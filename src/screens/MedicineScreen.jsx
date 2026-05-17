@@ -159,7 +159,7 @@ export default function MedicineScreen() {
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Generic name, brand, or common name..."
+            placeholder="Search medicines..."
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
           />
           {search && (
