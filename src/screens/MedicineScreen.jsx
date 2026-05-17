@@ -172,7 +172,7 @@ export default function MedicineScreen() {
             onClick={() => setDropdownOpen(o => !o)}
             className="flex items-center gap-1 flex-shrink-0"
           >
-            <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 ${
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 max-w-[80px] truncate ${
               {
                 "All": "bg-secondary text-secondary-foreground",
                 "Analgesic": "bg-blue-500/15 text-blue-400",
@@ -185,8 +185,8 @@ export default function MedicineScreen() {
                 "Opioid Analgesic": "bg-red-500/15 text-red-400",
               }[activeCategory] || "bg-secondary text-secondary-foreground"
             }`}>
-              {activeCategory === 'All' ? 'All' : activeCategory}
-              <ChevronDown size={10} className={`transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+              <span className="truncate">{activeCategory === 'All' ? 'All' : activeCategory}</span>
+              <ChevronDown size={10} className={`flex-shrink-0 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
             </span>
           </button>
         </div>
