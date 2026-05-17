@@ -149,7 +149,7 @@ export default function MedicineScreen() {
       {/* Header */}
       <div className="px-4 pt-5 pb-3">
         <h1 className="text-2xl font-bold text-foreground">Medicine</h1>
-        <p className="text-xs text-muted-foreground mt-0.5">Quick drug reference for nursing students</p>
+        <p className="text-xs text-muted-foreground mt-0.5">Drug reference guide</p>
       </div>
 
       {/* Search */}
