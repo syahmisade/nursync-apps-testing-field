@@ -172,10 +172,22 @@ export default function MedicineScreen() {
             onClick={() => setDropdownOpen(o => !o)}
             className="flex items-center gap-1 flex-shrink-0"
           >
-            <span className="text-xs font-medium text-primary">
-              {activeCategory === 'All' ? 'All' : activeCategory.split(' ')[0]}
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 ${
+              {
+                "All": "bg-secondary text-secondary-foreground",
+                "Analgesic": "bg-blue-500/15 text-blue-400",
+                "Antibiotic": "bg-emerald-500/15 text-emerald-400",
+                "Antidiabetic": "bg-purple-500/15 text-purple-400",
+                "Antihypertensive": "bg-rose-500/15 text-rose-400",
+                "Antilipid": "bg-orange-500/15 text-orange-400",
+                "Bronchodilator": "bg-cyan-500/15 text-cyan-400",
+                "Antacid/PPI": "bg-yellow-500/15 text-yellow-400",
+                "Opioid Analgesic": "bg-red-500/15 text-red-400",
+              }[activeCategory] || "bg-secondary text-secondary-foreground"
+            }`}>
+              {activeCategory === 'All' ? 'All' : activeCategory}
+              <ChevronDown size={10} className={`transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
             </span>
-            <ChevronDown size={13} className={`text-primary transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
           </button>
         </div>
 
