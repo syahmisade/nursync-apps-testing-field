@@ -171,13 +171,13 @@ export default function MedicineScreen() {
           </div>
           <button
             onClick={() => setDropdownOpen(o => !o)}
-            className={`flex items-center gap-1 px-3 py-3 rounded-2xl border transition-colors flex-shrink-0 ${
+            className={`flex items-center justify-between gap-1 px-3 py-3 rounded-2xl border transition-colors flex-shrink-0 w-[110px] ${
               activeCategory !== 'All'
                 ? 'bg-secondary/70 border-primary/40'
                 : 'bg-secondary/70 border-border'
             }`}
           >
-            <span className={`text-xs font-medium whitespace-nowrap ${
+            <span className={`text-xs font-medium truncate ${
               {
                 "All": "text-muted-foreground",
                 "Analgesic": "text-blue-400",
