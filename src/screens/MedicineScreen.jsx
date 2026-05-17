@@ -184,16 +184,29 @@ export default function MedicineScreen() {
 
         {dropdownOpen && (
           <div className="absolute left-4 right-4 top-full mt-1.5 z-50 bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
-            {categories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
-                className="flex items-center justify-between w-full px-4 py-3 text-sm text-left hover:bg-secondary/60 transition-colors border-b border-border/50 last:border-b-0"
-              >
-                <span className={activeCategory === cat ? 'text-primary font-medium' : 'text-foreground'}>{cat}</span>
-                {activeCategory === cat && <Check size={14} className="text-primary" />}
-              </button>
-            ))}
+            {categories.map(cat => {
+              const catTextColor = {
+                "All": "text-foreground",
+                "Analgesic": "text-blue-400",
+                "Antibiotic": "text-emerald-400",
+                "Antidiabetic": "text-purple-400",
+                "Antihypertensive": "text-rose-400",
+                "Antilipid": "text-orange-400",
+                "Bronchodilator": "text-cyan-400",
+                "Antacid/PPI": "text-yellow-400",
+                "Opioid Analgesic": "text-red-400",
+              }[cat] || "text-foreground";
+              return (
+                <button
+                  key={cat}
+                  onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
+                  className="flex items-center justify-between w-full px-4 py-3 text-sm text-left hover:bg-secondary/60 transition-colors border-b border-border/50 last:border-b-0"
+                >
+                  <span className={`${catTextColor} ${activeCategory === cat ? 'font-semibold' : 'font-medium'}`}>{cat}</span>
+                  {activeCategory === cat && <Check size={14} className={catTextColor} />}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
