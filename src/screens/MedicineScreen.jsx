@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle } from 'lucide-react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, ChevronDown, Check } from 'lucide-react';
 import { medicines, categories } from '../data/medicines';
 import { useApp } from '../context/AppContext';
 import CategoryChip from '../components/MedicineCategoryChip';
@@ -98,6 +98,18 @@ export default function MedicineScreen() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedMedicine, setSelectedMedicine] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   const { savedMedicines, toggleSaveMedicine, addRecentSearch, recentSearches } = useApp();
 
   const filtered = useMemo(() => {
@@ -158,18 +170,32 @@ export default function MedicineScreen() {
         </div>
       </div>
 
-      {/* Category chips */}
-      <div className="px-4 mb-3">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-          {categories.map(cat => (
-            <CategoryChip
-              key={cat}
-              label={cat}
-              active={activeCategory === cat}
-              onClick={() => setActiveCategory(cat)}
-            />
-          ))}
-        </div>
+      {/* Category dropdown */}
+      <div className="px-4 mb-3 relative" ref={dropdownRef}>
+        <button
+          onClick={() => setDropdownOpen(o => !o)}
+          className="flex items-center justify-between w-full bg-secondary/70 border border-border rounded-2xl px-4 py-2.5 transition-colors focus:border-primary/50"
+        >
+          <span className="text-sm font-medium text-foreground">
+            {activeCategory === 'All' ? 'All Categories' : activeCategory}
+          </span>
+          <ChevronDown size={16} className={`text-muted-foreground transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        {dropdownOpen && (
+          <div className="absolute left-4 right-4 top-full mt-1.5 z-50 bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
+                className="flex items-center justify-between w-full px-4 py-3 text-sm text-left hover:bg-secondary/60 transition-colors border-b border-border/50 last:border-b-0"
+              >
+                <span className={activeCategory === cat ? 'text-primary font-medium' : 'text-foreground'}>{cat}</span>
+                {activeCategory === cat && <Check size={14} className="text-primary" />}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Recent searches */}
