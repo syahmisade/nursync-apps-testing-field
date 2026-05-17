@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, ChevronDown, Check } from 'lucide-react';
+import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, ChevronDown, Check, SlidersHorizontal } from 'lucide-react';
 import { medicines, categories } from '../data/medicines';
 import { useApp } from '../context/AppContext';
 import CategoryChip from '../components/MedicineCategoryChip';
@@ -171,28 +171,13 @@ export default function MedicineScreen() {
           </div>
           <button
             onClick={() => setDropdownOpen(o => !o)}
-            className={`flex items-center justify-between gap-1 px-3 py-3 rounded-2xl border transition-colors flex-shrink-0 w-[110px] ${
+            className={`flex items-center justify-center p-3 rounded-2xl border transition-colors flex-shrink-0 ${
               activeCategory !== 'All'
-                ? 'bg-secondary/70 border-primary/40'
-                : 'bg-secondary/70 border-border'
+                ? 'bg-primary/15 border-primary/40 text-primary'
+                : 'bg-secondary/70 border-border text-muted-foreground'
             }`}
           >
-            <span className={`text-xs font-medium truncate ${
-              {
-                "All": "text-muted-foreground",
-                "Analgesic": "text-blue-400",
-                "Antibiotic": "text-emerald-400",
-                "Antidiabetic": "text-purple-400",
-                "Antihypertensive": "text-rose-400",
-                "Antilipid": "text-orange-400",
-                "Bronchodilator": "text-cyan-400",
-                "Antacid/PPI": "text-yellow-400",
-                "Opioid Analgesic": "text-red-400",
-              }[activeCategory] || "text-muted-foreground"
-            }`}>
-              {activeCategory === 'All' ? 'Category' : activeCategory}
-            </span>
-            <ChevronDown size={12} className={`flex-shrink-0 text-muted-foreground transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+            <SlidersHorizontal size={16} />
           </button>
         </div>
 
