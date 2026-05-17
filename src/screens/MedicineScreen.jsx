@@ -154,40 +154,45 @@ export default function MedicineScreen() {
 
       {/* Search + Category */}
       <div className="px-4 mb-3 relative" ref={dropdownRef}>
-        <div className="flex items-center gap-2.5 bg-secondary/70 rounded-2xl px-4 py-3 border border-border focus-within:border-primary/50 transition-colors">
-          <Search size={16} className="text-muted-foreground flex-shrink-0" />
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search medicines..."
-            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-          />
-          {search && (
-            <button onClick={() => setSearch('')}>
-              <X size={14} className="text-muted-foreground" />
-            </button>
-          )}
-          <div className="w-px h-4 bg-border flex-shrink-0" />
+        <div className="flex items-center gap-2">
+          <div className="flex-1 flex items-center gap-2.5 bg-secondary/70 rounded-2xl px-4 py-3 border border-border focus-within:border-primary/50 transition-colors">
+            <Search size={16} className="text-muted-foreground flex-shrink-0" />
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search medicines..."
+              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+            />
+            {search && (
+              <button onClick={() => setSearch('')}>
+                <X size={14} className="text-muted-foreground" />
+              </button>
+            )}
+          </div>
           <button
             onClick={() => setDropdownOpen(o => !o)}
-            className="flex items-center gap-1 flex-shrink-0"
+            className={`flex items-center gap-1 px-3 py-3 rounded-2xl border transition-colors flex-shrink-0 ${
+              activeCategory !== 'All'
+                ? 'bg-secondary/70 border-primary/40'
+                : 'bg-secondary/70 border-border'
+            }`}
           >
-            <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 max-w-[80px] truncate ${
+            <span className={`text-xs font-medium whitespace-nowrap ${
               {
-                "All": "bg-secondary text-secondary-foreground",
-                "Analgesic": "bg-blue-500/15 text-blue-400",
-                "Antibiotic": "bg-emerald-500/15 text-emerald-400",
-                "Antidiabetic": "bg-purple-500/15 text-purple-400",
-                "Antihypertensive": "bg-rose-500/15 text-rose-400",
-                "Antilipid": "bg-orange-500/15 text-orange-400",
-                "Bronchodilator": "bg-cyan-500/15 text-cyan-400",
-                "Antacid/PPI": "bg-yellow-500/15 text-yellow-400",
-                "Opioid Analgesic": "bg-red-500/15 text-red-400",
-              }[activeCategory] || "bg-secondary text-secondary-foreground"
+                "All": "text-muted-foreground",
+                "Analgesic": "text-blue-400",
+                "Antibiotic": "text-emerald-400",
+                "Antidiabetic": "text-purple-400",
+                "Antihypertensive": "text-rose-400",
+                "Antilipid": "text-orange-400",
+                "Bronchodilator": "text-cyan-400",
+                "Antacid/PPI": "text-yellow-400",
+                "Opioid Analgesic": "text-red-400",
+              }[activeCategory] || "text-muted-foreground"
             }`}>
-              <span className="truncate">{activeCategory === 'All' ? 'All' : activeCategory}</span>
-              <ChevronDown size={10} className={`flex-shrink-0 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+              {activeCategory === 'All' ? 'Category' : activeCategory}
             </span>
+            <ChevronDown size={12} className={`flex-shrink-0 text-muted-foreground transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
           </button>
         </div>
 
