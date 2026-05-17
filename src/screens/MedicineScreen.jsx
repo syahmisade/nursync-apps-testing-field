@@ -215,7 +215,7 @@ export default function MedicineScreen() {
                     {medicine.glamourName && (
                       <p className="text-xs text-primary/70 mt-0.5">Also known as: {medicine.glamourName}</p>
                     )}
-                    <p className="text-xs text-foreground/60 mt-1 line-clamp-2">{medicine.indications}</p>
+
                   </div>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     <button
