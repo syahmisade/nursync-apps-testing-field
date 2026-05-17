@@ -152,8 +152,8 @@ export default function MedicineScreen() {
         <p className="text-xs text-muted-foreground mt-0.5">Drug reference guide</p>
       </div>
 
-      {/* Search */}
-      <div className="px-4 mb-3">
+      {/* Search + Category */}
+      <div className="px-4 mb-3 relative" ref={dropdownRef}>
         <div className="flex items-center gap-2.5 bg-secondary/70 rounded-2xl px-4 py-3 border border-border focus-within:border-primary/50 transition-colors">
           <Search size={16} className="text-muted-foreground flex-shrink-0" />
           <input
@@ -167,20 +167,17 @@ export default function MedicineScreen() {
               <X size={14} className="text-muted-foreground" />
             </button>
           )}
+          <div className="w-px h-4 bg-border flex-shrink-0" />
+          <button
+            onClick={() => setDropdownOpen(o => !o)}
+            className="flex items-center gap-1 flex-shrink-0"
+          >
+            <span className="text-xs font-medium text-primary">
+              {activeCategory === 'All' ? 'All' : activeCategory.split(' ')[0]}
+            </span>
+            <ChevronDown size={13} className={`text-primary transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+          </button>
         </div>
-      </div>
-
-      {/* Category dropdown */}
-      <div className="px-4 mb-3 relative" ref={dropdownRef}>
-        <button
-          onClick={() => setDropdownOpen(o => !o)}
-          className="flex items-center justify-between w-full bg-secondary/70 border border-border rounded-2xl px-4 py-2.5 transition-colors focus:border-primary/50"
-        >
-          <span className="text-sm font-medium text-foreground">
-            {activeCategory === 'All' ? 'All Categories' : activeCategory}
-          </span>
-          <ChevronDown size={16} className={`text-muted-foreground transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
-        </button>
 
         {dropdownOpen && (
           <div className="absolute left-4 right-4 top-full mt-1.5 z-50 bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
