@@ -197,8 +197,7 @@ export default function MedicineScreen() {
             {recentSearches.slice(0, 5).map(s => (
               <button
                 key={s}
-                onMouseDown={e => e.preventDefault()}
-                onClick={() => { setSearch(s); setSearchFocused(false); }}
+                onMouseDown={e => { e.preventDefault(); setSearch(s); setSearchFocused(false); }}
                 className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-secondary/60 transition-colors border-b border-border/50 last:border-b-0"
               >
                 <Clock size={13} className="text-muted-foreground/60 flex-shrink-0" />
