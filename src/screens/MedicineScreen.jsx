@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, ChevronDown, Check, SlidersHorizontal } from 'lucide-react';
+import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, ChevronDown, Check, SlidersHorizontal, Clock } from 'lucide-react';
 import { medicines, categories } from '../data/medicines';
 import { useApp } from '../context/AppContext';
 import CategoryChip from '../components/MedicineCategoryChip';
@@ -101,12 +101,17 @@ export default function MedicineScreen() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedMedicine, setSelectedMedicine] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
   const dropdownRef = useRef(null);
+  const searchRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchFocused(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -158,12 +163,13 @@ export default function MedicineScreen() {
 
       {/* Search + Category */}
       <div className="px-4 mb-3 relative" ref={dropdownRef}>
-        <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-2.5 bg-secondary/70 rounded-2xl px-4 py-3 border border-border focus-within:border-primary/50 transition-colors">
+        <div className="flex items-center gap-2" ref={searchRef}>
+          <div className="flex-1 flex items-center gap-2.5 bg-secondary/70 rounded-2xl px-4 py-3 border border-border focus-within:border-primary/50 transition-colors relative">
             <Search size={16} className="text-muted-foreground flex-shrink-0" />
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
               placeholder="Search medicines..."
               className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
             />
@@ -184,6 +190,23 @@ export default function MedicineScreen() {
             <SlidersHorizontal size={16} />
           </button>
         </div>
+
+        {/* Recent searches dropdown */}
+        {searchFocused && !search && recentSearches.length > 0 && (
+          <div className="absolute left-0 right-10 top-full mt-1.5 z-50 bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
+            {recentSearches.slice(0, 5).map(s => (
+              <button
+                key={s}
+                onMouseDown={e => e.preventDefault()}
+                onClick={() => { setSearch(s); setSearchFocused(false); }}
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left hover:bg-secondary/60 transition-colors border-b border-border/50 last:border-b-0"
+              >
+                <Clock size={13} className="text-muted-foreground/60 flex-shrink-0" />
+                <span className="text-foreground/80">{s}</span>
+              </button>
+            ))}
+          </div>
+        )}
 
         {dropdownOpen && (
           <div className="absolute left-4 right-4 top-full mt-1.5 z-50 bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
@@ -215,24 +238,6 @@ export default function MedicineScreen() {
           </div>
         )}
       </div>
-
-      {/* Recent searches */}
-      {!search && recentSearches.length > 0 && (
-        <div className="px-4 mb-3">
-          <p className="text-xs text-muted-foreground mb-2 font-medium">Recent searches</p>
-          <div className="flex gap-2 flex-wrap">
-            {recentSearches.slice(0, 5).map(s => (
-              <button
-                key={s}
-                onClick={() => setSearch(s)}
-                className="px-3 py-1.5 bg-secondary/60 rounded-full text-xs text-muted-foreground hover:text-foreground border border-border transition-colors"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Medicine list */}
       <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3 animate-fade-in">
