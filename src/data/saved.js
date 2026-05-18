@@ -5,5 +5,5 @@ export const initialSavedState = {
   medicines: [3], // metformin saved by default
   procedures: [3], // hand hygiene saved by default  
   quizQuestions: [1, 8], // first and last pharmacology questions
-  recentSearches: ["Paracetamol", "Amoxicillin", "Metformin", "Salbutamol"]
+  recentSearches: ["Paracetamol", "Amoxicillin", "Metformin", "Salbutamol", "Amlodipine", "Atorvastatin", "Omeprazole", "Morphine", "PCM", "Blue inhaler"]
 };
