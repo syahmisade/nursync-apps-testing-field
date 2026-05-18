@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bookmark, BookmarkCheck, Pill, ClipboardList, BookOpen, Clock, ChevronRight, BookmarkX, ArrowLeft, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Bookmark, BookmarkCheck, Pill, ClipboardList, BookOpen, ChevronRight, BookmarkX, ArrowLeft, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { medicines } from '../data/medicines';
 import { procedures } from '../data/procedures';
 import { quizQuestions } from '../data/quiz';
@@ -277,7 +277,7 @@ export default function SavedScreen() {
   const [selectedMed, setSelectedMed] = useState(null);
   const [selectedProc, setSelectedProc] = useState(null);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
-  const { savedMedicines, savedProcedures, savedQuizQuestions, recentSearches, toggleSaveMedicine, toggleSaveProcedure, toggleSaveQuestion } = useApp();
+  const { savedMedicines, savedProcedures, savedQuizQuestions, toggleSaveMedicine, toggleSaveProcedure, toggleSaveQuestion } = useApp();
 
   const savedMeds = medicines.filter(m => savedMedicines.includes(m.id));
   const savedProcs = procedures.filter(p => savedProcedures.includes(p.id));
@@ -296,12 +296,11 @@ export default function SavedScreen() {
 
       {/* Stats row — doubles as tab selector */}
       <div className="px-4 mb-3">
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           {[
             { label: 'Medicines', count: savedMeds.length, Icon: Pill, color: 'text-blue-400', tab: 'medicines' },
             { label: 'Procedures', count: savedProcs.length, Icon: ClipboardList, color: 'text-purple-400', tab: 'procedures' },
             { label: 'Quiz Qs', count: savedQuestions.length, Icon: BookOpen, color: 'text-emerald-400', tab: 'quiz' },
-            { label: 'Searches', count: recentSearches.length, Icon: Clock, color: 'text-orange-400', tab: 'recent' },
           ].map(({ label, count, Icon, color, tab }) => (
             <button key={label} onClick={() => setActiveTab(tab)} className={`rounded-2xl p-2.5 border text-center transition-all active:scale-95 ${
               activeTab === tab
@@ -386,18 +385,6 @@ export default function SavedScreen() {
           ))
         )}
 
-        {/* Recent Searches */}
-        {activeTab === 'recent' && (
-          recentSearches.length === 0 ? <EmptyState label="searches" /> :
-          <div className="bg-card rounded-2xl border border-border overflow-hidden">
-            {recentSearches.map((s, i) => (
-              <div key={s} className={`flex items-center gap-3 px-4 py-3 ${i < recentSearches.length - 1 ? 'border-b border-border' : ''}`}>
-                <Clock size={14} className="text-muted-foreground flex-shrink-0" />
-                <p className="text-sm text-foreground">{s}</p>
-              </div>
-            ))}
-          </div>
-        )}
 
         <DisclaimerBanner compact />
         <div className="h-2" />
