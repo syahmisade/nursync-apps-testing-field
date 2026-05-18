@@ -125,7 +125,7 @@ export default function MedicineScreen() {
   }, [search, activeCategory]);
 
   const handleSelect = (medicine) => {
-    if (search) addRecentSearch(medicine.genericName);
+    addRecentSearch(medicine.genericName);
     setSelectedMedicine(medicine);
   };
 
