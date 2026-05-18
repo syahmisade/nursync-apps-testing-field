@@ -16,7 +16,7 @@ const catColors = {
   "Antacid/PPI": "bg-yellow-500/15 text-yellow-400",
   "Opioid Analgesic": "bg-red-500/15 text-red-400",
   "Anticoagulant": "bg-pink-500/15 text-pink-400",
-  "Corticosteroid": "bg-teal-500/15 text-teal-400",
+  "Corticosteroid": "bg-cyan-500/15 text-cyan-300",
   "Vital Signs": "bg-blue-500/15 text-blue-400",
   "Medication Administration": "bg-purple-500/15 text-purple-400",
   "Infection Control": "bg-emerald-500/15 text-emerald-400",

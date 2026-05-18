@@ -10,6 +10,8 @@ const categoryColors = {
   "Bronchodilator": "bg-cyan-500/15 text-cyan-400 border-cyan-500/25",
   "Antacid/PPI": "bg-yellow-500/15 text-yellow-400 border-yellow-500/25",
   "Opioid Analgesic": "bg-red-500/15 text-red-400 border-red-500/25",
+  "Anticoagulant": "bg-pink-500/15 text-pink-400 border-pink-500/25",
+  "Corticosteroid": "bg-cyan-500/15 text-cyan-300 border-cyan-500/25",
 };
 
 export default function CategoryChip({ label, active, onClick }) {
