@@ -215,7 +215,7 @@ export default function MedicineScreen() {
         <div className="px-4 mb-3">
           <p className="text-xs text-muted-foreground mb-2 font-medium">Recent searches</p>
           <div className="flex gap-2 flex-wrap">
-            {recentSearches.slice(0, 5).map(s => (
+            {recentSearches.slice(0, 10).map(s => (
               <button
                 key={s}
                 onClick={() => setSearch(s)}
