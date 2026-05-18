@@ -169,7 +169,7 @@ export default function MedicineScreen() {
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
-              onFocus={() => setSearchFocused(true)}
+              onFocus={() => { setSearchFocused(true); setDropdownOpen(false); }}
               placeholder="Search medicines..."
               className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
             />
@@ -180,7 +180,7 @@ export default function MedicineScreen() {
             )}
           </div>
           <button
-            onClick={() => setDropdownOpen(o => !o)}
+            onClick={() => { setDropdownOpen(o => !o); setSearchFocused(false); }}
             className={`flex items-center justify-center p-3 rounded-2xl border transition-colors flex-shrink-0 ${
               activeCategory !== 'All'
                 ? 'bg-primary/15 border-primary/40 text-primary'
