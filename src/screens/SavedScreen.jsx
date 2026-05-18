@@ -75,16 +75,16 @@ export default function SavedScreen() {
       <div className="px-4 mb-3">
         <div className="grid grid-cols-4 gap-2">
           {[
-            { label: 'Medicines', count: savedMeds.length, Icon: Pill, color: 'text-blue-400' },
-            { label: 'Procedures', count: savedProcs.length, Icon: ClipboardList, color: 'text-purple-400' },
-            { label: 'Quiz Qs', count: savedQuestions.length, Icon: BookOpen, color: 'text-emerald-400' },
-            { label: 'Searches', count: recentSearches.length, Icon: Clock, color: 'text-orange-400' },
-          ].map(({ label, count, Icon, color }) => (
-            <div key={label} className="bg-card rounded-2xl p-2.5 border border-border text-center">
+            { label: 'Medicines', count: savedMeds.length, Icon: Pill, color: 'text-blue-400', tab: 'medicines' },
+            { label: 'Procedures', count: savedProcs.length, Icon: ClipboardList, color: 'text-purple-400', tab: 'procedures' },
+            { label: 'Quiz Qs', count: savedQuestions.length, Icon: BookOpen, color: 'text-emerald-400', tab: 'quiz' },
+            { label: 'Searches', count: recentSearches.length, Icon: Clock, color: 'text-orange-400', tab: 'recent' },
+          ].map(({ label, count, Icon, color, tab }) => (
+            <button key={label} onClick={() => tab && setActiveTab(tab)} className="bg-card rounded-2xl p-2.5 border border-border text-center transition-colors hover:border-primary/40 active:scale-95">
               <Icon size={15} className={`${color} mx-auto mb-1`} />
               <p className={`text-lg font-bold ${color}`}>{count}</p>
               <p className="text-[9px] text-muted-foreground leading-tight">{label}</p>
-            </div>
+            </button>
           ))}
         </div>
       </div>
