@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, CheckCircle2, SlidersHorizontal, Check } from 'lucide-react';
 import { procedures, procedureCategories } from '../data/procedures';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
@@ -122,7 +122,19 @@ export default function ProceduresScreen() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [selected, setSelected] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const { savedProcedures, toggleSaveProcedure } = useApp();
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -142,30 +154,49 @@ export default function ProceduresScreen() {
         <p className="text-xs text-muted-foreground mt-0.5">Step-by-step nursing procedure guides</p>
       </div>
 
-      {/* Search */}
-      <div className="px-4 mb-3">
-        <div className="flex items-center gap-2.5 bg-secondary/70 rounded-2xl px-4 py-3 border border-border focus-within:border-primary/50 transition-colors">
-          <Search size={16} className="text-muted-foreground flex-shrink-0" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search procedures..."
-            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none" />
-          {search && <button onClick={() => setSearch('')}><X size={14} className="text-muted-foreground" /></button>}
+      {/* Search + Filter */}
+      <div className="px-4 mb-3 relative" ref={dropdownRef}>
+        <div className="flex items-center gap-2">
+          <div className="flex-1 flex items-center gap-2.5 bg-secondary/70 rounded-2xl px-4 py-3 border border-border focus-within:border-primary/50 transition-colors">
+            <Search size={16} className="text-muted-foreground flex-shrink-0" />
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search procedures..."
+              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none" />
+            {search && <button onClick={() => setSearch('')}><X size={14} className="text-muted-foreground" /></button>}
+          </div>
+          <button
+            onClick={() => setDropdownOpen(o => !o)}
+            className={`flex items-center justify-center p-3 rounded-2xl border transition-colors flex-shrink-0 ${
+              activeCategory !== 'All'
+                ? 'bg-primary/15 border-primary/40 text-primary'
+                : 'bg-secondary/70 border-border text-muted-foreground'
+            }`}
+          >
+            <SlidersHorizontal size={16} />
+          </button>
         </div>
-      </div>
 
-      {/* Category chips */}
-      <div className="px-4 mb-3">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-          {procedureCategories.map(cat => (
-            <button key={cat} onClick={() => setActiveCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border whitespace-nowrap transition-all ${
-                activeCategory === cat
-                  ? `${categoryColors[cat] || 'bg-secondary text-secondary-foreground border-border'} ring-1 ring-primary/30`
-                  : 'bg-secondary/40 text-muted-foreground border-border/50 hover:opacity-100 opacity-70'
-              }`}>
-              {cat}
-            </button>
-          ))}
-        </div>
+        {dropdownOpen && (
+          <div className="absolute left-4 right-4 top-full mt-1.5 z-50 bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
+            {procedureCategories.map(cat => {
+              const catColor = {
+                "All": "text-foreground",
+                "Vital Signs": "text-blue-400",
+                "Medication Administration": "text-purple-400",
+                "Infection Control": "text-emerald-400",
+                "Wound Care": "text-rose-400",
+                "Patient Safety": "text-orange-400",
+                "Emergency Basics": "text-red-400",
+              }[cat] || "text-foreground";
+              return (
+                <button key={cat} onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
+                  className="flex items-center justify-between w-full px-4 py-3 text-sm text-left hover:bg-secondary/60 transition-colors border-b border-border/50 last:border-b-0">
+                  <span className={`${catColor} ${activeCategory === cat ? 'font-semibold' : 'font-medium'}`}>{cat}</span>
+                  {activeCategory === cat && <Check size={14} className={catColor} />}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* List */}
