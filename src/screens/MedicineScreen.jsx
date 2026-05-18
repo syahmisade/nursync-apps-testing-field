@@ -193,7 +193,7 @@ export default function MedicineScreen() {
 
         {/* Recent searches dropdown */}
         {searchFocused && !search && recentSearches.length > 0 && (
-          <div className="absolute left-0 right-10 top-full mt-1.5 z-50 bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
+          <div className="absolute left-4 right-16 top-full mt-1.5 z-50 bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
             {recentSearches.slice(0, 5).map(s => (
               <button
                 key={s}
