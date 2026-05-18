@@ -34,6 +34,8 @@ function MedicineDetail({ medicine, onBack }) {
     "Bronchodilator": "bg-cyan-500/15 text-cyan-400",
     "Antacid/PPI": "bg-yellow-500/15 text-yellow-400",
     "Opioid Analgesic": "bg-red-500/15 text-red-400",
+    "Anticoagulant": "bg-pink-500/15 text-pink-400",
+    "Corticosteroid": "bg-teal-500/15 text-teal-400",
   };
 
   return (
@@ -142,6 +144,8 @@ export default function MedicineScreen() {
     "Bronchodilator": "bg-cyan-500/15 text-cyan-400",
     "Antacid/PPI": "bg-yellow-500/15 text-yellow-400",
     "Opioid Analgesic": "bg-red-500/15 text-red-400",
+    "Anticoagulant": "bg-pink-500/15 text-pink-400",
+    "Corticosteroid": "bg-teal-500/15 text-teal-400",
   };
 
   return (
@@ -194,6 +198,8 @@ export default function MedicineScreen() {
                 "Bronchodilator": "text-cyan-400",
                 "Antacid/PPI": "text-yellow-400",
                 "Opioid Analgesic": "text-red-400",
+              "Anticoagulant": "text-pink-400",
+              "Corticosteroid": "text-teal-400",
               }[cat] || "text-foreground";
               return (
                 <button
@@ -215,7 +221,7 @@ export default function MedicineScreen() {
         <div className="px-4 mb-3">
           <p className="text-xs text-muted-foreground mb-2 font-medium">Recent searches</p>
           <div className="flex gap-2 flex-wrap">
-            {recentSearches.slice(0, 10).map(s => (
+            {recentSearches.slice(0, 5).map(s => (
               <button
                 key={s}
                 onClick={() => setSearch(s)}

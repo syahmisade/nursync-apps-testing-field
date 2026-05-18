@@ -133,6 +133,44 @@ export const medicines = [
     isFeatured: false
   },
   {
+    id: 9,
+    genericName: "Warfarin",
+    brandName: "Coumadin, Marevan",
+    glamourName: "Blood thinner",
+    category: "Anticoagulant",
+    indications: "Prevention and treatment of deep vein thrombosis (DVT), pulmonary embolism (PE), atrial fibrillation, mechanical heart valves.",
+    adverseReactions: "Bleeding (major risk), bruising, haematuria, epistaxis. Rare: skin necrosis, purple toe syndrome.",
+    contraindications: "Active bleeding, severe hepatic impairment, pregnancy (1st & 3rd trimester), uncontrolled hypertension, recent CNS surgery.",
+    interactions: "Many interactions — NSAIDs, antibiotics, antifungals, herbal supplements (ginger, garlic, ginkgo) all affect INR. Monitor closely with any new medication.",
+    precautions: "Regular INR monitoring mandatory. Target INR 2.0–3.0 (most indications). Educate patient on consistent vitamin K dietary intake.",
+    dosage: "Individualised based on INR response. Typical starting dose: 5mg OD. Adjust to maintain therapeutic INR range.",
+    prescriberCategory: "Prescription Only (POM)",
+    prescribingRestrictions: "Medical Officer and above. INR monitoring required.",
+    nemlStatus: "NEML Listed — Essential Medicine",
+    references: "MOH Malaysia CPG Atrial Fibrillation (sample). BNF 85.",
+    savedByUser: false,
+    isFeatured: false
+  },
+  {
+    id: 10,
+    genericName: "Prednisolone",
+    brandName: "Deltacortril, Prelone",
+    glamourName: "Pred / Steroid",
+    category: "Corticosteroid",
+    indications: "Inflammatory and autoimmune conditions: asthma exacerbation, allergic reactions, rheumatoid arthritis, SLE, nephrotic syndrome, IBD.",
+    adverseReactions: "Short-term: hyperglycaemia, insomnia, mood changes, appetite increase. Long-term: Cushing's syndrome, osteoporosis, adrenal suppression, immunosuppression, peptic ulcer.",
+    contraindications: "Systemic infections (without antimicrobial cover), live vaccines during immunosuppressive doses, hypersensitivity.",
+    interactions: "NSAIDs (increased GI bleeding risk). Antidiabetics (hyperglycaemia — monitor glucose). Rifampicin reduces prednisolone effect. Vaccines (avoid live vaccines).",
+    precautions: "Do not stop abruptly after prolonged use — taper dose. Monitor BP, blood glucose, bone density with long-term use. PPI cover recommended.",
+    dosage: "Acute asthma: 30–40mg OD for 5 days. Autoimmune: 0.5–1mg/kg/day, taper as tolerated. Maintenance: lowest effective dose.",
+    prescriberCategory: "Prescription Only (POM)",
+    prescribingRestrictions: "Medical Officer and above. Specialist for long-term use.",
+    nemlStatus: "NEML Listed — Essential Medicine",
+    references: "MOH Malaysia CPG Asthma (sample). BNF 85.",
+    savedByUser: false,
+    isFeatured: false
+  },
+  {
     id: 8,
     genericName: "Morphine",
     brandName: "MST Continus, Kapanol",
@@ -153,4 +191,4 @@ export const medicines = [
   }
 ];
 
-export const categories = ["All", "Analgesic", "Antibiotic", "Antidiabetic", "Antihypertensive", "Antilipid", "Bronchodilator", "Antacid/PPI", "Opioid Analgesic"];
+export const categories = ["All", "Analgesic", "Antibiotic", "Antidiabetic", "Antihypertensive", "Antilipid", "Bronchodilator", "Antacid/PPI", "Opioid Analgesic", "Anticoagulant", "Corticosteroid"];
