@@ -80,29 +80,20 @@ export default function SavedScreen() {
             { label: 'Quiz Qs', count: savedQuestions.length, Icon: BookOpen, color: 'text-emerald-400', tab: 'quiz' },
             { label: 'Searches', count: recentSearches.length, Icon: Clock, color: 'text-orange-400', tab: 'recent' },
           ].map(({ label, count, Icon, color, tab }) => (
-            <button key={label} onClick={() => tab && setActiveTab(tab)} className="bg-card rounded-2xl p-2.5 border border-border text-center transition-colors hover:border-primary/40 active:scale-95">
+            <button key={label} onClick={() => tab && setActiveTab(tab)} className={`rounded-2xl p-2.5 border text-center transition-all active:scale-95 ${
+              activeTab === tab
+                ? 'bg-card border-primary/60 ring-1 ring-primary/40'
+                : 'bg-card border-border hover:border-primary/30'
+            }`}>
               <Icon size={15} className={`${color} mx-auto mb-1`} />
               <p className={`text-lg font-bold ${color}`}>{count}</p>
-              <p className="text-[9px] text-muted-foreground leading-tight">{label}</p>
+              <p className={`text-[9px] leading-tight ${activeTab === tab ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>{label}</p>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="px-4 mb-3">
-        <div className="flex bg-secondary/50 rounded-2xl p-1 gap-1">
-          {tabs.map(({ id, label, Icon }) => (
-            <button key={id} onClick={() => setActiveTab(id)}
-              className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-xs font-medium transition-all ${
-                activeTab === id ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'
-              }`}>
-              <Icon size={12} />
-              <span className="hidden sm:inline">{label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+
 
       <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3 animate-fade-in">
         {/* Medicines */}
