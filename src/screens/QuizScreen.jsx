@@ -213,7 +213,7 @@ export default function QuizScreen() {
         <p className="text-xs text-muted-foreground mt-0.5">Exam-style practice questions</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3 animate-fade-in">
         {/* Stats overview */}
         <div className="grid grid-cols-3 gap-2">
           {[

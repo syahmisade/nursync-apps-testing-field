@@ -255,7 +255,7 @@ export default function CalculatorScreen() {
         <p className="text-xs text-muted-foreground mt-0.5">Nursing clinical calculators</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3 animate-fade-in">
         <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl text-xs bg-amber-400/5 border border-amber-400/15 text-amber-400/80">
           <AlertTriangle size={13} className="text-amber-400 flex-shrink-0 mt-0.5" />
           <span>Always verify clinical calculations with a qualified practitioner. These calculators are for educational reference only.</span>

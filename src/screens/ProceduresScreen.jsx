@@ -169,7 +169,7 @@ export default function ProceduresScreen() {
       </div>
 
       {/* List */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3 animate-fade-in">
         {filtered.map(proc => {
           const isSaved = savedProcedures.includes(proc.id);
           return (

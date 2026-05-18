@@ -229,7 +229,7 @@ export default function MedicineScreen() {
       )}
 
       {/* Medicine list */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3 animate-fade-in">
         {filtered.length === 0 && (
           <div className="text-center py-12 text-muted-foreground text-sm">No medicines found.</div>
         )}
