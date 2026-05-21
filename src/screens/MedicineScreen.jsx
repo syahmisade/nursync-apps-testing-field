@@ -257,7 +257,7 @@ export default function MedicineScreen() {
         )}
       </div>
         {/* Scroll shadow */}
-        <div className="h-3 pointer-events-none transition-opacity duration-200"
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
           style={{
             background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)',
             opacity: isScrolled ? 1 : 0,
