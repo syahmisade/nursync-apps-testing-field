@@ -64,12 +64,12 @@ export default function NurSync() {
             ) : (
               <div className="h-full overflow-y-auto scrollbar-hide">
                 <Routes>
-                  <Route path="/" element={<Navigate to="/medicine" replace />} />
-                  <Route path="/medicine/*" element={<MedicineScreen />} />
-                  <Route path="/calculators/*" element={<CalculatorScreen />} />
-                  <Route path="/procedures/*" element={<ProceduresScreen />} />
-                  <Route path="/quiz/*" element={<QuizScreen />} />
-                  <Route path="/saved/*" element={<SavedScreen />} />
+                  <Route index element={<Navigate to="/medicine" replace />} />
+                  <Route path="medicine/*" element={<MedicineScreen />} />
+                  <Route path="calculators/*" element={<CalculatorScreen />} />
+                  <Route path="procedures/*" element={<ProceduresScreen />} />
+                  <Route path="quiz/*" element={<QuizScreen />} />
+                  <Route path="saved/*" element={<SavedScreen />} />
                 </Routes>
               </div>
             )}
