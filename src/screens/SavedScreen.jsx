@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Bookmark, BookmarkCheck, Pill, ClipboardList, BookOpen, ChevronRight, BookmarkX, ArrowLeft, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { medicines } from '../data/medicines';
 import { procedures } from '../data/procedures';
@@ -228,7 +228,17 @@ export default function SavedScreen() {
   const [selectedMed, setSelectedMed] = useState(null);
   const [selectedProc, setSelectedProc] = useState(null);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef(null);
   const { savedMedicines, savedProcedures, savedQuizQuestions, toggleSaveMedicine, toggleSaveProcedure, toggleSaveQuestion } = useApp();
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
 
   const savedMeds = medicines.filter(m => savedMedicines.includes(m.id));
   const savedProcs = procedures.filter(p => savedProcedures.includes(p.id));
@@ -269,9 +279,11 @@ export default function SavedScreen() {
           ))}
         </div>
       </div>
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>{/* end sticky wrapper */}
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
         {/* Medicines */}
         {activeTab === 'medicines' && (
           savedMeds.length === 0 ? <EmptyState label="medicines" /> :
