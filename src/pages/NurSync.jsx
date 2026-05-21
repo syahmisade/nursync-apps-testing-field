@@ -75,9 +75,9 @@ export default function NurSync() {
             <div className="flex items-center gap-2.5">
               {/* Logo */}
               <img
-                src="https://cdn.base44.com/apps/deft-nursing-pulse-sync/user-uploaded/0a0efb09-ad26-44ce-8fbe-3614d1a0286f.png"
+                src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/4a9f33203_AppsLogo.png"
                 alt="NurSync logo"
-                className="w-8 h-8 rounded-xl object-cover"
+                className="w-8 h-8 rounded-xl object-contain"
               />
               <div className="flex flex-col leading-none">
                 <span className="text-sm font-black tracking-tight" style={{ color: 'hsl(265,50%,35%)' }}>NurSync</span>
