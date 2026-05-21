@@ -22,7 +22,7 @@ export default function NurSync() {
 
   return (
     <AppProvider>
-      <div className="flex flex-col min-h-screen" style={{ background: 'hsl(270, 40%, 97%)' }}>
+      <div className="flex flex-col h-screen" style={{ background: 'hsl(270, 40%, 97%)' }}>
         {/* App header */}
         <div className="flex items-center justify-between px-5 py-2.5 border-b sticky top-0 z-40"
           style={{ background: 'hsl(270, 40%, 97%)', borderColor: 'hsl(270,25%,90%)' }}>
@@ -40,8 +40,10 @@ export default function NurSync() {
         </div>
 
         {/* Screen content */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide pb-20" id="main-scroll">
-          <ActiveScreen />
+        <div className="flex-1 min-h-0 pb-20">
+          <div className="h-full overflow-y-auto scrollbar-hide">
+            <ActiveScreen />
+          </div>
         </div>
 
         {/* Bottom nav */}

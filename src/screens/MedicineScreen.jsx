@@ -63,9 +63,9 @@ function MedicineDetail({ medicine, onBack }) {
   ];
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       {/* Sticky Header */}
-      <div className="sticky z-30 flex items-center justify-between px-4 pt-3 pb-3" style={{ top: '0px', background: 'hsl(270, 40%, 97%)' }}>
+      <div className="flex-shrink-0 flex items-center justify-between px-4 pt-3 pb-3" style={{ background: 'hsl(270, 40%, 97%)' }}>
         <button onClick={onBack} className="flex items-center gap-1.5 transition-colors rounded-xl px-3 py-1.5"
           style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
           <ArrowLeft size={15} />
@@ -80,7 +80,7 @@ function MedicineDetail({ medicine, onBack }) {
         </button>
       </div>
 
-      <div className="px-4 pb-6 space-y-3 mt-0">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
         {/* Title block */}
         <div className="rounded-3xl p-5 border card-shadow"
           style={{ background: 'white', borderColor: 'hsl(270,25%,90%)' }}>
@@ -162,9 +162,9 @@ export default function MedicineScreen() {
   if (selectedMedicine) return <MedicineDetail medicine={selectedMedicine} onBack={() => setSelectedMedicine(null)} />;
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       {/* Sticky header + search */}
-      <div className="sticky top-0 z-30" style={{ background: 'hsl(270, 40%, 97%)' }}>
+      <div className="flex-shrink-0" style={{ background: 'hsl(270, 40%, 97%)' }}>
         <div className="px-5 pt-4 pb-2 flex items-center gap-1">
           <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/f1fd0031d_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply', transform: 'scale(1.5)', transformOrigin: 'center' }} />
           <div className="animate-fade-in">
@@ -249,7 +249,7 @@ export default function MedicineScreen() {
       </div>{/* end sticky wrapper */}
 
       {/* Medicine list */}
-      <div className="px-4 pb-4 space-y-2.5 animate-fade-in">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
