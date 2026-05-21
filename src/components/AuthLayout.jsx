@@ -14,7 +14,7 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         {/* Logo / Icon */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl mb-4"
-            style={{ background: 'linear-gradient(135deg, hsl(265,60%,58%) 0%, hsl(285,55%,62%) 100%)', boxShadow: '0 6px 24px hsl(265,55%,70%,0.4)' }}>
+            style={{ background: 'linear-gradient(135deg, hsl(265,60%,58%) 0%, hsl(285,55%,62%) 100%)', boxShadow: '0 6px 24px hsla(265,55%,70%,0.4)' }}>
             <Icon className="w-8 h-8" style={{ color: 'white' }} aria-hidden="true" />
           </div>
           <div className="flex items-center justify-center gap-1.5 mb-1">
@@ -27,7 +27,7 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
 
         {/* Card */}
         <div className="rounded-3xl p-6 border"
-          style={{ background: 'white', borderColor: 'hsl(270,25%,88%)', boxShadow: '0 4px 32px hsl(265,50%,80%,0.2), 0 1px 6px rgba(0,0,0,0.04)' }}>
+          style={{ background: 'white', borderColor: 'hsl(270,25%,88%)', boxShadow: '0 4px 32px hsla(265,50%,80%,0.2), 0 1px 6px rgba(0,0,0,0.04)' }}>
           {children}
         </div>
 
