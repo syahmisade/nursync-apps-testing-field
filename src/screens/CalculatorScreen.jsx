@@ -118,6 +118,13 @@ function IVDripCalculator({ onBack }) {
 
   const reset = () => { setVolume(''); setHours(''); setDropFactor('20'); };
 
+  const dropsPerMin = volume && hours && dropFactor
+    ? ((parseFloat(volume) * parseFloat(dropFactor)) / (parseFloat(hours) * 60)).toFixed(1)
+    : null;
+  const mlPerHour = volume && hours
+    ? (parseFloat(volume) / parseFloat(hours)).toFixed(1)
+    : null;
+
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="flex-shrink-0" style={{ background: 'hsl(270, 40%, 97%)' }}>
