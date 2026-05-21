@@ -239,7 +239,7 @@ export default function QuizScreen() {
   return (
     <div className="flex flex-col h-full">
       <div className="px-5 pt-4 pb-2 flex items-center gap-1">
-        <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/b7b6d0ba5_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply', transform: 'scale(1.5)', transformOrigin: 'center' }} />
+        <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/b7b6d0ba5_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply', transform: 'scale(2.0)', transformOrigin: 'center' }} />
         <div>
           <h1 className="text-2xl font-black" style={{ color: 'hsl(265,45%,22%)' }}>Quiz</h1>
           <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Exam-style practice questions</p>
