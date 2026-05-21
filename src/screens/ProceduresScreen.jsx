@@ -174,7 +174,7 @@ export default function ProceduresScreen() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-5 pt-4 pb-2 flex items-center gap-1">
+      <div className="px-5 pt-4 pb-2 flex items-center gap-1 animate-fade-in">
         <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/83c26fcba_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply', transform: 'scale(1.8)', transformOrigin: 'center' }} />
         <div>
           <h1 className="text-2xl font-black" style={{ color: 'hsl(265,45%,22%)' }}>Procedures</h1>
@@ -183,7 +183,7 @@ export default function ProceduresScreen() {
       </div>
 
       {/* Search + Filter */}
-      <div className="px-4 mb-3 relative" ref={dropdownRef}>
+      <div className="px-4 mb-3 relative animate-fade-in" ref={dropdownRef}>
         <div className="flex items-center gap-2">
           <div className="flex-1 flex items-center gap-2.5 rounded-2xl px-4 py-3 border transition-colors"
             style={{ background: 'white', borderColor: 'hsl(270,22%,88%)', boxShadow: '0 1px 4px rgba(147,92,210,0.06)' }}>
