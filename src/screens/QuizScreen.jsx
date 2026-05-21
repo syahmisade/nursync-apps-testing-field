@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { ArrowLeft, Bookmark, BookmarkCheck, CheckCircle2, XCircle, RotateCcw, ChevronRight, Trophy } from 'lucide-react';
 import { quizCategories, quizQuestions } from '../data/quiz';
 import { useApp } from '../context/AppContext';
@@ -222,7 +222,17 @@ export default function QuizScreen() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [quizState, setQuizState] = useState('menu');
   const [lastResult, setLastResult] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef(null);
   const { quizProgress } = useApp();
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
 
   const handleFinish = (score, total) => {
     setLastResult({ score, total });
@@ -248,9 +258,11 @@ export default function QuizScreen() {
             <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Exam-style practice questions</p>
           </div>
         </div>
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3 animate-fade-in">
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2">
           {[

@@ -150,8 +150,18 @@ export default function ProceduresScreen() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selected, setSelected] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef(null);
+  const scrollRef = useRef(null);
   const { savedProcedures, toggleSaveProcedure } = useApp();
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -219,10 +229,12 @@ export default function ProceduresScreen() {
           </div>
         )}
       </div>
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>{/* end sticky wrapper */}
 
       {/* List */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { AlertTriangle, RotateCcw, ChevronRight, ArrowLeft, Info } from 'lucide-react';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 
@@ -564,6 +564,16 @@ function EDDCalculator({ onBack }) {
 
 export default function CalculatorScreen() {
   const [activeCalc, setActiveCalc] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
 
   if (activeCalc === 'bmi') return <BMICalculator onBack={() => setActiveCalc(null)} />;
   if (activeCalc === 'ivdrip') return <IVDripCalculator onBack={() => setActiveCalc(null)} />;
@@ -585,9 +595,11 @@ export default function CalculatorScreen() {
             <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Nursing clinical calculators</p>
           </div>
         </div>
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
         <div className="flex items-start gap-2.5 px-4 py-3 rounded-2xl text-xs"
           style={{ background: 'hsl(38,80%,96%)', border: '1px solid hsl(38,60%,82%)', color: 'hsl(38,55%,42%)' }}>
           <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" style={{ color: 'hsl(38,65%,48%)' }} />
