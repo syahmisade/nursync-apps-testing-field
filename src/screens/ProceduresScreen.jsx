@@ -174,13 +174,14 @@ export default function ProceduresScreen() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-5 pt-4 pb-2 flex items-center gap-1">
-        <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/83c26fcba_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply', transform: 'scale(1.8)', transformOrigin: 'center' }} />
-        <div className="animate-fade-in">
-          <h1 className="text-2xl font-black" style={{ color: 'hsl(265,45%,22%)' }}>Procedures</h1>
-          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Step-by-step nursing guides</p>
+      <div className="sticky top-0 z-30 flex-shrink-0" style={{ background: 'hsl(270, 40%, 97%)' }}>
+        <div className="px-5 pt-4 pb-2 flex items-center gap-1">
+          <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/83c26fcba_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply', transform: 'scale(1.8)', transformOrigin: 'center' }} />
+          <div className="animate-fade-in">
+            <h1 className="text-2xl font-black" style={{ color: 'hsl(265,45%,22%)' }}>Procedures</h1>
+            <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Step-by-step nursing guides</p>
+          </div>
         </div>
-      </div>
 
       {/* Search + Filter */}
       <div className="px-4 mb-3 relative animate-fade-in" ref={dropdownRef}>
@@ -218,6 +219,7 @@ export default function ProceduresScreen() {
           </div>
         )}
       </div>
+      </div>{/* end sticky wrapper */}
 
       {/* List */}
       <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
