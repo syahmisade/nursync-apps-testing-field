@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calculator, AlertTriangle, RotateCcw, ChevronRight, ArrowLeft, Info } from 'lucide-react';
+import { AlertTriangle, RotateCcw, ChevronRight, ArrowLeft, Info } from 'lucide-react';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 
 function BMICalculator({ onBack }) {
@@ -11,79 +11,74 @@ function BMICalculator({ onBack }) {
   const bmi = height && weight && heightM > 0 ? (weightKg / (heightM * heightM)).toFixed(1) : null;
 
   const getBmiCategory = (bmi) => {
-    if (bmi < 18.5) return { label: 'Underweight', color: 'text-blue-400', bg: 'bg-blue-400/10 border-blue-400/20' };
-    if (bmi < 23) return { label: 'Normal weight', color: 'text-emerald-400', bg: 'bg-emerald-400/10 border-emerald-400/20' };
-    if (bmi < 27.5) return { label: 'Overweight', color: 'text-yellow-400', bg: 'bg-yellow-400/10 border-yellow-400/20' };
-    if (bmi < 35) return { label: 'Obese', color: 'text-orange-400', bg: 'bg-orange-400/10 border-orange-400/20' };
-    return { label: 'Morbidly Obese', color: 'text-red-400', bg: 'bg-red-400/10 border-red-400/20' };
+    if (bmi < 18.5) return { label: 'Underweight', colorHsl: 'hsl(220,60%,46%)', bgHsl: 'hsl(220,60%,95%)', borderHsl: 'hsl(220,50%,82%)' };
+    if (bmi < 23) return { label: 'Normal weight', colorHsl: 'hsl(152,50%,38%)', bgHsl: 'hsl(152,50%,95%)', borderHsl: 'hsl(152,40%,78%)' };
+    if (bmi < 27.5) return { label: 'Overweight', colorHsl: 'hsl(38,65%,42%)', bgHsl: 'hsl(38,75%,95%)', borderHsl: 'hsl(38,60%,78%)' };
+    if (bmi < 35) return { label: 'Obese', colorHsl: 'hsl(28,65%,45%)', bgHsl: 'hsl(28,70%,95%)', borderHsl: 'hsl(28,58%,78%)' };
+    return { label: 'Morbidly Obese', colorHsl: 'hsl(0,52%,48%)', bgHsl: 'hsl(0,55%,95%)', borderHsl: 'hsl(0,45%,80%)' };
   };
 
   const reset = () => { setHeight(''); setWeight(''); };
-  const cat = bmi ? getBmiCategory(parseFloat(bmi)) : null;
+
+  const bmiCatData = bmi ? getBmiCategory(parseFloat(bmi)) : null;
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="text-muted-foreground hover:text-foreground">
-          <ArrowLeft size={18} />
+        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
         </button>
         <div>
-          <h2 className="font-bold text-foreground">BMI Calculator</h2>
-          <p className="text-xs text-muted-foreground">Body Mass Index</p>
+          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>BMI Calculator ⚖️</h2>
+          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Body Mass Index</p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-4">
-        <div className="bg-card rounded-2xl p-4 border border-border space-y-3">
-          <div>
-            <label className="text-xs font-semibold text-primary uppercase tracking-wide">Height (cm)</label>
-            <input
-              type="number"
-              value={height}
-              onChange={e => setHeight(e.target.value)}
-              placeholder="e.g. 165"
-              className="w-full mt-1.5 bg-secondary/70 rounded-xl px-4 py-3 text-foreground text-sm outline-none border border-border focus:border-primary/50 transition-colors"
-            />
-          </div>
-          <div>
-            <label className="text-xs font-semibold text-primary uppercase tracking-wide">Weight (kg)</label>
-            <input
-              type="number"
-              value={weight}
-              onChange={e => setWeight(e.target.value)}
-              placeholder="e.g. 68"
-              className="w-full mt-1.5 bg-secondary/70 rounded-xl px-4 py-3 text-foreground text-sm outline-none border border-border focus:border-primary/50 transition-colors"
-            />
-          </div>
-          <button onClick={reset} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+        <div className="rounded-2xl p-4 border card-shadow space-y-3" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
+          {[
+            { label: 'Height (cm)', value: height, set: setHeight, placeholder: 'e.g. 165' },
+            { label: 'Weight (kg)', value: weight, set: setWeight, placeholder: 'e.g. 68' },
+          ].map(({ label, value, set, placeholder }) => (
+            <div key={label}>
+              <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>{label}</label>
+              <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
+                className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border transition-colors font-medium"
+                style={{ background: 'hsl(270,30%,97%)', borderColor: 'hsl(270,22%,88%)', color: 'hsl(265,30%,25%)' }} />
+            </div>
+          ))}
+          <button onClick={reset} className="flex items-center gap-2 text-xs font-semibold transition-colors"
+            style={{ color: 'hsl(265,25%,62%)' }}>
             <RotateCcw size={13} /> Reset
           </button>
         </div>
 
-        {bmi && cat && (
-          <div className={`rounded-2xl p-5 border ${cat.bg} animate-slide-up`}>
-            <p className="text-xs text-muted-foreground mb-1">Your BMI</p>
-            <p className={`text-4xl font-bold ${cat.color}`}>{bmi}</p>
-            <p className={`text-sm font-semibold mt-1 ${cat.color}`}>{cat.label}</p>
-            <p className="text-xs text-muted-foreground mt-2">Formula: BMI = weight (kg) ÷ height² (m²)</p>
+        {bmi && bmiCatData && (
+          <div className="rounded-2xl p-5 border animate-slide-up"
+            style={{ background: bmiCatData.bgHsl, borderColor: bmiCatData.borderHsl }}>
+            <p className="text-xs font-semibold mb-1" style={{ color: 'hsl(265,15%,55%)' }}>Your BMI</p>
+            <p className="text-4xl font-black" style={{ color: bmiCatData.colorHsl }}>{bmi}</p>
+            <p className="text-sm font-bold mt-1" style={{ color: bmiCatData.colorHsl }}>{bmiCatData.label}</p>
+            <p className="text-xs mt-2" style={{ color: 'hsl(265,15%,58%)' }}>Formula: BMI = weight (kg) ÷ height² (m²)</p>
           </div>
         )}
 
-        <div className="bg-card rounded-2xl p-4 border border-border">
-          <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">BMI Categories (Asian)</p>
+        <div className="rounded-2xl p-4 border card-shadow" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'hsl(265,55%,54%)' }}>BMI Categories (Asian)</p>
           {[
-            ['< 18.5', 'Underweight', 'text-blue-400'],
-            ['18.5 – 22.9', 'Normal weight', 'text-emerald-400'],
-            ['23.0 – 27.4', 'Overweight', 'text-yellow-400'],
-            ['27.5 – 34.9', 'Obese', 'text-orange-400'],
-            ['≥ 35.0', 'Morbidly Obese', 'text-red-400'],
+            ['< 18.5', 'Underweight', 'hsl(220,60%,46%)'],
+            ['18.5 – 22.9', 'Normal weight', 'hsl(152,50%,38%)'],
+            ['23.0 – 27.4', 'Overweight', 'hsl(38,65%,42%)'],
+            ['27.5 – 34.9', 'Obese', 'hsl(28,65%,45%)'],
+            ['≥ 35.0', 'Morbidly Obese', 'hsl(0,52%,48%)'],
           ].map(([range, label, color]) => (
-            <div key={range} className="flex justify-between items-center py-1.5 border-b border-border/50 last:border-0">
-              <span className="text-xs text-muted-foreground">{range}</span>
-              <span className={`text-xs font-medium ${color}`}>{label}</span>
+            <div key={range} className="flex justify-between items-center py-1.5 border-b last:border-0" style={{ borderColor: 'hsl(270,20%,93%)' }}>
+              <span className="text-xs font-medium" style={{ color: 'hsl(265,15%,58%)' }}>{range}</span>
+              <span className="text-xs font-bold" style={{ color }}>{label}</span>
             </div>
           ))}
-          <p className="text-[10px] text-muted-foreground mt-2">Using WHO Asian-specific cut-offs</p>
+          <p className="text-[10px] mt-2 font-medium" style={{ color: 'hsl(265,15%,62%)' }}>Using WHO Asian-specific cut-offs</p>
         </div>
 
         <DisclaimerBanner compact />
@@ -109,65 +104,74 @@ function IVDripCalculator({ onBack }) {
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="text-muted-foreground hover:text-foreground">
-          <ArrowLeft size={18} />
+        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
         </button>
         <div>
-          <h2 className="font-bold text-foreground">IV Drip Rate</h2>
-          <p className="text-xs text-muted-foreground">Gravity infusion calculator</p>
+          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>IV Drip Rate 💉</h2>
+          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Gravity infusion calculator</p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-4">
-        <div className="flex items-start gap-2.5 px-3 py-3 rounded-xl text-xs bg-red-500/10 border border-red-500/25 text-red-400">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs"
+          style={{ background: 'hsl(0,60%,96%)', border: '1px solid hsl(0,48%,84%)', color: 'hsl(0,52%,46%)' }}>
           <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
-          <span><span className="font-semibold">Safety Warning:</span> Always verify drip rate calculations with a second nurse before administration. This tool is for educational reference only.</span>
+          <span><span className="font-bold">Safety Warning:</span> Always verify drip rate calculations with a second nurse before administration.</span>
         </div>
 
-        <div className="bg-card rounded-2xl p-4 border border-border space-y-3">
+        <div className="rounded-2xl p-4 border card-shadow space-y-3" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
           {[
             { label: 'Volume (mL)', value: volume, set: setVolume, placeholder: 'e.g. 500' },
             { label: 'Time (hours)', value: hours, set: setHours, placeholder: 'e.g. 4' },
           ].map(({ label, value, set, placeholder }) => (
             <div key={label}>
-              <label className="text-xs font-semibold text-primary uppercase tracking-wide">{label}</label>
+              <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>{label}</label>
               <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
-                className="w-full mt-1.5 bg-secondary/70 rounded-xl px-4 py-3 text-foreground text-sm outline-none border border-border focus:border-primary/50 transition-colors" />
+                className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border transition-colors font-medium"
+                style={{ background: 'hsl(270,30%,97%)', borderColor: 'hsl(270,22%,88%)', color: 'hsl(265,30%,25%)' }} />
             </div>
           ))}
           <div>
-            <label className="text-xs font-semibold text-primary uppercase tracking-wide">Drop Factor</label>
+            <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>Drop Factor</label>
             <div className="flex gap-2 mt-1.5">
               {[['15', 'Blood set'], ['20', 'Standard'], ['60', 'Microdrip']].map(([val, lbl]) => (
                 <button key={val} onClick={() => setDropFactor(val)}
-                  className={`flex-1 py-2.5 rounded-xl text-xs font-medium border transition-all ${dropFactor === val ? 'bg-primary/15 text-primary border-primary/40' : 'bg-secondary/60 text-muted-foreground border-border'}`}>
-                  <span className="block font-bold">{val}</span>
-                  <span className="block text-[10px] opacity-70">{lbl}</span>
+                  className="flex-1 py-2.5 rounded-xl text-xs font-bold border transition-all active:scale-95"
+                  style={dropFactor === val
+                    ? { background: 'hsl(265,55%,92%)', color: 'hsl(265,55%,48%)', borderColor: 'hsl(265,45%,75%)' }
+                    : { background: 'hsl(270,25%,96%)', color: 'hsl(265,15%,58%)', borderColor: 'hsl(270,20%,88%)' }}>
+                  <span className="block">{val}</span>
+                  <span className="block text-[9px] opacity-70 font-medium">{lbl}</span>
                 </button>
               ))}
             </div>
           </div>
-          <button onClick={reset} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <button onClick={reset} className="flex items-center gap-2 text-xs font-semibold" style={{ color: 'hsl(265,25%,62%)' }}>
             <RotateCcw size={13} /> Reset
           </button>
         </div>
 
         {dropsPerMin && (
-          <div className="bg-primary/10 rounded-2xl p-5 border border-primary/25 animate-slide-up">
-            <p className="text-xs text-muted-foreground mb-1">Drip Rate</p>
-            <p className="text-4xl font-bold text-primary">{dropsPerMin} <span className="text-lg font-normal">gtt/min</span></p>
-            <p className="text-sm text-muted-foreground mt-1">{mlPerHour} mL/hour</p>
-            <p className="text-xs text-muted-foreground/60 mt-2">Formula: (Volume × Drop factor) ÷ (Time in minutes)</p>
+          <div className="rounded-2xl p-5 border animate-slide-up"
+            style={{ background: 'hsl(265,50%,95%)', borderColor: 'hsl(265,40%,82%)' }}>
+            <p className="text-xs font-semibold mb-1" style={{ color: 'hsl(265,15%,55%)' }}>Drip Rate</p>
+            <p className="text-4xl font-black" style={{ color: 'hsl(265,55%,52%)' }}>
+              {dropsPerMin} <span className="text-lg font-semibold" style={{ color: 'hsl(265,30%,58%)' }}>gtt/min</span>
+            </p>
+            <p className="text-sm font-medium mt-1" style={{ color: 'hsl(265,20%,56%)' }}>{mlPerHour} mL/hour</p>
+            <p className="text-xs mt-2" style={{ color: 'hsl(265,15%,62%)' }}>Formula: (Volume × Drop factor) ÷ (Time in minutes)</p>
           </div>
         )}
 
-        <div className="bg-card rounded-2xl p-4 border border-border">
+        <div className="rounded-2xl p-4 border card-shadow" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
           <div className="flex items-center gap-2 mb-2">
-            <Info size={13} className="text-primary" />
-            <p className="text-xs font-semibold text-primary">Formula Reminder</p>
+            <Info size={13} style={{ color: 'hsl(265,55%,54%)' }} />
+            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>Formula</p>
           </div>
-          <p className="text-xs text-muted-foreground font-mono bg-secondary/50 p-2 rounded-lg">
-            Drip rate (gtt/min) = <br />Volume (mL) × Drop factor<br />÷ Time (minutes)
+          <p className="text-xs font-mono rounded-xl p-2.5 leading-relaxed" style={{ background: 'hsl(270,28%,96%)', color: 'hsl(265,25%,38%)' }}>
+            Drip rate (gtt/min) =<br />Volume (mL) × Drop factor<br />÷ Time (minutes)
           </p>
         </div>
 
@@ -183,50 +187,57 @@ function FluidBalanceCalculator({ onBack }) {
   const reset = () => { setIntake(''); setOutput(''); };
   const balance = intake && output ? (parseFloat(intake) - parseFloat(output)).toFixed(0) : null;
 
+  const balVal = balance !== null ? parseFloat(balance) : 0;
+  const balColor = balVal > 0 ? 'hsl(220,60%,46%)' : balVal < 0 ? 'hsl(28,65%,45%)' : 'hsl(152,50%,38%)';
+  const balBg = balVal > 0 ? 'hsl(220,60%,95%)' : balVal < 0 ? 'hsl(28,70%,95%)' : 'hsl(152,50%,95%)';
+  const balBorder = balVal > 0 ? 'hsl(220,50%,82%)' : balVal < 0 ? 'hsl(28,58%,80%)' : 'hsl(152,40%,78%)';
+
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="text-muted-foreground hover:text-foreground">
-          <ArrowLeft size={18} />
+        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
         </button>
         <div>
-          <h2 className="font-bold text-foreground">Fluid Balance</h2>
-          <p className="text-xs text-muted-foreground">24-hour balance calculator</p>
+          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Fluid Balance 🌊</h2>
+          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>24-hour balance calculator</p>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-4">
-        <div className="bg-card rounded-2xl p-4 border border-border space-y-3">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+        <div className="rounded-2xl p-4 border card-shadow space-y-3" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
           {[
             { label: 'Total Intake (mL)', value: intake, set: setIntake, placeholder: 'e.g. 2400' },
             { label: 'Total Output (mL)', value: output, set: setOutput, placeholder: 'e.g. 1800' },
           ].map(({ label, value, set, placeholder }) => (
             <div key={label}>
-              <label className="text-xs font-semibold text-primary uppercase tracking-wide">{label}</label>
+              <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>{label}</label>
               <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
-                className="w-full mt-1.5 bg-secondary/70 rounded-xl px-4 py-3 text-foreground text-sm outline-none border border-border focus:border-primary/50 transition-colors" />
+                className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border transition-colors font-medium"
+                style={{ background: 'hsl(270,30%,97%)', borderColor: 'hsl(270,22%,88%)', color: 'hsl(265,30%,25%)' }} />
             </div>
           ))}
-          <button onClick={reset} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <button onClick={reset} className="flex items-center gap-2 text-xs font-semibold" style={{ color: 'hsl(265,25%,62%)' }}>
             <RotateCcw size={13} /> Reset
           </button>
         </div>
         {balance !== null && (
-          <div className={`rounded-2xl p-5 border animate-slide-up ${parseFloat(balance) > 0 ? 'bg-blue-500/10 border-blue-500/25' : parseFloat(balance) < 0 ? 'bg-orange-500/10 border-orange-500/25' : 'bg-emerald-500/10 border-emerald-500/25'}`}>
-            <p className="text-xs text-muted-foreground mb-1">Fluid Balance</p>
-            <p className={`text-4xl font-bold ${parseFloat(balance) > 0 ? 'text-blue-400' : parseFloat(balance) < 0 ? 'text-orange-400' : 'text-emerald-400'}`}>
-              {parseFloat(balance) > 0 ? '+' : ''}{balance} mL
+          <div className="rounded-2xl p-5 border animate-slide-up" style={{ background: balBg, borderColor: balBorder }}>
+            <p className="text-xs font-semibold mb-1" style={{ color: 'hsl(265,15%,55%)' }}>Fluid Balance</p>
+            <p className="text-4xl font-black" style={{ color: balColor }}>
+              {balVal > 0 ? '+' : ''}{balance} mL
             </p>
-            <p className="text-sm font-medium mt-1 text-muted-foreground">
-              {parseFloat(balance) > 500 ? '⚠️ Positive — monitor for fluid overload' : parseFloat(balance) < -500 ? '⚠️ Negative — monitor for dehydration' : '✓ Roughly balanced'}
+            <p className="text-sm font-semibold mt-1" style={{ color: balColor }}>
+              {balVal > 500 ? '⚠️ Positive — monitor for fluid overload' : balVal < -500 ? '⚠️ Negative — monitor for dehydration' : '✓ Roughly balanced'}
             </p>
-            <p className="text-xs text-muted-foreground/60 mt-2">Intake – Output = {intake} – {output} = {balance} mL</p>
+            <p className="text-xs mt-2" style={{ color: 'hsl(265,15%,58%)' }}>Intake – Output = {intake} – {output} = {balance} mL</p>
           </div>
         )}
-        <div className="bg-card rounded-2xl p-4 border border-border">
-          <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">What counts as intake?</p>
-          <p className="text-xs text-muted-foreground">IV fluids, oral intake, nasogastric feeds, blood products, IV medications in large volumes.</p>
-          <p className="text-xs font-semibold text-primary uppercase tracking-wide mt-3 mb-2">What counts as output?</p>
-          <p className="text-xs text-muted-foreground">Urine, stool, nasogastric drainage, drain losses, vomit, estimated insensible losses (~800 mL/day).</p>
+        <div className="rounded-2xl p-4 border card-shadow" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest mb-1.5" style={{ color: 'hsl(265,55%,54%)' }}>What counts as intake?</p>
+          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,52%)' }}>IV fluids, oral intake, nasogastric feeds, blood products, IV medications in large volumes.</p>
+          <p className="text-[10px] font-black uppercase tracking-widest mt-3 mb-1.5" style={{ color: 'hsl(265,55%,54%)' }}>What counts as output?</p>
+          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,52%)' }}>Urine, stool, nasogastric drainage, drain losses, vomit, estimated insensible losses (~800 mL/day).</p>
         </div>
         <DisclaimerBanner compact />
       </div>
@@ -256,55 +267,66 @@ function DoseCalculator({ onBack }) {
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="text-muted-foreground hover:text-foreground"><ArrowLeft size={18} /></button>
+        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
+        </button>
         <div>
-          <h2 className="font-bold text-foreground">Dose Calculation</h2>
-          <p className="text-xs text-muted-foreground">Weight-based dosing</p>
+          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Dose Calculation 💊</h2>
+          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Weight-based dosing</p>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-4">
-        <div className="flex items-start gap-2.5 px-3 py-3 rounded-xl text-xs bg-red-500/10 border border-red-500/25 text-red-400">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs"
+          style={{ background: 'hsl(0,60%,96%)', border: '1px solid hsl(0,48%,84%)', color: 'hsl(0,52%,46%)' }}>
           <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
-          <span><span className="font-semibold">Safety Warning:</span> Always verify doses with prescriber orders, BNF, or local formulary. Double-check with a second nurse.</span>
+          <span><span className="font-bold">Safety Warning:</span> Always verify doses with prescriber orders, BNF, or local formulary. Double-check with a second nurse.</span>
         </div>
-        <div className="bg-card rounded-2xl p-4 border border-border space-y-3">
+        <div className="rounded-2xl p-4 border card-shadow space-y-3" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
+          {[
+            { label: 'Patient Weight (kg)', value: weight, set: setWeight, placeholder: 'e.g. 70' },
+            { label: 'Prescribed Dose (mg/kg)', value: dosePerKg, set: setDosePerKg, placeholder: 'e.g. 10' },
+          ].map(({ label, value, set, placeholder }) => (
+            <div key={label}>
+              <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>{label}</label>
+              <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
+                className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border font-medium"
+                style={{ background: 'hsl(270,30%,97%)', borderColor: 'hsl(270,22%,88%)', color: 'hsl(265,30%,25%)' }} />
+            </div>
+          ))}
           <div>
-            <label className="text-xs font-semibold text-primary uppercase tracking-wide">Patient Weight (kg)</label>
-            <input type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="e.g. 70"
-              className="w-full mt-1.5 bg-secondary/70 rounded-xl px-4 py-3 text-foreground text-sm outline-none border border-border focus:border-primary/50 transition-colors" />
-          </div>
-          <div>
-            <label className="text-xs font-semibold text-primary uppercase tracking-wide">Prescribed Dose (mg/kg)</label>
-            <input type="number" value={dosePerKg} onChange={e => setDosePerKg(e.target.value)} placeholder="e.g. 10"
-              className="w-full mt-1.5 bg-secondary/70 rounded-xl px-4 py-3 text-foreground text-sm outline-none border border-border focus:border-primary/50 transition-colors" />
-          </div>
-          <div>
-            <label className="text-xs font-semibold text-primary uppercase tracking-wide">Frequency (doses/day)</label>
+            <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>Frequency (doses/day)</label>
             <div className="flex gap-2 mt-1.5">
               {[['1','OD'],['2','BD'],['3','TDS'],['4','QDS']].map(([val, lbl]) => (
                 <button key={val} onClick={() => setFrequency(val)}
-                  className={`flex-1 py-2.5 rounded-xl text-xs font-medium border transition-all ${frequency === val ? 'bg-primary/15 text-primary border-primary/40' : 'bg-secondary/60 text-muted-foreground border-border'}`}>
-                  <span className="block font-bold">{lbl}</span>
-                  <span className="block text-[10px] opacity-70">{val}x</span>
+                  className="flex-1 py-2.5 rounded-xl text-xs font-bold border transition-all active:scale-95"
+                  style={frequency === val
+                    ? { background: 'hsl(265,55%,92%)', color: 'hsl(265,55%,48%)', borderColor: 'hsl(265,45%,75%)' }
+                    : { background: 'hsl(270,25%,96%)', color: 'hsl(265,15%,58%)', borderColor: 'hsl(270,20%,88%)' }}>
+                  <span className="block">{lbl}</span>
+                  <span className="block text-[9px] opacity-70 font-medium">{val}x</span>
                 </button>
               ))}
             </div>
           </div>
-          <button onClick={reset} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <button onClick={reset} className="flex items-center gap-2 text-xs font-semibold" style={{ color: 'hsl(265,25%,62%)' }}>
             <RotateCcw size={13} /> Reset
           </button>
         </div>
         {singleDose && (
-          <div className="bg-purple-500/10 rounded-2xl p-5 border border-purple-500/25 animate-slide-up space-y-3">
+          <div className="rounded-2xl p-5 border animate-slide-up space-y-3"
+            style={{ background: 'hsl(270,50%,95%)', borderColor: 'hsl(270,40%,80%)' }}>
             <div>
-              <p className="text-xs text-muted-foreground">Single Dose</p>
-              <p className="text-4xl font-bold text-purple-400">{singleDose} <span className="text-lg font-normal">mg</span></p>
+              <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Single Dose</p>
+              <p className="text-4xl font-black" style={{ color: 'hsl(270,50%,48%)' }}>
+                {singleDose} <span className="text-lg font-semibold" style={{ color: 'hsl(270,30%,58%)' }}>mg</span>
+              </p>
             </div>
-            <div className="border-t border-purple-500/20 pt-3">
-              <p className="text-xs text-muted-foreground">Total Daily Dose</p>
-              <p className="text-2xl font-bold text-purple-300">{dailyDose} mg/day</p>
+            <div className="pt-3 border-t" style={{ borderColor: 'hsl(270,38%,84%)' }}>
+              <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Total Daily Dose</p>
+              <p className="text-2xl font-black" style={{ color: 'hsl(270,45%,52%)' }}>{dailyDose} mg/day</p>
             </div>
-            <p className="text-xs text-muted-foreground/60">Formula: Weight × Dose/kg = {weight} × {dosePerKg} = {singleDose} mg</p>
+            <p className="text-xs" style={{ color: 'hsl(265,15%,58%)' }}>Formula: {weight} kg × {dosePerKg} mg/kg = {singleDose} mg</p>
           </div>
         )}
         <DisclaimerBanner compact />
@@ -325,42 +347,47 @@ function InfusionTimeCalculator({ onBack }) {
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="text-muted-foreground hover:text-foreground"><ArrowLeft size={18} /></button>
+        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
+        </button>
         <div>
-          <h2 className="font-bold text-foreground">Infusion Time</h2>
-          <p className="text-xs text-muted-foreground">Total infusion duration</p>
+          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Infusion Time ⏱️</h2>
+          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Total infusion duration</p>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-4">
-        <div className="bg-card rounded-2xl p-4 border border-border space-y-3">
-          <div>
-            <label className="text-xs font-semibold text-primary uppercase tracking-wide">Volume to Infuse (mL)</label>
-            <input type="number" value={volume} onChange={e => setVolume(e.target.value)} placeholder="e.g. 500"
-              className="w-full mt-1.5 bg-secondary/70 rounded-xl px-4 py-3 text-foreground text-sm outline-none border border-border focus:border-primary/50 transition-colors" />
-          </div>
-          <div>
-            <label className="text-xs font-semibold text-primary uppercase tracking-wide">Infusion Rate (mL/hour)</label>
-            <input type="number" value={rate} onChange={e => setRate(e.target.value)} placeholder="e.g. 125"
-              className="w-full mt-1.5 bg-secondary/70 rounded-xl px-4 py-3 text-foreground text-sm outline-none border border-border focus:border-primary/50 transition-colors" />
-          </div>
-          <button onClick={reset} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+        <div className="rounded-2xl p-4 border card-shadow space-y-3" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
+          {[
+            { label: 'Volume to Infuse (mL)', value: volume, set: setVolume, placeholder: 'e.g. 500' },
+            { label: 'Infusion Rate (mL/hour)', value: rate, set: setRate, placeholder: 'e.g. 125' },
+          ].map(({ label, value, set, placeholder }) => (
+            <div key={label}>
+              <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>{label}</label>
+              <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
+                className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border font-medium"
+                style={{ background: 'hsl(270,30%,97%)', borderColor: 'hsl(270,22%,88%)', color: 'hsl(265,30%,25%)' }} />
+            </div>
+          ))}
+          <button onClick={reset} className="flex items-center gap-2 text-xs font-semibold" style={{ color: 'hsl(265,25%,62%)' }}>
             <RotateCcw size={13} /> Reset
           </button>
         </div>
         {totalMinutes !== null && (
-          <div className="bg-indigo-500/10 rounded-2xl p-5 border border-indigo-500/25 animate-slide-up">
-            <p className="text-xs text-muted-foreground mb-1">Infusion Duration</p>
-            <p className="text-4xl font-bold text-indigo-400">{hours}h {minutes}m</p>
-            <p className="text-sm text-muted-foreground mt-1">{totalMinutes.toFixed(0)} minutes total</p>
-            <p className="text-xs text-muted-foreground/60 mt-2">Formula: Volume ÷ Rate × 60 = {volume} ÷ {rate} × 60</p>
+          <div className="rounded-2xl p-5 border animate-slide-up"
+            style={{ background: 'hsl(245,50%,95%)', borderColor: 'hsl(245,40%,80%)' }}>
+            <p className="text-xs font-semibold mb-1" style={{ color: 'hsl(265,15%,55%)' }}>Infusion Duration</p>
+            <p className="text-4xl font-black" style={{ color: 'hsl(245,55%,50%)' }}>{hours}h {minutes}m</p>
+            <p className="text-sm font-medium mt-1" style={{ color: 'hsl(245,25%,55%)' }}>{totalMinutes.toFixed(0)} minutes total</p>
+            <p className="text-xs mt-2" style={{ color: 'hsl(265,15%,58%)' }}>Formula: {volume} ÷ {rate} × 60</p>
           </div>
         )}
-        <div className="bg-card rounded-2xl p-4 border border-border">
+        <div className="rounded-2xl p-4 border card-shadow" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
           <div className="flex items-center gap-2 mb-2">
-            <Info size={13} className="text-primary" />
-            <p className="text-xs font-semibold text-primary">Formula</p>
+            <Info size={13} style={{ color: 'hsl(265,55%,54%)' }} />
+            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>Formula</p>
           </div>
-          <p className="text-xs text-muted-foreground font-mono bg-secondary/50 p-2 rounded-lg">
+          <p className="text-xs font-mono rounded-xl p-2.5" style={{ background: 'hsl(270,28%,96%)', color: 'hsl(265,25%,38%)' }}>
             Time (hours) = Volume (mL) ÷ Rate (mL/hr)
           </p>
         </div>
@@ -381,49 +408,60 @@ function BloodTransfusionCalculator({ onBack }) {
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="text-muted-foreground hover:text-foreground"><ArrowLeft size={18} /></button>
+        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
+        </button>
         <div>
-          <h2 className="font-bold text-foreground">Blood Transfusion Rate</h2>
-          <p className="text-xs text-muted-foreground">Transfusion drip rate calculator</p>
+          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Blood Transfusion 🩸</h2>
+          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Transfusion drip rate calculator</p>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-4">
-        <div className="flex items-start gap-2.5 px-3 py-3 rounded-xl text-xs bg-red-500/10 border border-red-500/25 text-red-400">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs"
+          style={{ background: 'hsl(0,60%,96%)', border: '1px solid hsl(0,48%,84%)', color: 'hsl(0,52%,46%)' }}>
           <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
-          <span><span className="font-semibold">Clinical Note:</span> Always follow local blood transfusion protocol. Monitor patient closely throughout. Standard blood set = 15 gtt/mL.</span>
+          <span><span className="font-bold">Clinical Note:</span> Always follow local blood transfusion protocol. Monitor patient closely. Standard blood set = 15 gtt/mL.</span>
         </div>
-        <div className="bg-card rounded-2xl p-4 border border-border space-y-3">
+        <div className="rounded-2xl p-4 border card-shadow space-y-3" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
           <div>
-            <label className="text-xs font-semibold text-primary uppercase tracking-wide">Volume (mL)</label>
+            <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>Volume (mL)</label>
             <input type="number" value={volume} onChange={e => setVolume(e.target.value)} placeholder="e.g. 450 (1 unit PRBC)"
-              className="w-full mt-1.5 bg-secondary/70 rounded-xl px-4 py-3 text-foreground text-sm outline-none border border-border focus:border-primary/50 transition-colors" />
+              className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border font-medium"
+              style={{ background: 'hsl(270,30%,97%)', borderColor: 'hsl(270,22%,88%)', color: 'hsl(265,30%,25%)' }} />
           </div>
           <div>
-            <label className="text-xs font-semibold text-primary uppercase tracking-wide">Duration (hours)</label>
+            <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>Duration (hours)</label>
             <div className="flex gap-2 mt-1.5">
               {[['2','2h'],['3','3h'],['4','4h'],['6','6h']].map(([val, lbl]) => (
                 <button key={val} onClick={() => setHours(val)}
-                  className={`flex-1 py-2.5 rounded-xl text-xs font-medium border transition-all ${hours === val ? 'bg-primary/15 text-primary border-primary/40' : 'bg-secondary/60 text-muted-foreground border-border'}`}>
-                  <span className="font-bold">{lbl}</span>
+                  className="flex-1 py-2.5 rounded-xl text-xs font-bold border transition-all active:scale-95"
+                  style={hours === val
+                    ? { background: 'hsl(265,55%,92%)', color: 'hsl(265,55%,48%)', borderColor: 'hsl(265,45%,75%)' }
+                    : { background: 'hsl(270,25%,96%)', color: 'hsl(265,15%,58%)', borderColor: 'hsl(270,20%,88%)' }}>
+                  {lbl}
                 </button>
               ))}
             </div>
           </div>
-          <button onClick={reset} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <button onClick={reset} className="flex items-center gap-2 text-xs font-semibold" style={{ color: 'hsl(265,25%,62%)' }}>
             <RotateCcw size={13} /> Reset
           </button>
         </div>
         {mlPerHour && (
-          <div className="bg-red-500/10 rounded-2xl p-5 border border-red-500/25 animate-slide-up space-y-3">
+          <div className="rounded-2xl p-5 border animate-slide-up space-y-3"
+            style={{ background: 'hsl(0,55%,96%)', borderColor: 'hsl(0,45%,82%)' }}>
             <div>
-              <p className="text-xs text-muted-foreground">Infusion Rate</p>
-              <p className="text-4xl font-bold text-red-400">{mlPerHour} <span className="text-lg font-normal">mL/hr</span></p>
+              <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Infusion Rate</p>
+              <p className="text-4xl font-black" style={{ color: 'hsl(0,52%,48%)' }}>
+                {mlPerHour} <span className="text-lg font-semibold" style={{ color: 'hsl(0,35%,58%)' }}>mL/hr</span>
+              </p>
             </div>
-            <div className="border-t border-red-500/20 pt-3">
-              <p className="text-xs text-muted-foreground">Drip Rate (15 gtt/mL set)</p>
-              <p className="text-2xl font-bold text-red-300">{dropsPerMin} gtt/min</p>
+            <div className="pt-3 border-t" style={{ borderColor: 'hsl(0,40%,86%)' }}>
+              <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Drip Rate (15 gtt/mL set)</p>
+              <p className="text-2xl font-black" style={{ color: 'hsl(0,48%,52%)' }}>{dropsPerMin} gtt/min</p>
             </div>
-            <p className="text-xs text-muted-foreground/60">Volume ÷ Duration = {volume} ÷ {hours}h = {mlPerHour} mL/hr</p>
+            <p className="text-xs" style={{ color: 'hsl(265,15%,58%)' }}>Volume ÷ Duration = {volume} ÷ {hours}h = {mlPerHour} mL/hr</p>
           </div>
         )}
         <DisclaimerBanner compact />
@@ -451,10 +489,10 @@ function EDDCalculator({ onBack }) {
 
   const getTrimester = (weeks) => {
     if (weeks < 0) return null;
-    if (weeks <= 12) return { label: '1st Trimester', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/25' };
-    if (weeks <= 28) return { label: '2nd Trimester', color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/25' };
-    if (weeks <= 40) return { label: '3rd Trimester', color: 'text-rose-400', bg: 'bg-rose-500/10 border-rose-500/25' };
-    return { label: 'Post-term', color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/25' };
+    if (weeks <= 12) return { label: '1st Trimester', colorHsl: 'hsl(152,50%,38%)', bgHsl: 'hsl(152,50%,93%)', borderHsl: 'hsl(152,40%,76%)' };
+    if (weeks <= 28) return { label: '2nd Trimester', colorHsl: 'hsl(220,60%,46%)', bgHsl: 'hsl(220,60%,93%)', borderHsl: 'hsl(220,50%,78%)' };
+    if (weeks <= 40) return { label: '3rd Trimester', colorHsl: 'hsl(340,52%,48%)', bgHsl: 'hsl(340,55%,94%)', borderHsl: 'hsl(340,45%,80%)' };
+    return { label: 'Post-term', colorHsl: 'hsl(28,65%,45%)', bgHsl: 'hsl(28,70%,94%)', borderHsl: 'hsl(28,58%,78%)' };
   };
 
   const trimester = weeksPregnant !== null ? getTrimester(weeksPregnant) : null;
@@ -462,53 +500,59 @@ function EDDCalculator({ onBack }) {
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="text-muted-foreground hover:text-foreground"><ArrowLeft size={18} /></button>
+        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
+        </button>
         <div>
-          <h2 className="font-bold text-foreground">Estimated Delivery Date</h2>
-          <p className="text-xs text-muted-foreground">Naegele's Rule (LMP + 280 days)</p>
+          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Estimated Delivery Date 🤰</h2>
+          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Naegele's Rule (LMP + 280 days)</p>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-4">
-        <div className="bg-card rounded-2xl p-4 border border-border space-y-3">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+        <div className="rounded-2xl p-4 border card-shadow space-y-3" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
           <div>
-            <label className="text-xs font-semibold text-primary uppercase tracking-wide">Last Menstrual Period (LMP)</label>
+            <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>Last Menstrual Period (LMP)</label>
             <input type="date" value={lmp} onChange={e => setLmp(e.target.value)} max={new Date().toISOString().split('T')[0]}
-              className="w-full mt-1.5 bg-secondary/70 rounded-xl px-4 py-3 text-foreground text-sm outline-none border border-border focus:border-primary/50 transition-colors" />
+              className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border font-medium"
+              style={{ background: 'hsl(270,30%,97%)', borderColor: 'hsl(270,22%,88%)', color: 'hsl(265,30%,25%)' }} />
           </div>
-          {lmp && <button onClick={() => setLmp('')} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          {lmp && <button onClick={() => setLmp('')} className="flex items-center gap-2 text-xs font-semibold" style={{ color: 'hsl(265,25%,62%)' }}>
             <RotateCcw size={13} /> Reset
           </button>}
         </div>
         {edd && (
-          <div className="bg-rose-500/10 rounded-2xl p-5 border border-rose-500/25 animate-slide-up space-y-3">
+          <div className="rounded-2xl p-5 border animate-slide-up space-y-3"
+            style={{ background: 'hsl(340,55%,96%)', borderColor: 'hsl(340,45%,82%)' }}>
             <div>
-              <p className="text-xs text-muted-foreground">Estimated Due Date</p>
-              <p className="text-2xl font-bold text-rose-400">{formatDate(edd)}</p>
+              <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Estimated Due Date</p>
+              <p className="text-2xl font-black" style={{ color: 'hsl(340,52%,48%)' }}>{formatDate(edd)}</p>
             </div>
             {weeksPregnant !== null && weeksPregnant >= 0 && (
-              <div className="border-t border-rose-500/20 pt-3 space-y-1">
-                <p className="text-xs text-muted-foreground">Gestational Age Today</p>
-                <p className="text-xl font-bold text-rose-300">{weeksPregnant}w {daysPregnant % 7}d</p>
+              <div className="pt-3 border-t space-y-1.5" style={{ borderColor: 'hsl(340,40%,86%)' }}>
+                <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Gestational Age Today</p>
+                <p className="text-xl font-black" style={{ color: 'hsl(340,48%,52%)' }}>{weeksPregnant}w {daysPregnant % 7}d</p>
                 {trimester && (
-                  <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium mt-1 ${trimester.bg} ${trimester.color}`}>
+                  <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-bold border"
+                    style={{ background: trimester.bgHsl, color: trimester.colorHsl, borderColor: trimester.borderHsl }}>
                     {trimester.label}
                   </span>
                 )}
               </div>
             )}
-            <p className="text-xs text-muted-foreground/60">LMP + 280 days (Naegele's Rule)</p>
+            <p className="text-xs" style={{ color: 'hsl(265,15%,58%)' }}>LMP + 280 days (Naegele's Rule)</p>
           </div>
         )}
-        <div className="bg-card rounded-2xl p-4 border border-border">
-          <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">Trimester Guide</p>
+        <div className="rounded-2xl p-4 border card-shadow" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest mb-2.5" style={{ color: 'hsl(265,55%,54%)' }}>Trimester Guide</p>
           {[
-            ['1st Trimester', 'Weeks 1–12', 'text-emerald-400'],
-            ['2nd Trimester', 'Weeks 13–28', 'text-blue-400'],
-            ['3rd Trimester', 'Weeks 29–40', 'text-rose-400'],
+            ['1st Trimester', 'Weeks 1–12', 'hsl(152,50%,38%)'],
+            ['2nd Trimester', 'Weeks 13–28', 'hsl(220,60%,46%)'],
+            ['3rd Trimester', 'Weeks 29–40', 'hsl(340,52%,48%)'],
           ].map(([label, range, color]) => (
-            <div key={label} className="flex justify-between py-1.5 border-b border-border/50 last:border-0">
-              <span className={`text-xs font-medium ${color}`}>{label}</span>
-              <span className="text-xs text-muted-foreground">{range}</span>
+            <div key={label} className="flex justify-between py-1.5 border-b last:border-0" style={{ borderColor: 'hsl(270,20%,93%)' }}>
+              <span className="text-xs font-bold" style={{ color }}>{label}</span>
+              <span className="text-xs font-medium" style={{ color: 'hsl(265,15%,58%)' }}>{range}</span>
             </div>
           ))}
         </div>
@@ -531,33 +575,38 @@ export default function CalculatorScreen() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-4 pt-5 pb-3">
-        <h1 className="text-2xl font-bold text-foreground">Calculators</h1>
-        <p className="text-xs text-muted-foreground mt-0.5">Nursing clinical calculators</p>
+      <div className="px-5 pt-5 pb-3">
+        <h1 className="text-2xl font-black" style={{ color: 'hsl(265,45%,22%)' }}>Calculators 🧮</h1>
+        <p className="text-xs font-medium mt-0.5" style={{ color: 'hsl(265,15%,56%)' }}>Nursing clinical calculators</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3 animate-fade-in">
-        <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl text-xs bg-amber-400/5 border border-amber-400/15 text-amber-400/80">
-          <AlertTriangle size={13} className="text-amber-400 flex-shrink-0 mt-0.5" />
-          <span>Always verify clinical calculations with a qualified practitioner. These calculators are for educational reference only.</span>
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
+        <div className="flex items-start gap-2.5 px-4 py-3 rounded-2xl text-xs"
+          style={{ background: 'hsl(38,80%,96%)', border: '1px solid hsl(38,60%,82%)', color: 'hsl(38,55%,42%)' }}>
+          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" style={{ color: 'hsl(38,65%,48%)' }} />
+          <span>Always verify clinical calculations with a qualified practitioner. Educational reference only.</span>
         </div>
 
         {calculators.map(calc => (
           <button
             key={calc.id}
-            onClick={() => !calc.disabled && setActiveCalc(calc.id)}
-            disabled={calc.disabled}
-            className={`w-full bg-gradient-to-r ${calc.color} rounded-2xl p-4 border text-left flex items-center justify-between transition-all duration-200 ${calc.disabled ? 'opacity-40 cursor-not-allowed' : 'hover:scale-[1.01] active:scale-[0.99]'}`}
+            onClick={() => setActiveCalc(calc.id)}
+            className="w-full rounded-2xl p-4 border text-left flex items-center justify-between transition-all active:scale-[0.98] card-shadow"
+            style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'hsl(270,28%,98%)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'white'}
           >
             <div className="flex items-center gap-3">
-              <span className="text-2xl">{calc.icon}</span>
+              <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0"
+                style={{ background: 'hsl(265,45%,94%)', border: '1px solid hsl(265,35%,86%)' }}>
+                {calc.icon}
+              </div>
               <div>
-                <p className="font-semibold text-sm text-foreground">{calc.name}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{calc.desc}</p>
+                <p className="font-bold text-sm" style={{ color: 'hsl(265,35%,22%)' }}>{calc.name}</p>
+                <p className="text-xs font-medium mt-0.5" style={{ color: 'hsl(265,15%,58%)' }}>{calc.desc}</p>
               </div>
             </div>
-            {!calc.disabled && <ChevronRight size={16} className="text-muted-foreground/60" />}
-            {calc.disabled && <span className="text-[10px] text-muted-foreground bg-secondary px-2 py-1 rounded-full">Soon</span>}
+            <ChevronRight size={15} style={{ color: 'hsl(265,20%,70%)' }} />
           </button>
         ))}
 

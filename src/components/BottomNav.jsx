@@ -11,24 +11,42 @@ const tabs = [
 
 export default function BottomNav({ activeTab, onTabChange }) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center px-2 py-2 border-t border-border"
-      style={{ background: 'hsl(222, 42%, 10%)', backdropFilter: 'blur(20px)', maxWidth: '430px', margin: '0 auto' }}>
+    <nav
+      className="flex justify-around items-center px-2 pt-2 pb-3 border-t"
+      style={{
+        background: 'rgba(255,255,255,0.92)',
+        backdropFilter: 'blur(20px)',
+        borderColor: 'hsl(270,25%,90%)',
+        boxShadow: '0 -4px 20px rgba(147,92,210,0.07)',
+      }}
+    >
       {tabs.map(({ id, label, Icon }) => {
         const isActive = activeTab === id;
         return (
           <button
             key={id}
             onClick={() => onTabChange(id)}
-            className="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-all duration-200"
+            className="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-2xl transition-all duration-200 active:scale-95"
           >
-            <div className={`p-1.5 rounded-xl transition-all duration-200 ${isActive ? 'bg-primary/15' : ''}`}>
+            <div
+              className="p-2 rounded-2xl transition-all duration-200"
+              style={isActive ? {
+                background: 'linear-gradient(135deg, hsl(265,60%,58%) 0%, hsl(285,55%,62%) 100%)',
+                boxShadow: '0 4px 12px rgba(147,92,210,0.30)',
+              } : {
+                background: 'transparent',
+              }}
+            >
               <Icon
-                size={20}
-                className={`transition-colors duration-200 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
-                strokeWidth={isActive ? 2.2 : 1.8}
+                size={18}
+                strokeWidth={isActive ? 2.5 : 1.8}
+                style={{ color: isActive ? 'white' : 'hsl(265,20%,62%)' }}
               />
             </div>
-            <span className={`text-[10px] font-medium transition-colors duration-200 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+            <span
+              className="text-[9px] font-bold transition-colors duration-200"
+              style={{ color: isActive ? 'hsl(265,55%,48%)' : 'hsl(265,15%,62%)' }}
+            >
               {label}
             </span>
           </button>
