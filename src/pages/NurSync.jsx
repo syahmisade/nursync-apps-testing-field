@@ -75,7 +75,7 @@ export default function NurSync() {
             <div className="flex items-center gap-2.5">
               {/* Logo */}
               <img
-                src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/4a9f33203_AppsLogo.png"
+                src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/883e60a2e_AppsLogoUpdate.png"
                 alt="NurSync logo"
                 className="w-8 h-8 rounded-xl object-contain"
               />
