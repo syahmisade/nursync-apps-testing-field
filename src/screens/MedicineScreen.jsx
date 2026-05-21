@@ -108,7 +108,7 @@ function MedicineDetail({ medicine, onBack }) {
           </div>
         )}
 
-        {sections.map(({ label, value }) => (
+        {sections.filter(({ label }) => !['Generic Name', 'Brand Name', 'Common / Glamour Name'].includes(label)).map(({ label, value }) => (
           <div key={label} className="rounded-2xl p-4 border card-shadow"
             style={{ background: 'white', borderColor: 'hsl(270,22%,91%)' }}>
             <p className="text-[10px] font-black uppercase tracking-widest mb-1.5"
