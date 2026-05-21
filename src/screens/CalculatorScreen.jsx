@@ -575,9 +575,12 @@ export default function CalculatorScreen() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-5 pt-5 pb-3">
-        <h1 className="text-2xl font-black" style={{ color: 'hsl(265,45%,22%)' }}>Calculators 🧮</h1>
-        <p className="text-xs font-medium mt-0.5" style={{ color: 'hsl(265,15%,56%)' }}>Nursing clinical calculators</p>
+      <div className="px-5 pt-5 pb-3 flex items-center gap-3">
+        <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/5bbf287df_generated_image.png" alt="" className="w-12 h-12 object-contain flex-shrink-0" />
+        <div>
+          <h1 className="text-2xl font-black" style={{ color: 'hsl(265,45%,22%)' }}>Calculators</h1>
+          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Nursing clinical calculators</p>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
