@@ -12,12 +12,13 @@ const tabs = [
 export default function BottomNav({ activeTab, onTabChange }) {
   return (
     <nav
-      className="flex justify-around items-center px-2 pt-2 pb-3 border-t fixed bottom-0 left-0 right-0 z-50"
+      className="flex justify-around items-center px-2 pt-2 border-t w-full z-50"
       style={{
         background: 'rgba(255,255,255,0.92)',
         backdropFilter: 'blur(20px)',
         borderColor: 'hsl(270,25%,90%)',
         boxShadow: '0 -4px 20px rgba(147,92,210,0.07)',
+        paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
       }}
     >
       {tabs.map(({ id, label, Icon }) => {
