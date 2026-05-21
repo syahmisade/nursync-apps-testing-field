@@ -41,13 +41,8 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Tab routes — all handled inside NurSync shell */}
+      {/* Add your page Route elements here */}
       <Route path="/" element={<NurSync />} />
-      <Route path="/medicine/*" element={<NurSync />} />
-      <Route path="/calculators/*" element={<NurSync />} />
-      <Route path="/procedures/*" element={<NurSync />} />
-      <Route path="/quiz/*" element={<NurSync />} />
-      <Route path="/saved/*" element={<NurSync />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />

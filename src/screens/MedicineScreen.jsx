@@ -3,7 +3,6 @@ import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTrian
 import { medicines, categories } from '../data/medicines';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import PullToRefresh from '../components/PullToRefresh';
 
 // ── Shared colour maps ────────────────────────────────────────────────────────
 const categoryColors = {
@@ -132,8 +131,10 @@ export default function MedicineScreen() {
   const [selectedMedicine, setSelectedMedicine] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef(null);
   const searchRef = useRef(null);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -142,6 +143,14 @@ export default function MedicineScreen() {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
   }, []);
 
   const { savedMedicines, toggleSaveMedicine, addRecentSearch, recentSearches } = useApp();
@@ -248,14 +257,15 @@ export default function MedicineScreen() {
         )}
       </div>
         {/* Scroll shadow */}
-        <div className="h-1.5 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)' }} />
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)',
+            opacity: isScrolled ? 1 : 0,
+          }} />
       </div>{/* end sticky wrapper */}
 
       {/* Medicine list */}
-      <div className="flex-1 min-h-0">
-      <PullToRefresh>
-      <div className="px-4 pb-4 space-y-2.5 animate-fade-in pt-1">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
@@ -299,8 +309,6 @@ export default function MedicineScreen() {
         })}
         <DisclaimerBanner compact />
         <div className="h-2" />
-      </div>
-      </PullToRefresh>
       </div>
     </div>
   );

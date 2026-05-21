@@ -34,44 +34,6 @@
     --coral: 0 65% 63%;
     --amber-soft: 38 85% 58%;
     --pink-soft: 330 55% 70%;
-    /* App shell colors */
-    --app-bg: hsl(270, 40%, 97%);
-    --app-outer-bg: hsl(265, 25%, 88%);
-    --nav-bg: rgba(255,255,255,0.92);
-    --header-border: hsl(270,25%,90%);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --background: 265 25% 10%;
-      --foreground: 270 30% 92%;
-      --card: 265 22% 14%;
-      --card-foreground: 270 30% 92%;
-      --popover: 265 22% 14%;
-      --popover-foreground: 270 30% 92%;
-      --primary: 265 55% 65%;
-      --primary-foreground: 0 0% 100%;
-      --secondary: 265 20% 20%;
-      --secondary-foreground: 270 25% 75%;
-      --muted: 265 18% 18%;
-      --muted-foreground: 265 15% 58%;
-      --accent: 290 25% 22%;
-      --accent-foreground: 270 40% 80%;
-      --destructive: 0 60% 55%;
-      --destructive-foreground: 0 0% 100%;
-      --border: 265 18% 22%;
-      --input: 265 18% 18%;
-      --ring: 265 55% 65%;
-      --surface: 265 22% 16%;
-      --lavender: 265 55% 65%;
-      --lavender-light: 265 25% 22%;
-      --lavender-soft: 265 25% 10%;
-      /* App shell colors */
-      --app-bg: hsl(265, 25%, 10%);
-      --app-outer-bg: hsl(265, 30%, 7%);
-      --nav-bg: rgba(30, 24, 42, 0.94);
-      --header-border: hsl(265,18%,22%);
-    }
   }
 }
 
@@ -83,12 +45,6 @@
   body {
     @apply bg-background text-foreground font-nunito antialiased;
     background: hsl(270, 40%, 97%);
-    overscroll-behavior: none;
-  }
-
-  button, a, nav {
-    user-select: none;
-    -webkit-user-select: none;
   }
 
   ::-webkit-scrollbar {
