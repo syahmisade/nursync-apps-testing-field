@@ -73,11 +73,12 @@ export default function NurSync() {
           <div className="flex items-center justify-between px-5 py-2.5 border-b"
             style={{ background: 'hsl(270, 40%, 97%)', borderColor: 'hsl(270,25%,90%)' }}>
             <div className="flex items-center gap-2.5">
-              {/* Logo pill */}
-              <div className="w-7 h-7 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, hsl(265,60%,58%) 0%, hsl(285,55%,62%) 100%)' }}>
-                <span className="text-[11px] font-black text-white">N</span>
-              </div>
+              {/* Logo */}
+              <img
+                src="https://cdn.base44.com/apps/deft-nursing-pulse-sync/user-uploaded/0a0efb09-ad26-44ce-8fbe-3614d1a0286f.png"
+                alt="NurSync logo"
+                className="w-8 h-8 rounded-xl object-cover"
+              />
               <div className="flex flex-col leading-none">
                 <span className="text-sm font-black tracking-tight" style={{ color: 'hsl(265,50%,35%)' }}>NurSync</span>
                 <span className="text-[9px] font-medium" style={{ color: 'hsl(265,30%,60%)' }}>Sync to better care</span>
