@@ -165,7 +165,7 @@ export default function MedicineScreen() {
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="px-5 pt-4 pb-2 flex items-center gap-1">
-        <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/f1fd0031d_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply' }} />
+        <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/f1fd0031d_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply', transform: 'scale(1.5)', transformOrigin: 'center' }} />
         <div>
           <h1 className="text-2xl font-black" style={{ color: 'hsl(265,45%,22%)' }}>Medicine</h1>
           <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Drug reference guide</p>
