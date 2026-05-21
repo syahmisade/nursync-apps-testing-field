@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Bookmark, BookmarkCheck, Pill, ClipboardList, BookOpen, ChevronRight, BookmarkX, ArrowLeft, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { medicines } from '../data/medicines';
 import { procedures } from '../data/procedures';
@@ -224,10 +225,8 @@ const EmptyState = ({ label }) => (
 );
 
 export default function SavedScreen() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('medicines');
-  const [selectedMed, setSelectedMed] = useState(null);
-  const [selectedProc, setSelectedProc] = useState(null);
-  const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef(null);
   const { savedMedicines, savedProcedures, savedQuizQuestions, toggleSaveMedicine, toggleSaveProcedure, toggleSaveQuestion } = useApp();
@@ -243,10 +242,6 @@ export default function SavedScreen() {
   const savedMeds = medicines.filter(m => savedMedicines.includes(m.id));
   const savedProcs = procedures.filter(p => savedProcedures.includes(p.id));
   const savedQuestions = quizQuestions.filter(q => savedQuizQuestions.includes(q.id));
-
-  if (selectedMed) return <MedicineDetail medicine={selectedMed} onBack={() => setSelectedMed(null)} />;
-  if (selectedProc) return <ProcedureDetail procedure={selectedProc} onBack={() => setSelectedProc(null)} />;
-  if (selectedQuiz) return <QuizDetail question={selectedQuiz} onBack={() => setSelectedQuiz(null)} />;
 
   return (
     <div className="flex flex-col h-full">
@@ -283,15 +278,22 @@ export default function SavedScreen() {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>{/* end sticky wrapper */}
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-4 space-y-2.5 animate-fade-in">
         {/* Medicines */}
         {activeTab === 'medicines' && (
           savedMeds.length === 0 ? <EmptyState label="medicines" /> :
           savedMeds.map(med => {
             const c = catColors[med.category] || { bg: 'hsl(270,30%,92%)', text: 'hsl(265,30%,48%)', border: 'hsl(270,25%,82%)' };
             return (
-              <button key={med.id} onClick={() => setSelectedMed(med)}
-                className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99]"
+              <div key={med.id} role="button" tabIndex={0}
+                onClick={() => navigate(`/medicine/${med.id}`)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate(`/medicine/${med.id}`);
+                  }
+                }}
+                className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer"
                 style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-0.5">
@@ -306,7 +308,7 @@ export default function SavedScreen() {
                   </button>
                   <ChevronRight size={15} style={{ color: 'hsl(265,20%,72%)' }} />
                 </div>
-              </button>
+              </div>
             );
           })
         )}
@@ -317,8 +319,15 @@ export default function SavedScreen() {
           savedProcs.map(proc => {
             const c = catColors[proc.category] || { bg: 'hsl(270,30%,92%)', text: 'hsl(265,30%,48%)', border: 'hsl(270,25%,82%)' };
             return (
-              <button key={proc.id} onClick={() => setSelectedProc(proc)}
-                className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99]"
+              <div key={proc.id} role="button" tabIndex={0}
+                onClick={() => navigate(`/procedures/${proc.id}`)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate(`/procedures/${proc.id}`);
+                  }
+                }}
+                className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer"
                 style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-0.5">
@@ -333,7 +342,7 @@ export default function SavedScreen() {
                   </button>
                   <ChevronRight size={15} style={{ color: 'hsl(265,20%,72%)' }} />
                 </div>
-              </button>
+              </div>
             );
           })
         )}
@@ -344,8 +353,15 @@ export default function SavedScreen() {
           savedQuestions.map(q => {
             const c = quizCatColors[q.category] || { bg: 'hsl(265,40%,92%)', text: 'hsl(265,40%,48%)' };
             return (
-              <button key={q.id} onClick={() => setSelectedQuiz(q)}
-                className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99]"
+              <div key={q.id} role="button" tabIndex={0}
+                onClick={() => navigate(`/quiz/${q.category}`)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate(`/quiz/${q.category}`);
+                  }
+                }}
+                className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer"
                 style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
                 <div className="flex-1 min-w-0">
                   <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold mb-1.5" style={{ background: c.bg, color: c.text }}>{quizCatLabel[q.category]}</span>
@@ -358,7 +374,7 @@ export default function SavedScreen() {
                   </button>
                   <ChevronRight size={15} style={{ color: 'hsl(265,20%,72%)' }} />
                 </div>
-              </button>
+              </div>
             );
           })
         )}

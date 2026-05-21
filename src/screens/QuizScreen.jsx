@@ -1,8 +1,10 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Bookmark, BookmarkCheck, CheckCircle2, XCircle, RotateCcw, ChevronRight, Trophy } from 'lucide-react';
 import { quizCategories, quizQuestions } from '../data/quiz';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
+import PullToRefreshIndicator from '../components/PullToRefreshIndicator';
 
 function QuizSession({ category, onBack, onFinish }) {
   const questions = useMemo(() =>
@@ -219,8 +221,10 @@ function QuizResults({ category, score, total, onRetry, onBack }) {
 }
 
 export default function QuizScreen() {
-  const [activeCategory, setActiveCategory] = useState(null);
-  const [quizState, setQuizState] = useState('menu');
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const activeCategory = id ? quizCategories.find(cat => cat.id === id) : null;
+  const [quizState, setQuizState] = useState(id ? 'session' : 'menu');
   const [lastResult, setLastResult] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef(null);
@@ -234,17 +238,22 @@ export default function QuizScreen() {
     return () => el.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    setQuizState(id ? 'session' : 'menu');
+    setLastResult(null);
+  }, [id]);
+
   const handleFinish = (score, total) => {
     setLastResult({ score, total });
     setQuizState('results');
   };
 
   if (quizState === 'session' && activeCategory)
-    return <QuizSession category={activeCategory} onBack={() => { setQuizState('menu'); setActiveCategory(null); }} onFinish={handleFinish} />;
+    return <QuizSession category={activeCategory} onBack={() => navigate('/quiz')} onFinish={handleFinish} />;
   if (quizState === 'results' && lastResult)
     return <QuizResults category={activeCategory} score={lastResult.score} total={lastResult.total}
       onRetry={() => setQuizState('session')}
-      onBack={() => { setQuizState('menu'); setActiveCategory(null); }} />;
+      onBack={() => navigate('/quiz')} />;
 
   return (
     <div className="flex flex-col h-full">
@@ -262,7 +271,8 @@ export default function QuizScreen() {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-4 space-y-3 animate-fade-in">
+        <PullToRefreshIndicator />
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2">
           {[
@@ -284,7 +294,7 @@ export default function QuizScreen() {
           const progress = quizProgress[cat.id];
           const pct = progress ? Math.round((progress.score / progress.total) * 100) : null;
           return (
-            <button key={cat.id} onClick={() => { setActiveCategory(cat); setQuizState('session'); }}
+            <button key={cat.id} onClick={() => navigate(`/quiz/${cat.id}`)}
               className="w-full rounded-2xl border p-4 text-left flex items-center gap-4 transition-all active:scale-[0.98] card-shadow"
               style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}
               onMouseEnter={e => e.currentTarget.style.background = 'hsl(270,30%,98%)'}

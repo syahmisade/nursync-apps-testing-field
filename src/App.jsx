@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -11,6 +11,12 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import MedicineScreen from './screens/MedicineScreen';
+import CalculatorScreen from './screens/CalculatorScreen';
+import ProceduresScreen from './screens/ProceduresScreen';
+import QuizScreen from './screens/QuizScreen';
+import SavedScreen from './screens/SavedScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -41,8 +47,18 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
-      <Route path="/" element={<NurSync />} />
+      <Route path="/" element={<NurSync />}>
+        <Route index element={<Navigate to="/medicine" replace />} />
+        <Route path="medicine" element={<MedicineScreen />} />
+        <Route path="medicine/:id" element={<MedicineScreen />} />
+        <Route path="calculators" element={<CalculatorScreen />} />
+        <Route path="procedures" element={<ProceduresScreen />} />
+        <Route path="procedures/:id" element={<ProceduresScreen />} />
+        <Route path="quiz" element={<QuizScreen />} />
+        <Route path="quiz/:id" element={<QuizScreen />} />
+        <Route path="saved" element={<SavedScreen />} />
+        <Route path="profile" element={<ProfileScreen />} />
+      </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />

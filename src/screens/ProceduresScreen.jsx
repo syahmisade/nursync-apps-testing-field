@@ -1,8 +1,10 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, CheckCircle2, SlidersHorizontal, Check } from 'lucide-react';
 import { procedures, procedureCategories } from '../data/procedures';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
+import PullToRefreshIndicator from '../components/PullToRefreshIndicator';
 
 const catStyles = {
   "Vital Signs":              { bg: 'hsl(220,65%,93%)', text: 'hsl(220,60%,46%)', border: 'hsl(220,50%,80%)' },
@@ -146,9 +148,10 @@ function ProcedureDetail({ procedure, onBack }) {
 }
 
 export default function ProceduresScreen() {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
-  const [selected, setSelected] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef(null);
@@ -180,7 +183,12 @@ export default function ProceduresScreen() {
     });
   }, [search, activeCategory]);
 
-  if (selected) return <ProcedureDetail procedure={selected} onBack={() => setSelected(null)} />;
+  const selected = id ? procedures.find(p => String(p.id) === id) : null;
+  if (id) {
+    return selected
+      ? <ProcedureDetail procedure={selected} onBack={() => navigate(-1)} />
+      : <ProcedureDetail procedure={procedures[0]} onBack={() => navigate('/procedures', { replace: true })} />;
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -234,7 +242,8 @@ export default function ProceduresScreen() {
       </div>{/* end sticky wrapper */}
 
       {/* List */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-4 space-y-2.5 animate-fade-in">
+        <PullToRefreshIndicator />
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
@@ -246,7 +255,17 @@ export default function ProceduresScreen() {
           return (
             <div key={proc.id} className="rounded-2xl border overflow-hidden card-shadow"
               style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
-              <button onClick={() => setSelected(proc)} className="w-full p-4 text-left transition-all"
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate(`/procedures/${proc.id}`)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate(`/procedures/${proc.id}`);
+                  }
+                }}
+                className="w-full p-4 text-left transition-all cursor-pointer"
                 style={{ background: 'white' }}
                 onMouseEnter={e => e.currentTarget.style.background = 'hsl(270,30%,98%)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'white'}>
@@ -266,7 +285,7 @@ export default function ProceduresScreen() {
                     <ChevronRight size={15} style={{ color: 'hsl(265,20%,72%)' }} />
                   </div>
                 </div>
-              </button>
+              </div>
             </div>
           );
         })}

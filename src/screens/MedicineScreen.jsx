@@ -1,8 +1,10 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, Check, SlidersHorizontal, Clock } from 'lucide-react';
 import { medicines, categories } from '../data/medicines';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
+import PullToRefreshIndicator from '../components/PullToRefreshIndicator';
 
 // ── Shared colour maps ────────────────────────────────────────────────────────
 const categoryColors = {
@@ -126,9 +128,10 @@ function MedicineDetail({ medicine, onBack }) {
 }
 
 export default function MedicineScreen() {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
-  const [selectedMedicine, setSelectedMedicine] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -166,10 +169,15 @@ export default function MedicineScreen() {
 
   const handleSelect = (medicine) => {
     addRecentSearch(medicine.genericName);
-    setSelectedMedicine(medicine);
+    navigate(`/medicine/${medicine.id}`);
   };
 
-  if (selectedMedicine) return <MedicineDetail medicine={selectedMedicine} onBack={() => setSelectedMedicine(null)} />;
+  const selectedMedicine = id ? medicines.find(m => String(m.id) === id) : null;
+  if (id) {
+    return selectedMedicine
+      ? <MedicineDetail medicine={selectedMedicine} onBack={() => navigate(-1)} />
+      : <MedicineDetail medicine={medicines[0]} onBack={() => navigate('/medicine', { replace: true })} />;
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -265,7 +273,8 @@ export default function MedicineScreen() {
       </div>{/* end sticky wrapper */}
 
       {/* Medicine list */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-4 space-y-2.5 animate-fade-in">
+        <PullToRefreshIndicator />
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
@@ -278,8 +287,17 @@ export default function MedicineScreen() {
           return (
             <div key={medicine.id} className="rounded-2xl border overflow-hidden card-shadow"
               style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
-              <button onClick={() => handleSelect(medicine)}
-                className="w-full p-4 text-left transition-all active:scale-[0.99]"
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => handleSelect(medicine)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleSelect(medicine);
+                  }
+                }}
+                className="w-full p-4 text-left transition-all active:scale-[0.99] cursor-pointer"
                 style={{ background: 'white' }}
                 onMouseEnter={e => e.currentTarget.style.background = 'hsl(270,30%,98%)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'white'}>
@@ -303,7 +321,7 @@ export default function MedicineScreen() {
                     <ChevronRight size={15} style={{ color: 'hsl(265,20%,72%)' }} />
                   </div>
                 </div>
-              </button>
+              </div>
             </div>
           );
         })}

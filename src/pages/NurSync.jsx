@@ -1,25 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Link, Outlet } from 'react-router-dom';
 import { AppProvider } from '../context/AppContext';
 import BottomNav from '../components/BottomNav';
-import MedicineScreen from '../screens/MedicineScreen';
-import CalculatorScreen from '../screens/CalculatorScreen';
-import ProceduresScreen from '../screens/ProceduresScreen';
-import QuizScreen from '../screens/QuizScreen';
-import SavedScreen from '../screens/SavedScreen';
+import { Settings } from 'lucide-react';
 
 export default function NurSync() {
-  const [activeTab, setActiveTab] = useState('medicine');
-
-  const screenMap = {
-    medicine: MedicineScreen,
-    calculators: CalculatorScreen,
-    procedures: ProceduresScreen,
-    quiz: QuizScreen,
-    saved: SavedScreen,
-  };
-
-  const ActiveScreen = screenMap[activeTab];
-
   return (
     <AppProvider>
       {/* Full-screen background */}
@@ -42,18 +27,26 @@ export default function NurSync() {
                 <span className="text-[9px] font-medium" style={{ color: 'hsl(265,30%,60%)' }}>Sync to better care</span>
               </div>
             </div>
+            <Link
+              to="/profile"
+              aria-label="Open profile settings"
+              className="p-2 rounded-2xl transition-all active:scale-95"
+              style={{ color: 'hsl(265,45%,48%)', background: 'hsl(265,50%,94%)' }}
+            >
+              <Settings size={17} />
+            </Link>
           </div>
 
           {/* Screen content */}
           <div className="flex-1 min-h-0">
-            <div className="h-full overflow-y-auto scrollbar-hide">
-              <ActiveScreen />
+            <div className="h-full overflow-y-auto scrollbar-hide main-scroll">
+              <Outlet />
             </div>
           </div>
 
           {/* Bottom nav */}
           <div className="flex-shrink-0">
-            <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+            <BottomNav />
           </div>
 
         </div>
