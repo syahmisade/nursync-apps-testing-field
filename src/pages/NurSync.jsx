@@ -24,7 +24,7 @@ export default function NurSync() {
     <AppProvider>
       <div className="flex flex-col min-h-screen" style={{ background: 'hsl(270, 40%, 97%)' }}>
         {/* App header */}
-        <div className="flex items-center justify-between px-5 py-2.5 border-b flex-shrink-0"
+        <div className="flex items-center justify-between px-5 py-2.5 border-b sticky top-0 z-40"
           style={{ background: 'hsl(270, 40%, 97%)', borderColor: 'hsl(270,25%,90%)' }}>
           <div className="flex items-center gap-2.5">
             <img
