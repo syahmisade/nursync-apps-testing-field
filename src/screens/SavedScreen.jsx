@@ -68,7 +68,7 @@ function MedicineDetail({ medicine, onBack }) {
   ];
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center justify-between px-4 pt-4 pb-3">
+      <div className="flex items-center justify-between px-4 pt-4 pb-3 sticky top-0 z-30" style={{ background: 'hsl(270, 40%, 97%)' }}>
         <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
           style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
           <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
@@ -115,7 +115,7 @@ function ProcedureDetail({ procedure, onBack }) {
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center justify-between px-4 pt-4 pb-3">
+      <div className="flex items-center justify-between px-4 pt-4 pb-3 sticky top-0 z-30" style={{ background: 'hsl(270, 40%, 97%)' }}>
         <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
           style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
           <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
@@ -162,7 +162,7 @@ function QuizDetail({ question, onBack }) {
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center justify-between px-4 pt-4 pb-3">
+      <div className="flex items-center justify-between px-4 pt-4 pb-3 sticky top-0 z-30" style={{ background: 'hsl(270, 40%, 97%)' }}>
         <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
           style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
           <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
