@@ -5,6 +5,16 @@ import DisclaimerBanner from '../components/DisclaimerBanner';
 function BMICalculator({ onBack }) {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
 
   const heightM = parseFloat(height) / 100;
   const weightKg = parseFloat(weight);
@@ -24,18 +34,22 @@ function BMICalculator({ onBack }) {
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
-          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
-          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
-        </button>
-        <div>
-          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>BMI Calculator ⚖️</h2>
-          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Body Mass Index</p>
+      <div className="flex-shrink-0" style={{ background: 'hsl(270, 40%, 97%)' }}>
+        <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+          <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+            style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+            <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
+          </button>
+          <div>
+            <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>BMI Calculator ⚖️</h2>
+            <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Body Mass Index</p>
+          </div>
         </div>
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
         <div className="rounded-2xl p-4 border card-shadow space-y-3" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
           {[
             { label: 'Height (cm)', value: height, set: setHeight, placeholder: 'e.g. 165' },
@@ -91,30 +105,37 @@ function IVDripCalculator({ onBack }) {
   const [volume, setVolume] = useState('');
   const [hours, setHours] = useState('');
   const [dropFactor, setDropFactor] = useState('20');
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
 
   const reset = () => { setVolume(''); setHours(''); setDropFactor('20'); };
 
-  const dropsPerMin = volume && hours && dropFactor
-    ? ((parseFloat(volume) * parseFloat(dropFactor)) / (parseFloat(hours) * 60)).toFixed(1)
-    : null;
-  const mlPerHour = volume && hours
-    ? (parseFloat(volume) / parseFloat(hours)).toFixed(1)
-    : null;
-
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
-          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
-          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
-        </button>
-        <div>
-          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>IV Drip Rate 💉</h2>
-          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Gravity infusion calculator</p>
+      <div className="flex-shrink-0" style={{ background: 'hsl(270, 40%, 97%)' }}>
+        <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+          <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+            style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+            <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
+          </button>
+          <div>
+            <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>IV Drip Rate 💉</h2>
+            <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Gravity infusion calculator</p>
+          </div>
         </div>
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
         <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs"
           style={{ background: 'hsl(0,60%,96%)', border: '1px solid hsl(0,48%,84%)', color: 'hsl(0,52%,46%)' }}>
           <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
@@ -184,6 +205,17 @@ function IVDripCalculator({ onBack }) {
 function FluidBalanceCalculator({ onBack }) {
   const [intake, setIntake] = useState('');
   const [output, setOutput] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
   const reset = () => { setIntake(''); setOutput(''); };
   const balance = intake && output ? (parseFloat(intake) - parseFloat(output)).toFixed(0) : null;
 
@@ -194,17 +226,21 @@ function FluidBalanceCalculator({ onBack }) {
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
-          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
-          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
-        </button>
-        <div>
-          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Fluid Balance 🌊</h2>
-          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>24-hour balance calculator</p>
+      <div className="flex-shrink-0" style={{ background: 'hsl(270, 40%, 97%)' }}>
+        <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+          <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+            style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+            <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
+          </button>
+          <div>
+            <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Fluid Balance 🌊</h2>
+            <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>24-hour balance calculator</p>
+          </div>
         </div>
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
         <div className="rounded-2xl p-4 border card-shadow space-y-3" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
           {[
             { label: 'Total Intake (mL)', value: intake, set: setIntake, placeholder: 'e.g. 2400' },
@@ -259,6 +295,17 @@ function DoseCalculator({ onBack }) {
   const [weight, setWeight] = useState('');
   const [dosePerKg, setDosePerKg] = useState('');
   const [frequency, setFrequency] = useState('1');
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
   const reset = () => { setWeight(''); setDosePerKg(''); setFrequency('1'); };
 
   const singleDose = weight && dosePerKg ? (parseFloat(weight) * parseFloat(dosePerKg)).toFixed(2) : null;
@@ -266,17 +313,21 @@ function DoseCalculator({ onBack }) {
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
-          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
-          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
-        </button>
-        <div>
-          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Dose Calculation 💊</h2>
-          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Weight-based dosing</p>
+      <div className="flex-shrink-0" style={{ background: 'hsl(270, 40%, 97%)' }}>
+        <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+          <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+            style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+            <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
+          </button>
+          <div>
+            <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Dose Calculation 💊</h2>
+            <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Weight-based dosing</p>
+          </div>
         </div>
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
         <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs"
           style={{ background: 'hsl(0,60%,96%)', border: '1px solid hsl(0,48%,84%)', color: 'hsl(0,52%,46%)' }}>
           <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
@@ -338,6 +389,17 @@ function DoseCalculator({ onBack }) {
 function InfusionTimeCalculator({ onBack }) {
   const [volume, setVolume] = useState('');
   const [rate, setRate] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
   const reset = () => { setVolume(''); setRate(''); };
 
   const totalMinutes = volume && rate && parseFloat(rate) > 0 ? (parseFloat(volume) / parseFloat(rate)) * 60 : null;
@@ -346,17 +408,21 @@ function InfusionTimeCalculator({ onBack }) {
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
-          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
-          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
-        </button>
-        <div>
-          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Infusion Time ⏱️</h2>
-          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Total infusion duration</p>
+      <div className="flex-shrink-0" style={{ background: 'hsl(270, 40%, 97%)' }}>
+        <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+          <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+            style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+            <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
+          </button>
+          <div>
+            <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Infusion Time ⏱️</h2>
+            <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Total infusion duration</p>
+          </div>
         </div>
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
         <div className="rounded-2xl p-4 border card-shadow space-y-3" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
           {[
             { label: 'Volume to Infuse (mL)', value: volume, set: setVolume, placeholder: 'e.g. 500' },
@@ -400,6 +466,17 @@ function InfusionTimeCalculator({ onBack }) {
 function BloodTransfusionCalculator({ onBack }) {
   const [volume, setVolume] = useState('');
   const [hours, setHours] = useState('4');
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
   const reset = () => { setVolume(''); setHours('4'); };
 
   const mlPerHour = volume && hours ? (parseFloat(volume) / parseFloat(hours)).toFixed(1) : null;
@@ -407,17 +484,21 @@ function BloodTransfusionCalculator({ onBack }) {
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
-          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
-          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
-        </button>
-        <div>
-          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Blood Transfusion 🩸</h2>
-          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Transfusion drip rate calculator</p>
+      <div className="flex-shrink-0" style={{ background: 'hsl(270, 40%, 97%)' }}>
+        <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+          <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+            style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+            <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
+          </button>
+          <div>
+            <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Blood Transfusion 🩸</h2>
+            <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Transfusion drip rate calculator</p>
+          </div>
         </div>
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
         <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs"
           style={{ background: 'hsl(0,60%,96%)', border: '1px solid hsl(0,48%,84%)', color: 'hsl(0,52%,46%)' }}>
           <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
@@ -472,6 +553,16 @@ function BloodTransfusionCalculator({ onBack }) {
 
 function EDDCalculator({ onBack }) {
   const [lmp, setLmp] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 8);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
 
   const calcEDD = () => {
     if (!lmp) return null;
@@ -499,17 +590,21 @@ function EDDCalculator({ onBack }) {
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center gap-3 px-4 pt-4 pb-3">
-        <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
-          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
-          <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
-        </button>
-        <div>
-          <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Estimated Delivery Date 🤰</h2>
-          <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Naegele's Rule (LMP + 280 days)</p>
+      <div className="flex-shrink-0" style={{ background: 'hsl(270, 40%, 97%)' }}>
+        <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+          <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5"
+            style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+            <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
+          </button>
+          <div>
+            <h2 className="font-black" style={{ color: 'hsl(265,40%,22%)' }}>Estimated Delivery Date 🤰</h2>
+            <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Naegele's Rule (LMP + 280 days)</p>
+          </div>
         </div>
+        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
         <div className="rounded-2xl p-4 border card-shadow space-y-3" style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
           <div>
             <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'hsl(265,55%,54%)' }}>Last Menstrual Period (LMP)</label>
