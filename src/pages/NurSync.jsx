@@ -10,9 +10,9 @@ export default function NurSync() {
   return (
     <AppProvider>
       {/* Full-screen background */}
-      <div className="min-h-screen w-full bg-background">
+      <div className="min-h-dvh w-full bg-background">
         {/* Centered phone-width container */}
-        <div className="relative flex flex-col h-screen mx-auto overflow-hidden bg-background border-x border-border"
+        <div className="relative flex flex-col h-dvh min-h-dvh mx-auto overflow-hidden bg-background border-x border-border"
           style={{ maxWidth: '430px' }}>
 
           {/* App header */}
@@ -26,7 +26,7 @@ export default function NurSync() {
               />
               <div className="flex flex-col leading-none">
                 <span className="text-sm font-black tracking-tight text-primary">NurSync</span>
-                <span className="text-[9px] font-medium text-muted-foreground">Sync to better care</span>
+                <span className="text-[11px] font-medium text-muted-foreground">Sync to better care</span>
               </div>
             </div>
             <div className="flex items-center gap-2">

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock, Loader2 } from "lucide-react";
@@ -76,14 +75,12 @@ export default function Register() {
         subtitle={`We sent a code to ${email}`}
       >
         {error && (
-          <div className="mb-4 px-3 py-2 rounded-xl text-xs font-semibold"
-            style={{ background: 'hsl(0,60%,96%)', color: 'hsl(0,58%,45%)', border: '1px solid hsl(0,55%,88%)' }}>
+          <div className="mb-4 status-panel status-panel-compact" data-tone="danger">
             {error}
           </div>
         )}
         {resendSuccess && (
-          <div className="mb-4 px-3 py-2 rounded-xl text-xs font-semibold"
-            style={{ background: 'hsl(152,50%,94%)', color: 'hsl(152,50%,32%)', border: '1px solid hsl(152,40%,78%)' }}>
+          <div className="mb-4 status-panel status-panel-compact" data-tone="success">
             Code sent! Check your email.
           </div>
         )}
@@ -114,9 +111,9 @@ export default function Register() {
         >
           {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Verifying...</> : "Verify"}
         </button>
-        <p className="text-center text-xs font-medium mt-4" style={{ color: 'hsl(265,15%,58%)' }}>
+        <p className="text-center text-sm font-medium mt-4 text-muted-foreground">
           Didn't receive the code?{" "}
-          <button onClick={handleResend} className="font-bold hover:underline" style={{ color: 'hsl(265,60%,55%)' }}>
+          <button onClick={handleResend} className="font-bold hover:underline text-primary">
             Resend
           </button>
         </p>
@@ -131,7 +128,7 @@ export default function Register() {
       footer={
         <>
           Already have an account?{" "}
-          <Link to="/login" className="font-bold hover:underline" style={{ color: 'hsl(265,60%,55%)' }}>
+          <Link to="/login" className="font-bold hover:underline text-primary">
             Log in
           </Link>
         </>
@@ -141,8 +138,7 @@ export default function Register() {
       <button
         type="button"
         onClick={handleGoogle}
-        className="w-full flex items-center justify-center gap-2.5 h-12 rounded-2xl border text-sm font-bold mb-5 transition-all active:scale-[0.98]"
-        style={{ borderColor: 'hsl(270,25%,88%)', color: 'hsl(265,35%,32%)', background: 'hsl(270,40%,98%)' }}
+        className="w-full flex items-center justify-center gap-2.5 h-12 rounded-2xl border text-sm font-bold mb-5 transition-all active:scale-[0.98] bg-card text-foreground border-border hover:bg-muted"
       >
         <GoogleIcon className="w-4 h-4" />
         Continue with Google
@@ -151,25 +147,24 @@ export default function Register() {
       {/* Divider */}
       <div className="relative mb-5">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t" style={{ borderColor: 'hsl(270,25%,90%)' }} />
+          <div className="w-full border-t border-border" />
         </div>
-        <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest">
-          <span className="px-3" style={{ background: 'white', color: 'hsl(265,15%,65%)' }}>or</span>
+        <div className="relative flex justify-center text-xs uppercase font-bold tracking-widest">
+          <span className="px-3 bg-card text-muted-foreground">or</span>
         </div>
       </div>
 
       {error && (
-        <div className="mb-4 px-3 py-2 rounded-xl text-xs font-semibold"
-          style={{ background: 'hsl(0,60%,96%)', color: 'hsl(0,58%,45%)', border: '1px solid hsl(0,55%,88%)' }}>
+        <div className="mb-4 status-panel status-panel-compact" data-tone="danger">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <Label htmlFor="email" className="text-xs font-bold" style={{ color: 'hsl(265,30%,45%)' }}>Email</Label>
+          <Label htmlFor="email" className="text-sm font-bold text-foreground">Email</Label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'hsl(265,30%,68%)' }} aria-hidden="true" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
             <Input
               id="email"
               type="email"
@@ -178,16 +173,15 @@ export default function Register() {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="pl-10 h-12 rounded-2xl border text-sm font-medium"
-              style={{ borderColor: 'hsl(270,25%,88%)', background: 'hsl(270,35%,98%)' }}
+              className="pl-10 h-12 rounded-2xl border text-sm font-medium bg-muted border-border text-foreground placeholder:text-muted-foreground"
               required
             />
           </div>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="password" className="text-xs font-bold" style={{ color: 'hsl(265,30%,45%)' }}>Password</Label>
+          <Label htmlFor="password" className="text-sm font-bold text-foreground">Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'hsl(265,30%,68%)' }} aria-hidden="true" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
             <Input
               id="password"
               type="password"
@@ -195,16 +189,15 @@ export default function Register() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="pl-10 h-12 rounded-2xl border text-sm font-medium"
-              style={{ borderColor: 'hsl(270,25%,88%)', background: 'hsl(270,35%,98%)' }}
+              className="pl-10 h-12 rounded-2xl border text-sm font-medium bg-muted border-border text-foreground placeholder:text-muted-foreground"
               required
             />
           </div>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="confirm" className="text-xs font-bold" style={{ color: 'hsl(265,30%,45%)' }}>Confirm Password</Label>
+          <Label htmlFor="confirm" className="text-sm font-bold text-foreground">Confirm Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'hsl(265,30%,68%)' }} aria-hidden="true" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
             <Input
               id="confirm"
               type="password"
@@ -212,8 +205,7 @@ export default function Register() {
               placeholder="••••••••"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="pl-10 h-12 rounded-2xl border text-sm font-medium"
-              style={{ borderColor: 'hsl(270,25%,88%)', background: 'hsl(270,35%,98%)' }}
+              className="pl-10 h-12 rounded-2xl border text-sm font-medium bg-muted border-border text-foreground placeholder:text-muted-foreground"
               required
             />
           </div>

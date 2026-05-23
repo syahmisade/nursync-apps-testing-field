@@ -4,7 +4,7 @@ import { ArrowLeft, Bookmark, BookmarkCheck, CheckCircle2, XCircle, RotateCcw, C
 import { quizCategories, quizQuestions } from '../data/quiz';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import PullToRefreshIndicator from '../components/PullToRefreshIndicator';
+import { SemanticPill, StatusPanel, toneForQuizCategory } from '../components/Semantic';
 
 function QuizSession({ category, onBack, onFinish }) {
   const questions = useMemo(() =>
@@ -64,13 +64,13 @@ function QuizSession({ category, onBack, onFinish }) {
             style={{ width: `${progress}%`, background: 'linear-gradient(90deg, hsl(265,60%,58%) 0%, hsl(285,55%,62%) 100%)' }} />
         </div>
         <div className="mt-2">
-          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border bg-secondary text-primary border-border">
+          <SemanticPill tone={toneForQuizCategory(category.id)} className="py-1">
             {category.icon} {category.label}
-          </span>
+          </SemanticPill>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-4 space-y-3">
         {/* Question */}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
           <p className="text-sm font-semibold leading-relaxed text-foreground">{current.question}</p>
@@ -86,24 +86,14 @@ function QuizSession({ category, onBack, onFinish }) {
             }
             return (
               <button key={idx} onClick={() => handleSelect(idx)}
-                className="w-full p-3.5 rounded-2xl border text-left text-sm transition-all duration-200 flex items-start gap-3 active:scale-[0.98]"
-                style={
-                  state === 'correct' ? { background: 'hsl(152,50%,93%)', borderColor: 'hsl(152,45%,70%)', color: 'hsl(152,50%,28%)' } :
-                  state === 'wrong'   ? { background: 'hsl(0,55%,94%)', borderColor: 'hsl(0,48%,75%)', color: 'hsl(0,52%,40%)' } :
-                  selected === null   ? { background: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--foreground))' } :
-                  { background: 'hsl(var(--muted))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--muted-foreground))' }
-                }>
-                <span className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black flex-shrink-0 mt-0.5"
-                  style={
-                    state === 'correct' ? { background: 'hsl(152,45%,82%)', color: 'hsl(152,50%,32%)' } :
-                    state === 'wrong'   ? { background: 'hsl(0,48%,88%)', color: 'hsl(0,52%,45%)' } :
-                    { background: 'hsl(var(--secondary))', color: 'hsl(var(--primary))' }
-                  }>
+                data-state={state === 'default' && selected !== null ? 'muted' : state}
+                className="choice-option w-full p-3.5 rounded-2xl border text-left text-sm transition-all duration-200 flex items-start gap-3 active:scale-[0.98]">
+                <span className="choice-option-badge w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0 mt-0.5">
                   {['A','B','C','D'][idx]}
                 </span>
                 <span className="leading-relaxed font-medium">{option}</span>
-                {state === 'correct' && <CheckCircle2 size={16} className="ml-auto flex-shrink-0 mt-0.5" style={{ color: 'hsl(152,50%,38%)' }} />}
-                {state === 'wrong'   && <XCircle size={16} className="ml-auto flex-shrink-0 mt-0.5" style={{ color: 'hsl(0,52%,48%)' }} />}
+                {state === 'correct' && <CheckCircle2 size={16} className="ml-auto flex-shrink-0 mt-0.5" />}
+                {state === 'wrong'   && <XCircle size={16} className="ml-auto flex-shrink-0 mt-0.5" />}
               </button>
             );
           })}
@@ -111,22 +101,18 @@ function QuizSession({ category, onBack, onFinish }) {
 
         {/* Explanation */}
         {showExplanation && (
-          <div className="rounded-2xl p-4 border animate-slide-up"
-            style={isCorrect
-              ? { background: 'hsl(152,50%,94%)', borderColor: 'hsl(152,40%,76%)' }
-              : { background: 'hsl(0,55%,95%)', borderColor: 'hsl(0,45%,80%)' }}>
+          <StatusPanel tone={isCorrect ? 'success' : 'danger'} className="status-panel-block animate-slide-up">
             <div className="flex items-center gap-2 mb-2">
               {isCorrect
-                ? <CheckCircle2 size={15} style={{ color: 'hsl(152,50%,38%)' }} />
-                : <XCircle size={15} style={{ color: 'hsl(0,52%,48%)' }} />}
-              <p className="text-xs font-black"
-                style={{ color: isCorrect ? 'hsl(152,50%,36%)' : 'hsl(0,52%,46%)' }}>
+                ? <CheckCircle2 size={15} />
+                : <XCircle size={15} />}
+              <p className="text-sm font-black">
                 {isCorrect ? '✓ Correct!' : 'Not quite.'}
               </p>
             </div>
             <p className="text-xs leading-relaxed font-medium text-foreground">{current.explanation}</p>
-            <p className="text-[10px] mt-2 italic text-muted-foreground">Ref: {current.reference}</p>
-          </div>
+            <p className="text-xs mt-2 italic text-muted-foreground">Ref: {current.reference}</p>
+          </StatusPanel>
         )}
 
         {/* Next */}
@@ -183,7 +169,7 @@ function QuizResults({ category, score, total, onRetry, onBack }) {
             <div className="h-full rounded-full transition-all duration-700"
               style={{ width: `${percentage}%`, background: percentage >= 80 ? 'linear-gradient(90deg, hsl(152,50%,52%) 0%, hsl(152,55%,45%) 100%)' : percentage >= 60 ? 'linear-gradient(90deg, hsl(38,70%,55%) 0%, hsl(38,75%,48%) 100%)' : 'linear-gradient(90deg, hsl(28,65%,58%) 0%, hsl(28,70%,50%) 100%)' }} />
           </div>
-          <div className="flex justify-between mt-1.5 text-[10px] font-semibold text-muted-foreground">
+          <div className="flex justify-between mt-1.5 text-xs font-semibold text-muted-foreground">
             <span>0%</span><span>100%</span>
           </div>
         </div>
@@ -263,8 +249,7 @@ export default function QuizScreen() {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-4 space-y-3 animate-fade-in">
-        <PullToRefreshIndicator />
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pt-2 pb-4 space-y-3 animate-fade-in">
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2">
           {[
@@ -274,12 +259,12 @@ export default function QuizScreen() {
           ].map(({ label, value, color }) => (
             <div key={label} className="rounded-2xl p-3 border card-shadow text-center bg-card border-border">
               <p className="text-xl font-black" style={{ color }}>{value}</p>
-              <p className="text-[10px] font-semibold text-muted-foreground">{label}</p>
+              <p className="text-xs font-semibold text-muted-foreground">{label}</p>
             </div>
           ))}
         </div>
 
-        <p className="text-[10px] font-black uppercase tracking-widest px-1 text-muted-foreground">Select a Category</p>
+        <p className="text-xs font-black uppercase tracking-widest px-1 text-muted-foreground">Select a Category</p>
 
         {quizCategories.map(cat => {
           const progress = quizProgress[cat.id];
@@ -290,13 +275,13 @@ export default function QuizScreen() {
               <span className="text-2xl">{cat.icon}</span>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-sm text-foreground">{cat.label}</p>
-                <p className="text-[10px] font-medium text-muted-foreground">{cat.count} questions</p>
+                <p className="text-xs font-medium text-muted-foreground">{cat.count} questions</p>
                 {pct !== null && (
                   <div className="mt-1.5 flex items-center gap-2">
                     <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted">
                       <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
                     </div>
-                    <span className="text-[10px] font-bold text-primary">{pct}%</span>
+                    <span className="text-xs font-bold text-primary">{pct}%</span>
                   </div>
                 )}
               </div>

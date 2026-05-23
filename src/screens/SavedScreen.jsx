@@ -6,34 +6,7 @@ import { procedures } from '../data/procedures';
 import { quizQuestions } from '../data/quiz';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-
-const catColors = {
-  "Analgesic":         { bg: 'hsl(220,65%,93%)', text: 'hsl(220,60%,46%)', border: 'hsl(220,50%,80%)' },
-  "Antibiotic":        { bg: 'hsl(152,55%,93%)', text: 'hsl(152,55%,36%)', border: 'hsl(152,45%,78%)' },
-  "Antidiabetic":      { bg: 'hsl(270,55%,93%)', text: 'hsl(270,50%,48%)', border: 'hsl(270,40%,80%)' },
-  "Antihypertensive":  { bg: 'hsl(350,65%,93%)', text: 'hsl(350,60%,48%)', border: 'hsl(350,50%,80%)' },
-  "Antilipid":         { bg: 'hsl(28,80%,93%)',  text: 'hsl(28,70%,45%)',  border: 'hsl(28,60%,78%)' },
-  "Bronchodilator":    { bg: 'hsl(188,60%,92%)', text: 'hsl(188,55%,36%)', border: 'hsl(188,45%,76%)' },
-  "Antacid/PPI":       { bg: 'hsl(45,80%,92%)',  text: 'hsl(38,65%,40%)',  border: 'hsl(40,60%,76%)' },
-  "Opioid Analgesic":  { bg: 'hsl(0,60%,93%)',   text: 'hsl(0,58%,48%)',   border: 'hsl(0,48%,80%)' },
-  "Anticoagulant":     { bg: 'hsl(330,60%,93%)', text: 'hsl(330,55%,48%)', border: 'hsl(330,45%,80%)' },
-  "Corticosteroid":    { bg: 'hsl(188,55%,92%)', text: 'hsl(195,55%,38%)', border: 'hsl(188,45%,76%)' },
-  "Vital Signs":               { bg: 'hsl(220,65%,93%)', text: 'hsl(220,60%,46%)', border: 'hsl(220,50%,80%)' },
-  "Medication Administration": { bg: 'hsl(270,55%,93%)', text: 'hsl(270,50%,46%)', border: 'hsl(270,40%,80%)' },
-  "Infection Control":         { bg: 'hsl(152,50%,92%)', text: 'hsl(152,50%,34%)', border: 'hsl(152,40%,76%)' },
-  "Wound Care":                { bg: 'hsl(350,60%,93%)', text: 'hsl(350,55%,46%)', border: 'hsl(350,45%,80%)' },
-  "Patient Safety":            { bg: 'hsl(28,75%,92%)',  text: 'hsl(28,65%,42%)',  border: 'hsl(28,55%,76%)' },
-  "Emergency Basics":          { bg: 'hsl(0,58%,93%)',   text: 'hsl(0,52%,46%)',   border: 'hsl(0,45%,80%)' },
-};
-
-const quizCatColors = {
-  "pharmacology": { bg: 'hsl(220,65%,93%)', text: 'hsl(220,60%,46%)' },
-  "fundamentals": { bg: 'hsl(152,55%,93%)', text: 'hsl(152,55%,36%)' },
-  "medsurg":      { bg: 'hsl(270,55%,93%)', text: 'hsl(270,50%,48%)' },
-  "maternal":     { bg: 'hsl(350,65%,93%)', text: 'hsl(350,60%,48%)' },
-  "infection":    { bg: 'hsl(188,60%,92%)', text: 'hsl(188,55%,36%)' },
-  "calculations": { bg: 'hsl(28,80%,93%)',  text: 'hsl(28,70%,45%)' },
-};
+import { SemanticPill, toneForCategory, toneForQuizCategory } from '../components/Semantic';
 
 const quizCatLabel = {
   "pharmacology": "Pharmacology",
@@ -100,7 +73,7 @@ export default function SavedScreen() {
                   : { background: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}>
                 <Icon size={14} className="mx-auto mb-1" style={{ color }} />
                 <p className="text-lg font-black" style={{ color }}>{count}</p>
-                <p className="text-[9px] font-semibold leading-tight" style={{ color: activeTab === tab ? color : 'hsl(var(--muted-foreground))' }}>{label}</p>
+                <p className="text-[11px] font-semibold leading-tight" style={{ color: activeTab === tab ? color : 'hsl(var(--muted-foreground))' }}>{label}</p>
               </button>
             ))}
           </div>
@@ -109,12 +82,11 @@ export default function SavedScreen() {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-4 space-y-2.5 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
         {/* Medicines */}
         {activeTab === 'medicines' && (
           savedMeds.length === 0 ? <EmptyState label="medicines" /> :
           savedMeds.map(med => {
-            const c = catColors[med.category] || { bg: 'hsl(270,30%,92%)', text: 'hsl(265,30%,48%)', border: 'hsl(270,25%,82%)' };
             return (
               <div key={med.id} role="button" tabIndex={0}
                 onClick={() => navigate(`/medicine/${med.id}`)}
@@ -128,7 +100,7 @@ export default function SavedScreen() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-0.5">
                     <h3 className="font-bold text-sm text-foreground">{med.genericName}</h3>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border" style={{ background: c.bg, color: c.text, borderColor: c.border }}>{med.category}</span>
+                    <SemanticPill tone={toneForCategory(med.category)}>{med.category}</SemanticPill>
                   </div>
                   <p className="text-xs font-medium text-muted-foreground">{med.brandName}</p>
                 </div>
@@ -147,7 +119,6 @@ export default function SavedScreen() {
         {activeTab === 'procedures' && (
           savedProcs.length === 0 ? <EmptyState label="procedures" /> :
           savedProcs.map(proc => {
-            const c = catColors[proc.category] || { bg: 'hsl(270,30%,92%)', text: 'hsl(265,30%,48%)', border: 'hsl(270,25%,82%)' };
             return (
               <div key={proc.id} role="button" tabIndex={0}
                 onClick={() => navigate(`/procedures/${proc.id}`)}
@@ -162,7 +133,7 @@ export default function SavedScreen() {
                   <div className="flex items-center gap-2 flex-wrap mb-0.5">
                     <h3 className="font-bold text-sm text-foreground">{proc.title}</h3>
                   </div>
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold border" style={{ background: c.bg, color: c.text, borderColor: c.border }}>{proc.category}</span>
+                  <SemanticPill tone={toneForCategory(proc.category)}>{proc.category}</SemanticPill>
                   <p className="text-xs font-medium mt-1 text-muted-foreground">{proc.steps.length} steps</p>
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0">
@@ -180,7 +151,6 @@ export default function SavedScreen() {
         {activeTab === 'quiz' && (
           savedQuestions.length === 0 ? <EmptyState label="quiz questions" /> :
           savedQuestions.map(q => {
-            const c = quizCatColors[q.category] || { bg: 'hsl(265,40%,92%)', text: 'hsl(265,40%,48%)' };
             return (
               <div key={q.id} role="button" tabIndex={0}
                 onClick={() => navigate(`/quiz/${q.category}`)}
@@ -192,9 +162,9 @@ export default function SavedScreen() {
                 }}
                 className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer bg-card border-border hover:bg-muted">
                 <div className="flex-1 min-w-0">
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold mb-1.5" style={{ background: c.bg, color: c.text }}>{quizCatLabel[q.category]}</span>
+                  <SemanticPill tone={toneForQuizCategory(q.category)} className="mb-1.5">{quizCatLabel[q.category]}</SemanticPill>
                   <p className="text-xs font-medium leading-relaxed line-clamp-3 text-foreground">{q.question}</p>
-                  <p className="text-[10px] font-bold mt-1.5" style={{ color: 'hsl(152,50%,38%)' }}>✓ {q.options[q.correctIndex]}</p>
+                  <p className="text-xs font-bold mt-1.5" style={{ color: 'hsl(152,50%,38%)' }}>✓ {q.options[q.correctIndex]}</p>
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button onClick={e => { e.stopPropagation(); toggleSaveQuestion(q.id); }} className="p-1.5" style={{ color: 'hsl(265,55%,52%)' }}>

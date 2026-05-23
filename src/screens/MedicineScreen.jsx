@@ -4,20 +4,7 @@ import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTrian
 import { medicines, categories } from '../data/medicines';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-
-// Category pills use fixed semantic colours (same light/dark) — readable on both themes
-const categoryColors = {
-  "Analgesic":         { bg: 'hsl(220,75%,94%)', text: 'hsl(220,65%,50%)', border: 'hsl(220,55%,82%)' },
-  "Antibiotic":        { bg: 'hsl(152,55%,93%)', text: 'hsl(152,55%,36%)', border: 'hsl(152,45%,78%)' },
-  "Antidiabetic":      { bg: 'hsl(270,55%,93%)', text: 'hsl(270,50%,48%)', border: 'hsl(270,40%,80%)' },
-  "Antihypertensive":  { bg: 'hsl(350,65%,93%)', text: 'hsl(350,60%,48%)', border: 'hsl(350,50%,80%)' },
-  "Antilipid":         { bg: 'hsl(28,80%,93%)',  text: 'hsl(28,70%,45%)',  border: 'hsl(28,60%,78%)' },
-  "Bronchodilator":    { bg: 'hsl(188,60%,92%)', text: 'hsl(188,55%,36%)', border: 'hsl(188,45%,76%)' },
-  "Antacid/PPI":       { bg: 'hsl(45,80%,92%)',  text: 'hsl(38,65%,40%)',  border: 'hsl(40,60%,76%)' },
-  "Opioid Analgesic":  { bg: 'hsl(0,60%,93%)',   text: 'hsl(0,58%,48%)',   border: 'hsl(0,48%,80%)' },
-  "Anticoagulant":     { bg: 'hsl(330,60%,93%)', text: 'hsl(330,55%,48%)', border: 'hsl(330,45%,80%)' },
-  "Corticosteroid":    { bg: 'hsl(188,55%,92%)', text: 'hsl(195,55%,38%)', border: 'hsl(188,45%,76%)' },
-};
+import { SemanticPill, StatusPanel, toneForCategory } from '../components/Semantic';
 
 const catTextColor = {
   "All":              'hsl(265,30%,40%)',
@@ -34,12 +21,10 @@ const catTextColor = {
 };
 
 function CategoryPill({ category }) {
-  const c = categoryColors[category] || { bg: 'hsl(270,30%,92%)', text: 'hsl(265,30%,48%)', border: 'hsl(270,25%,82%)' };
   return (
-    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border"
-      style={{ background: c.bg, color: c.text, borderColor: c.border }}>
+    <SemanticPill tone={toneForCategory(category)}>
       {category}
-    </span>
+    </SemanticPill>
   );
 }
 
@@ -80,7 +65,7 @@ function MedicineDetail({ medicine, onBack }) {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-6 space-y-3">
         {/* Title block */}
         <div className="rounded-3xl p-5 border card-shadow bg-card border-border">
           <div className="flex items-start justify-between gap-2">
@@ -92,23 +77,22 @@ function MedicineDetail({ medicine, onBack }) {
           </div>
           {medicine.glamourName && (
             <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-secondary border border-border">
-              <span className="text-[10px] font-medium text-muted-foreground">Also known as:</span>
-              <span className="text-[10px] font-bold text-primary">{medicine.glamourName}</span>
+              <span className="text-xs font-medium text-muted-foreground">Also known as:</span>
+              <span className="text-xs font-bold text-primary">{medicine.glamourName}</span>
             </div>
           )}
         </div>
 
         {medicine.id === 8 && (
-          <div className="flex items-start gap-2.5 px-4 py-3 rounded-2xl text-xs border"
-            style={{ background: 'hsl(0,60%,96%)', borderColor: 'hsl(0,55%,85%)', color: 'hsl(0,55%,45%)' }}>
+          <StatusPanel tone="danger">
             <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
             <span><span className="font-bold">Controlled Substance.</span> Strict documentation, prescriber authorisation, and storage protocols apply.</span>
-          </div>
+          </StatusPanel>
         )}
 
         {sections.filter(({ label }) => !['Generic Name', 'Brand Name', 'Common / Glamour Name'].includes(label)).map(({ label, value }) => (
           <div key={label} className="rounded-2xl p-4 border card-shadow bg-card border-border">
-            <p className="text-[10px] font-black uppercase tracking-widest mb-1.5 text-primary">{label}</p>
+            <p className="text-xs font-black uppercase tracking-widest mb-1.5 text-primary">{label}</p>
             <p className="text-sm leading-relaxed font-medium text-foreground">{value}</p>
           </div>
         ))}
@@ -222,7 +206,7 @@ export default function MedicineScreen() {
         {searchFocused && !search && recentSearches.length > 0 && (
           <div className="absolute left-4 right-16 top-full mt-2 z-50 rounded-2xl overflow-hidden bg-card border border-border"
             style={{ boxShadow: '0 8px 32px rgba(147,92,210,0.14)' }}>
-            <p className="text-[9px] font-black uppercase tracking-widest px-4 pt-3 pb-1 text-muted-foreground">Recent</p>
+            <p className="text-[11px] font-black uppercase tracking-widest px-4 pt-3 pb-1 text-muted-foreground">Recent</p>
             {recentSearches.slice(0, 5).map(s => (
               <button key={s}
                 onMouseDown={e => { e.preventDefault(); setSearch(s); setSearchFocused(false); }}
@@ -238,7 +222,7 @@ export default function MedicineScreen() {
         {dropdownOpen && (
           <div className="absolute left-4 right-4 top-full mt-2 z-50 rounded-2xl overflow-hidden bg-card border border-border"
             style={{ boxShadow: '0 8px 32px rgba(147,92,210,0.14)' }}>
-            <p className="text-[9px] font-black uppercase tracking-widest px-4 pt-3 pb-1 text-muted-foreground">Filter by Category</p>
+            <p className="text-[11px] font-black uppercase tracking-widest px-4 pt-3 pb-1 text-muted-foreground">Filter by Category</p>
             {categories.map(cat => (
               <button key={cat}
                 onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
@@ -260,7 +244,7 @@ export default function MedicineScreen() {
       </div>{/* end sticky wrapper */}
 
       {/* Medicine list */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>

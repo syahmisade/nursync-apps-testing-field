@@ -44,7 +44,7 @@ export default function BottomNav() {
                   />
                 </div>
                 <span
-                  className="text-[9px] font-bold transition-colors duration-200"
+                  className="text-[11px] font-bold transition-colors duration-200"
                   style={{ color: isActive ? 'hsl(265,55%,48%)' : 'hsl(var(--muted-foreground))' }}
                 >
                   {label}

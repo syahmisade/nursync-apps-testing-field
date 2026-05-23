@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AlertTriangle, RotateCcw, ChevronRight, ArrowLeft, Info } from 'lucide-react';
 import DisclaimerBanner from '../components/DisclaimerBanner';
+import { StatusPanel } from '../components/Semantic';
 
 function BMICalculator({ onBack }) {
   const [height, setHeight] = useState('');
@@ -48,14 +49,14 @@ function BMICalculator({ onBack }) {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-6 space-y-3">
         <div className="rounded-2xl p-4 border card-shadow space-y-3 bg-card border-border">
           {[
             { label: 'Height (cm)', value: height, set: setHeight, placeholder: 'e.g. 165' },
             { label: 'Weight (kg)', value: weight, set: setWeight, placeholder: 'e.g. 68' },
           ].map(({ label, value, set, placeholder }) => (
             <div key={label}>
-              <label className="text-[10px] font-black uppercase tracking-widest text-primary">{label}</label>
+              <label className="text-xs font-black uppercase tracking-widest text-primary">{label}</label>
               <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
                 className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border transition-colors font-medium bg-muted border-border text-foreground placeholder:text-muted-foreground" />
             </div>
@@ -76,7 +77,7 @@ function BMICalculator({ onBack }) {
         )}
 
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
-          <p className="text-[10px] font-black uppercase tracking-widest mb-3 text-primary">BMI Categories (Asian)</p>
+          <p className="text-xs font-black uppercase tracking-widest mb-3 text-primary">BMI Categories (Asian)</p>
           {[
             ['< 18.5', 'Underweight', 'hsl(220,60%,46%)'],
             ['18.5 – 22.9', 'Normal weight', 'hsl(152,50%,38%)'],
@@ -89,7 +90,7 @@ function BMICalculator({ onBack }) {
               <span className="text-xs font-bold" style={{ color }}>{label}</span>
             </div>
           ))}
-          <p className="text-[10px] mt-2 font-medium text-muted-foreground">Using WHO Asian-specific cut-offs</p>
+          <p className="text-xs mt-2 font-medium text-muted-foreground">Using WHO Asian-specific cut-offs</p>
         </div>
 
         <DisclaimerBanner compact />
@@ -138,12 +139,11 @@ function IVDripCalculator({ onBack }) {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
-        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs border border-destructive/30 bg-destructive/8"
-          style={{ color: 'hsl(0,52%,46%)' }}>
-          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5 text-destructive" />
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-6 space-y-3">
+        <StatusPanel tone="danger" compact>
+          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
           <span><span className="font-bold">Safety Warning:</span> Always verify drip rate calculations with a second nurse before administration.</span>
-        </div>
+        </StatusPanel>
 
         <div className="rounded-2xl p-4 border card-shadow space-y-3 bg-card border-border">
           {[
@@ -151,13 +151,13 @@ function IVDripCalculator({ onBack }) {
             { label: 'Time (hours)', value: hours, set: setHours, placeholder: 'e.g. 4' },
           ].map(({ label, value, set, placeholder }) => (
             <div key={label}>
-              <label className="text-[10px] font-black uppercase tracking-widest text-primary">{label}</label>
+              <label className="text-xs font-black uppercase tracking-widest text-primary">{label}</label>
               <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
                 className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border transition-colors font-medium bg-muted border-border text-foreground placeholder:text-muted-foreground" />
             </div>
           ))}
           <div>
-            <label className="text-[10px] font-black uppercase tracking-widest text-primary">Drop Factor</label>
+            <label className="text-xs font-black uppercase tracking-widest text-primary">Drop Factor</label>
             <div className="flex gap-2 mt-1.5">
               {[['15', 'Blood set'], ['20', 'Standard'], ['60', 'Microdrip']].map(([val, lbl]) => (
                 <button key={val} onClick={() => setDropFactor(val)}
@@ -166,7 +166,7 @@ function IVDripCalculator({ onBack }) {
                     ? { background: 'hsl(265,55%,92%)', color: 'hsl(265,55%,48%)', borderColor: 'hsl(265,45%,75%)' }
                     : { background: 'hsl(var(--muted))', color: 'hsl(var(--muted-foreground))', borderColor: 'hsl(var(--border))' }}>
                   <span className="block">{val}</span>
-                  <span className="block text-[9px] opacity-70 font-medium">{lbl}</span>
+                  <span className="block text-[11px] opacity-70 font-medium">{lbl}</span>
                 </button>
               ))}
             </div>
@@ -190,7 +190,7 @@ function IVDripCalculator({ onBack }) {
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
           <div className="flex items-center gap-2 mb-2">
             <Info size={13} className="text-primary" />
-            <p className="text-[10px] font-black uppercase tracking-widest text-primary">Formula</p>
+            <p className="text-xs font-black uppercase tracking-widest text-primary">Formula</p>
           </div>
           <p className="text-xs font-mono rounded-xl p-2.5 leading-relaxed bg-muted text-foreground">
             Drip rate (gtt/min) =<br />Volume (mL) × Drop factor<br />÷ Time (minutes)
@@ -240,14 +240,14 @@ function FluidBalanceCalculator({ onBack }) {
         <div className="h-1.5 pointer-events-none transition-opacity duration-200"
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-6 space-y-3">
         <div className="rounded-2xl p-4 border card-shadow space-y-3 bg-card border-border">
           {[
             { label: 'Total Intake (mL)', value: intake, set: setIntake, placeholder: 'e.g. 2400' },
             { label: 'Total Output (mL)', value: output, set: setOutput, placeholder: 'e.g. 1800' },
           ].map(({ label, value, set, placeholder }) => (
             <div key={label}>
-              <label className="text-[10px] font-black uppercase tracking-widest text-primary">{label}</label>
+              <label className="text-xs font-black uppercase tracking-widest text-primary">{label}</label>
               <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
                 className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border transition-colors font-medium bg-muted border-border text-foreground placeholder:text-muted-foreground" />
             </div>
@@ -269,9 +269,9 @@ function FluidBalanceCalculator({ onBack }) {
           </div>
         )}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
-          <p className="text-[10px] font-black uppercase tracking-widest mb-1.5 text-primary">What counts as intake?</p>
+          <p className="text-xs font-black uppercase tracking-widest mb-1.5 text-primary">What counts as intake?</p>
           <p className="text-xs font-medium text-muted-foreground">IV fluids, oral intake, nasogastric feeds, blood products, IV medications in large volumes.</p>
-          <p className="text-[10px] font-black uppercase tracking-widest mt-3 mb-1.5 text-primary">What counts as output?</p>
+          <p className="text-xs font-black uppercase tracking-widest mt-3 mb-1.5 text-primary">What counts as output?</p>
           <p className="text-xs font-medium text-muted-foreground">Urine, stool, nasogastric drainage, drain losses, vomit, estimated insensible losses (~800 mL/day).</p>
         </div>
         <DisclaimerBanner compact />
@@ -325,25 +325,24 @@ function DoseCalculator({ onBack }) {
         <div className="h-1.5 pointer-events-none transition-opacity duration-200"
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
-        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs border border-destructive/30"
-          style={{ background: 'hsl(0,60%,96%)', color: 'hsl(0,52%,46%)' }}>
-          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5 text-destructive" />
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-6 space-y-3">
+        <StatusPanel tone="danger" compact>
+          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
           <span><span className="font-bold">Safety Warning:</span> Always verify doses with prescriber orders, BNF, or local formulary. Double-check with a second nurse.</span>
-        </div>
+        </StatusPanel>
         <div className="rounded-2xl p-4 border card-shadow space-y-3 bg-card border-border">
           {[
             { label: 'Patient Weight (kg)', value: weight, set: setWeight, placeholder: 'e.g. 70' },
             { label: 'Prescribed Dose (mg/kg)', value: dosePerKg, set: setDosePerKg, placeholder: 'e.g. 10' },
           ].map(({ label, value, set, placeholder }) => (
             <div key={label}>
-              <label className="text-[10px] font-black uppercase tracking-widest text-primary">{label}</label>
+              <label className="text-xs font-black uppercase tracking-widest text-primary">{label}</label>
               <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
                 className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border font-medium bg-muted border-border text-foreground placeholder:text-muted-foreground" />
             </div>
           ))}
           <div>
-            <label className="text-[10px] font-black uppercase tracking-widest text-primary">Frequency (doses/day)</label>
+            <label className="text-xs font-black uppercase tracking-widest text-primary">Frequency (doses/day)</label>
             <div className="flex gap-2 mt-1.5">
               {[['1','OD'],['2','BD'],['3','TDS'],['4','QDS']].map(([val, lbl]) => (
                 <button key={val} onClick={() => setFrequency(val)}
@@ -352,7 +351,7 @@ function DoseCalculator({ onBack }) {
                     ? { background: 'hsl(265,55%,92%)', color: 'hsl(265,55%,48%)', borderColor: 'hsl(265,45%,75%)' }
                     : { background: 'hsl(var(--muted))', color: 'hsl(var(--muted-foreground))', borderColor: 'hsl(var(--border))' }}>
                   <span className="block">{lbl}</span>
-                  <span className="block text-[9px] opacity-70 font-medium">{val}x</span>
+                  <span className="block text-[11px] opacity-70 font-medium">{val}x</span>
                 </button>
               ))}
             </div>
@@ -417,14 +416,14 @@ function InfusionTimeCalculator({ onBack }) {
         <div className="h-1.5 pointer-events-none transition-opacity duration-200"
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-6 space-y-3">
         <div className="rounded-2xl p-4 border card-shadow space-y-3 bg-card border-border">
           {[
             { label: 'Volume to Infuse (mL)', value: volume, set: setVolume, placeholder: 'e.g. 500' },
             { label: 'Infusion Rate (mL/hour)', value: rate, set: setRate, placeholder: 'e.g. 125' },
           ].map(({ label, value, set, placeholder }) => (
             <div key={label}>
-              <label className="text-[10px] font-black uppercase tracking-widest text-primary">{label}</label>
+              <label className="text-xs font-black uppercase tracking-widest text-primary">{label}</label>
               <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={placeholder}
                 className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border font-medium bg-muted border-border text-foreground placeholder:text-muted-foreground" />
             </div>
@@ -444,7 +443,7 @@ function InfusionTimeCalculator({ onBack }) {
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
           <div className="flex items-center gap-2 mb-2">
             <Info size={13} className="text-primary" />
-            <p className="text-[10px] font-black uppercase tracking-widest text-primary">Formula</p>
+            <p className="text-xs font-black uppercase tracking-widest text-primary">Formula</p>
           </div>
           <p className="text-xs font-mono rounded-xl p-2.5 bg-muted text-foreground">
             Time (hours) = Volume (mL) ÷ Rate (mL/hr)
@@ -490,20 +489,19 @@ function BloodTransfusionCalculator({ onBack }) {
         <div className="h-1.5 pointer-events-none transition-opacity duration-200"
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
-        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs border border-destructive/30"
-          style={{ background: 'hsl(0,60%,96%)', color: 'hsl(0,52%,46%)' }}>
-          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5 text-destructive" />
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-6 space-y-3">
+        <StatusPanel tone="danger" compact>
+          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
           <span><span className="font-bold">Clinical Note:</span> Always follow local blood transfusion protocol. Monitor patient closely. Standard blood set = 15 gtt/mL.</span>
-        </div>
+        </StatusPanel>
         <div className="rounded-2xl p-4 border card-shadow space-y-3 bg-card border-border">
           <div>
-            <label className="text-[10px] font-black uppercase tracking-widest text-primary">Volume (mL)</label>
+            <label className="text-xs font-black uppercase tracking-widest text-primary">Volume (mL)</label>
             <input type="number" value={volume} onChange={e => setVolume(e.target.value)} placeholder="e.g. 450 (1 unit PRBC)"
               className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border font-medium bg-muted border-border text-foreground placeholder:text-muted-foreground" />
           </div>
           <div>
-            <label className="text-[10px] font-black uppercase tracking-widest text-primary">Duration (hours)</label>
+            <label className="text-xs font-black uppercase tracking-widest text-primary">Duration (hours)</label>
             <div className="flex gap-2 mt-1.5">
               {[['2','2h'],['3','3h'],['4','4h'],['6','6h']].map(([val, lbl]) => (
                 <button key={val} onClick={() => setHours(val)}
@@ -521,20 +519,19 @@ function BloodTransfusionCalculator({ onBack }) {
           </button>
         </div>
         {mlPerHour && (
-          <div className="rounded-2xl p-5 border animate-slide-up space-y-3"
-            style={{ background: 'hsl(0,55%,96%)', borderColor: 'hsl(0,45%,82%)' }}>
+          <StatusPanel tone="danger" className="status-panel-block animate-slide-up space-y-3">
             <div>
               <p className="text-xs font-semibold text-muted-foreground">Infusion Rate</p>
-              <p className="text-4xl font-black" style={{ color: 'hsl(0,52%,48%)' }}>
+              <p className="text-4xl font-black">
                 {mlPerHour} <span className="text-lg font-semibold text-muted-foreground">mL/hr</span>
               </p>
             </div>
             <div className="pt-3 border-t border-border">
               <p className="text-xs font-semibold text-muted-foreground">Drip Rate (15 gtt/mL set)</p>
-              <p className="text-2xl font-black" style={{ color: 'hsl(0,48%,52%)' }}>{dropsPerMin} gtt/min</p>
+              <p className="text-2xl font-black">{dropsPerMin} gtt/min</p>
             </div>
             <p className="text-xs text-muted-foreground">Volume ÷ Duration = {volume} ÷ {hours}h = {mlPerHour} mL/hr</p>
-          </div>
+          </StatusPanel>
         )}
         <DisclaimerBanner compact />
       </div>
@@ -594,10 +591,10 @@ function EDDCalculator({ onBack }) {
         <div className="h-1.5 pointer-events-none transition-opacity duration-200"
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-6 space-y-3">
         <div className="rounded-2xl p-4 border card-shadow space-y-3 bg-card border-border">
           <div>
-            <label className="text-[10px] font-black uppercase tracking-widest text-primary">Last Menstrual Period (LMP)</label>
+            <label className="text-xs font-black uppercase tracking-widest text-primary">Last Menstrual Period (LMP)</label>
             <input type="date" value={lmp} onChange={e => setLmp(e.target.value)} max={new Date().toISOString().split('T')[0]}
               className="w-full mt-1.5 rounded-xl px-4 py-3 text-sm outline-none border font-medium bg-muted border-border text-foreground" />
           </div>
@@ -606,16 +603,15 @@ function EDDCalculator({ onBack }) {
           </button>}
         </div>
         {edd && (
-          <div className="rounded-2xl p-5 border animate-slide-up space-y-3"
-            style={{ background: 'hsl(340,55%,96%)', borderColor: 'hsl(340,45%,82%)' }}>
+          <StatusPanel tone="info" className="status-panel-block animate-slide-up space-y-3">
             <div>
               <p className="text-xs font-semibold text-muted-foreground">Estimated Due Date</p>
-              <p className="text-2xl font-black" style={{ color: 'hsl(340,52%,48%)' }}>{formatDate(edd)}</p>
+              <p className="text-2xl font-black">{formatDate(edd)}</p>
             </div>
             {weeksPregnant !== null && weeksPregnant >= 0 && (
-              <div className="pt-3 border-t space-y-1.5" style={{ borderColor: 'hsl(340,40%,86%)' }}>
+              <div className="pt-3 border-t border-border space-y-1.5">
                 <p className="text-xs font-semibold text-muted-foreground">Gestational Age Today</p>
-                <p className="text-xl font-black" style={{ color: 'hsl(340,48%,52%)' }}>{weeksPregnant}w {daysPregnant % 7}d</p>
+                <p className="text-xl font-black">{weeksPregnant}w {daysPregnant % 7}d</p>
                 {trimester && (
                   <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-bold border"
                     style={{ background: trimester.bgHsl, color: trimester.colorHsl, borderColor: trimester.borderHsl }}>
@@ -625,10 +621,10 @@ function EDDCalculator({ onBack }) {
               </div>
             )}
             <p className="text-xs text-muted-foreground">LMP + 280 days (Naegele's Rule)</p>
-          </div>
+          </StatusPanel>
         )}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
-          <p className="text-[10px] font-black uppercase tracking-widest mb-2.5 text-primary">Trimester Guide</p>
+          <p className="text-xs font-black uppercase tracking-widest mb-2.5 text-primary">Trimester Guide</p>
           {[
             ['1st Trimester', 'Weeks 1–12', 'hsl(152,50%,38%)'],
             ['2nd Trimester', 'Weeks 13–28', 'hsl(220,60%,46%)'],
@@ -683,12 +679,11 @@ export default function CalculatorScreen() {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
-        <div className="flex items-start gap-2.5 px-4 py-3 rounded-2xl text-xs border"
-          style={{ background: 'hsl(38,80%,96%)', borderColor: 'hsl(38,60%,82%)', color: 'hsl(38,55%,42%)' }}>
-          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" style={{ color: 'hsl(38,65%,48%)' }} />
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
+        <StatusPanel tone="warning" compact>
+          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
           <span>Always verify clinical calculations with a qualified practitioner. Educational reference only.</span>
-        </div>
+        </StatusPanel>
 
         {calculators.map(calc => (
           <button

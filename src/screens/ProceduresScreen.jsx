@@ -4,16 +4,7 @@ import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, CheckCircl
 import { procedures, procedureCategories } from '../data/procedures';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import PullToRefreshIndicator from '../components/PullToRefreshIndicator';
-
-const catStyles = {
-  "Vital Signs":              { bg: 'hsl(220,65%,93%)', text: 'hsl(220,60%,46%)', border: 'hsl(220,50%,80%)' },
-  "Medication Administration":{ bg: 'hsl(270,55%,93%)', text: 'hsl(270,50%,46%)', border: 'hsl(270,40%,80%)' },
-  "Infection Control":        { bg: 'hsl(152,50%,92%)', text: 'hsl(152,50%,34%)', border: 'hsl(152,40%,76%)' },
-  "Wound Care":               { bg: 'hsl(350,60%,93%)', text: 'hsl(350,55%,46%)', border: 'hsl(350,45%,80%)' },
-  "Patient Safety":           { bg: 'hsl(28,75%,92%)',  text: 'hsl(28,65%,42%)',  border: 'hsl(28,55%,76%)' },
-  "Emergency Basics":         { bg: 'hsl(0,58%,93%)',   text: 'hsl(0,52%,46%)',   border: 'hsl(0,45%,80%)' },
-};
+import { SemanticPill, StatusPanel, toneForCategory } from '../components/Semantic';
 
 const catTextColor = {
   "All":                      'hsl(265,30%,40%)',
@@ -26,12 +17,10 @@ const catTextColor = {
 };
 
 function ProcCategoryPill({ category }) {
-  const s = catStyles[category] || { bg: 'hsl(270,30%,92%)', text: 'hsl(265,30%,48%)', border: 'hsl(270,25%,82%)' };
   return (
-    <span className="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold border"
-      style={{ background: s.bg, color: s.text, borderColor: s.border }}>
+    <SemanticPill tone={toneForCategory(category)}>
       {category}
-    </span>
+    </SemanticPill>
   );
 }
 
@@ -58,7 +47,7 @@ function ProcedureDetail({ procedure, onBack }) {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-6 space-y-3">
         {/* Title */}
         <div className="rounded-3xl p-5 border card-shadow bg-card border-border">
           <ProcCategoryPill category={procedure.category} />
@@ -68,13 +57,13 @@ function ProcedureDetail({ procedure, onBack }) {
 
         {/* Indications */}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
-          <p className="text-[10px] font-black uppercase tracking-widest mb-1.5 text-primary">Indications</p>
+          <p className="text-xs font-black uppercase tracking-widest mb-1.5 text-primary">Indications</p>
           <p className="text-sm leading-relaxed font-medium text-foreground">{procedure.indications}</p>
         </div>
 
         {/* Equipment */}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
-          <p className="text-[10px] font-black uppercase tracking-widest mb-2.5 text-primary">Equipment Required</p>
+          <p className="text-xs font-black uppercase tracking-widest mb-2.5 text-primary">Equipment Required</p>
           <div className="space-y-2">
             {procedure.equipment.map((item, i) => (
               <div key={i} className="flex items-start gap-2.5">
@@ -88,8 +77,8 @@ function ProcedureDetail({ procedure, onBack }) {
         {/* Steps */}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
           <div className="flex items-center justify-between mb-3">
-            <p className="text-[10px] font-black uppercase tracking-widest text-primary">Procedure Steps</p>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary text-primary">
+            <p className="text-xs font-black uppercase tracking-widest text-primary">Procedure Steps</p>
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-secondary text-primary">
               {completedSteps.length}/{procedure.steps.length} done
             </span>
           </div>
@@ -98,12 +87,12 @@ function ProcedureDetail({ procedure, onBack }) {
               const done = completedSteps.includes(i);
               return (
                 <button key={i} onClick={() => toggleStep(i)}
-                  className="w-full flex items-start gap-3 p-3 rounded-2xl border text-left transition-all active:scale-[0.98]"
-                  style={done
-                    ? { background: 'hsl(265,50%,95%)', borderColor: 'hsl(265,40%,82%)' }
-                    : { background: 'hsl(var(--muted))', borderColor: 'hsl(var(--border))' }}>
-                  <CheckCircle2 size={16} className="flex-shrink-0 mt-0.5 transition-colors"
-                    style={{ color: done ? 'hsl(265,55%,55%)' : 'hsl(var(--muted-foreground))' }} />
+                  className={`w-full flex items-start gap-3 p-3 rounded-2xl border text-left transition-all active:scale-[0.98] ${
+                    done
+                      ? 'bg-secondary/80 border-primary/30 text-muted-foreground'
+                      : 'bg-muted border-border text-foreground'
+                  }`}>
+                  <CheckCircle2 size={16} className={`flex-shrink-0 mt-0.5 transition-colors ${done ? 'text-primary' : 'text-muted-foreground'}`} />
                   <p className="text-xs leading-relaxed font-medium transition-colors text-foreground"
                     style={{ textDecoration: done ? 'line-through' : 'none', opacity: done ? 0.6 : 1 }}>
                     {step}
@@ -113,29 +102,27 @@ function ProcedureDetail({ procedure, onBack }) {
             })}
           </div>
           {completedSteps.length === procedure.steps.length && procedure.steps.length > 0 && (
-            <div className="mt-3 text-center py-2.5 rounded-2xl animate-pop-in"
-              style={{ background: 'hsl(152,50%,94%)', border: '1px solid hsl(152,40%,78%)' }}>
-              <span className="text-xs font-bold" style={{ color: 'hsl(152,50%,36%)' }}>🎉 All steps completed!</span>
-            </div>
+            <StatusPanel tone="success" compact className="mt-3 justify-center animate-pop-in">
+              <span className="font-bold">All steps completed!</span>
+            </StatusPanel>
           )}
         </div>
 
         {/* Precautions */}
-        <div className="rounded-2xl p-4 border"
-          style={{ background: 'hsl(38,80%,96%)', borderColor: 'hsl(38,60%,82%)' }}>
-          <p className="text-[10px] font-black uppercase tracking-widest mb-1.5" style={{ color: 'hsl(38,65%,42%)' }}>Precautions</p>
-          <p className="text-sm leading-relaxed font-medium" style={{ color: 'hsl(38,40%,32%)' }}>{procedure.precautions}</p>
-        </div>
+        <StatusPanel tone="warning" className="status-panel-block">
+          <p className="text-xs font-black uppercase tracking-widest mb-1.5">Precautions</p>
+          <p className="text-sm leading-relaxed font-medium">{procedure.precautions}</p>
+        </StatusPanel>
 
         {/* Documentation */}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
-          <p className="text-[10px] font-black uppercase tracking-widest mb-1.5 text-primary">Documentation Notes</p>
+          <p className="text-xs font-black uppercase tracking-widest mb-1.5 text-primary">Documentation Notes</p>
           <p className="text-sm leading-relaxed font-medium text-foreground">{procedure.documentation}</p>
         </div>
 
         {/* References */}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
-          <p className="text-[10px] font-black uppercase tracking-widest mb-1.5 text-primary">References</p>
+          <p className="text-xs font-black uppercase tracking-widest mb-1.5 text-primary">References</p>
           <p className="text-xs leading-relaxed text-muted-foreground">{procedure.references}</p>
         </div>
 
@@ -223,7 +210,7 @@ export default function ProceduresScreen() {
         {dropdownOpen && (
           <div className="absolute left-4 right-4 top-full mt-2 z-50 rounded-2xl overflow-hidden bg-card border border-border"
             style={{ boxShadow: '0 8px 32px rgba(147,92,210,0.14)' }}>
-            <p className="text-[9px] font-black uppercase tracking-widest px-4 pt-3 pb-1 text-muted-foreground">Filter by Category</p>
+            <p className="text-[11px] font-black uppercase tracking-widest px-4 pt-3 pb-1 text-muted-foreground">Filter by Category</p>
             {procedureCategories.map(cat => (
               <button key={cat} onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
                 className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold text-left transition-colors border-t border-border hover:bg-muted"
@@ -240,8 +227,7 @@ export default function ProceduresScreen() {
       </div>
 
       {/* List */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-4 space-y-2.5 animate-fade-in">
-        <PullToRefreshIndicator />
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
@@ -268,7 +254,7 @@ export default function ProceduresScreen() {
                     <ProcCategoryPill category={proc.category} />
                     <h3 className="font-bold text-sm mt-1.5 text-foreground">{proc.title}</h3>
                     <p className="text-xs font-medium mt-1 line-clamp-2 text-muted-foreground">{proc.overview}</p>
-                    <p className="text-[10px] font-semibold mt-1 text-primary">{proc.steps.length} steps</p>
+                    <p className="text-xs font-semibold mt-1 text-primary">{proc.steps.length} steps</p>
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
                     <button onClick={e => { e.stopPropagation(); toggleSaveProcedure(proc.id); }}

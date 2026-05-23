@@ -1,0 +1,54 @@
+import React from 'react';
+
+export const categoryToneMap = {
+  All: 'neutral',
+  Analgesic: 'blue',
+  Antibiotic: 'success',
+  Antidiabetic: 'purple',
+  Antihypertensive: 'rose',
+  Antilipid: 'orange',
+  Bronchodilator: 'cyan',
+  'Antacid/PPI': 'amber',
+  'Opioid Analgesic': 'danger',
+  Anticoagulant: 'pink',
+  Corticosteroid: 'cyan',
+  'Vital Signs': 'blue',
+  'Medication Administration': 'purple',
+  'Infection Control': 'success',
+  'Wound Care': 'rose',
+  'Patient Safety': 'orange',
+  'Emergency Basics': 'danger',
+};
+
+export const quizToneMap = {
+  pharmacology: 'blue',
+  fundamentals: 'success',
+  medsurg: 'purple',
+  maternal: 'rose',
+  infection: 'cyan',
+  calculations: 'orange',
+};
+
+export function toneForCategory(category) {
+  return categoryToneMap[category] || 'neutral';
+}
+
+export function toneForQuizCategory(category) {
+  return quizToneMap[category] || 'neutral';
+}
+
+export function SemanticPill({ tone = 'neutral', className = '', children }) {
+  return (
+    <span className={`semantic-pill ${className}`} data-tone={tone}>
+      {children}
+    </span>
+  );
+}
+
+export function StatusPanel({ tone = 'info', compact = false, className = '', children }) {
+  return (
+    <div className={`status-panel ${compact ? 'status-panel-compact' : ''} ${className}`} data-tone={tone}>
+      {children}
+    </div>
+  );
+}

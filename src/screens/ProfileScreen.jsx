@@ -1,51 +1,101 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  AlertTriangle, ChevronRight, ShieldCheck, Trash2,
-  LogOut, UserRound, Info, BookOpen, Bell, Moon
+  AlertTriangle, BookOpen, ChevronRight, ClipboardList, GraduationCap,
+  Info, Lightbulb, LogOut, MailQuestion, Moon, Pill, School,
+  ShieldAlert, ShieldCheck, Sparkles, Trash2, UserRound
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { useApp } from '@/context/AppContext';
+import { useTheme } from '@/context/ThemeContext';
+import { StatusPanel } from '@/components/Semantic';
+import { Switch } from '@/components/ui/switch';
 
 function SectionLabel({ children }) {
   return (
-    <p className="text-[10px] font-black uppercase tracking-widest px-1 pb-1.5"
-      style={{ color: 'hsl(265,30%,62%)' }}>
+    <p className="text-xs font-black uppercase tracking-widest px-1 pb-1.5 text-muted-foreground">
       {children}
     </p>
   );
 }
 
-function SettingsRow({ icon: Icon, iconColor, iconBg, label, sublabel, onClick, chevron = true, danger = false }) {
+function SettingsRow({
+  icon: Icon,
+  iconColor,
+  iconBg,
+  label,
+  sublabel,
+  onClick,
+  chevron = true,
+  danger = false,
+  disabled = false,
+  accessory = null
+}) {
+  const interactive = Boolean(onClick) && !disabled;
+
   return (
     <button
       type="button"
-      onClick={onClick}
-      className="w-full flex items-center gap-3 px-4 py-3.5 text-left active:scale-[0.99] transition-all"
+      onClick={interactive ? onClick : undefined}
+      disabled={disabled}
+      className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-all ${
+        interactive ? 'active:scale-[0.99]' : 'cursor-default'
+      } ${disabled ? 'opacity-75' : ''}`}
     >
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ background: iconBg, color: iconColor }}>
+      <div
+        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+        style={{ background: iconBg, color: iconColor }}
+      >
         <Icon size={17} strokeWidth={2.2} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold leading-tight"
-          style={{ color: danger ? 'hsl(0,58%,45%)' : 'hsl(var(--foreground))' }}>
+        <p
+          className="text-sm font-bold leading-tight"
+          style={{ color: danger ? 'hsl(0,58%,45%)' : 'hsl(var(--foreground))' }}
+        >
           {label}
         </p>
         {sublabel && (
-          <p className="text-[11px] mt-0.5 leading-tight" style={{ color: 'hsl(var(--muted-foreground))' }}>
+          <p className="text-[11px] mt-0.5 leading-tight text-muted-foreground">
             {sublabel}
           </p>
         )}
       </div>
-      {chevron && <ChevronRight size={15} style={{ color: 'hsl(var(--muted-foreground))' }} />}
+      {accessory}
+      {chevron && interactive && <ChevronRight size={15} className="text-muted-foreground" />}
     </button>
   );
 }
 
 function SettingsCard({ children }) {
   return (
-    <div className="rounded-2xl border overflow-hidden card-shadow app-card divide-y"
-      style={{ borderColor: 'hsl(var(--border))' }}>
+    <div
+      className="rounded-2xl border overflow-hidden card-shadow app-card divide-y"
+      style={{ borderColor: 'hsl(var(--border))' }}
+    >
       {children}
+    </div>
+  );
+}
+
+function SummaryCard({ icon: Icon, label, value, tone }) {
+  const toneStyles = {
+    purple: ['hsl(265,55%,92%)', 'hsl(265,55%,48%)'],
+    green: ['hsl(152,50%,92%)', 'hsl(152,50%,38%)'],
+    blue: ['hsl(205,70%,92%)', 'hsl(205,70%,38%)'],
+    amber: ['hsl(38,85%,92%)', 'hsl(38,70%,45%)']
+  };
+  const [bg, color] = toneStyles[tone] || toneStyles.purple;
+
+  return (
+    <div className="rounded-2xl border p-3 bg-card border-border">
+      <div
+        className="w-9 h-9 rounded-xl flex items-center justify-center mb-2"
+        style={{ background: bg, color }}
+      >
+        <Icon size={17} strokeWidth={2.2} />
+      </div>
+      <p className="text-xl font-black leading-none text-foreground">{value}</p>
+      <p className="text-[11px] font-bold mt-1 text-muted-foreground">{label}</p>
     </div>
   );
 }
@@ -53,145 +103,277 @@ function SettingsCard({ children }) {
 export default function ProfileScreen() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const [feedbackNotice, setFeedbackNotice] = useState('');
   const { user, logout } = useAuth();
+  const {
+    savedMedicines,
+    savedProcedures,
+    savedQuizQuestions,
+    quizProgress
+  } = useApp();
+  const { isDark, toggleTheme } = useTheme();
 
-  // ── Existing deletion logic — untouched ──
+  const roleLabel = user?.role === 'admin' ? 'Admin' : 'Nursing Student';
+  const quizStats = useMemo(() => {
+    const attempts = Object.values(quizProgress || {});
+    if (attempts.length === 0) {
+      return {
+        label: 'No quiz progress yet',
+        bestScore: 'Start'
+      };
+    }
+
+    const bestPercent = Math.max(
+      ...attempts.map(item => Math.round((item.score / item.total) * 100))
+    );
+    const totalAnswered = attempts.reduce((sum, item) => sum + item.total, 0);
+
+    return {
+      label: `${attempts.length} quiz set${attempts.length === 1 ? '' : 's'} completed`,
+      bestScore: `${bestPercent}%`,
+      totalAnswered
+    };
+  }, [quizProgress]);
+
   const handleDelete = () => {
     localStorage.removeItem('nursync_saved_state');
     setDeleted(true);
     setConfirmOpen(false);
   };
 
+  const showFeedbackPlaceholder = (type) => {
+    setFeedbackNotice(`${type} is planned for a later version. For now, this is a prototype placeholder.`);
+  };
+
   return (
     <div className="flex flex-col h-full">
-
-      <div className="flex-1 overflow-y-auto scrollbar-hide main-scroll">
-
-      {/* ── Hero / Avatar section ── */}
-      <div className="px-5 pt-6 pb-5 flex flex-col items-center gap-3 animate-fade-in"
-        style={{ background: 'linear-gradient(160deg, hsl(270,50%,96%) 0%, hsl(265,40%,97%) 100%)' }}>
-        <div className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-md"
-          style={{ background: 'linear-gradient(135deg, hsl(265,60%,58%) 0%, hsl(285,55%,62%) 100%)' }}>
-          <UserRound size={34} color="white" strokeWidth={1.8} />
-        </div>
-        <div className="text-center">
-          <p className="text-lg font-black leading-tight" style={{ color: 'hsl(265,50%,30%)' }}>
-            {user?.full_name || 'Student Nurse'}
-          </p>
-          <p className="text-xs font-medium mt-0.5" style={{ color: 'hsl(265,30%,58%)' }}>
-            {user?.email || 'Local demo account'}
-          </p>
-        </div>
-        {/* Role badge */}
-        <div className="px-3 py-1 rounded-full text-[10px] font-black"
-          style={{ background: 'hsl(265,60%,92%)', color: 'hsl(265,55%,42%)' }}>
-          {user?.role === 'admin' ? '⚙️ Admin' : '🎓 Nursing Student'}
-        </div>
-      </div>
-
-      {/* ── Settings body ── */}
-      <div className="px-4 pb-8 space-y-4 animate-fade-in">
-
-        {deleted && (
-          <div className="rounded-2xl border p-3.5 flex items-center gap-2.5"
-            style={{ background: 'hsl(152,50%,94%)', borderColor: 'hsl(152,40%,78%)', color: 'hsl(152,50%,32%)' }}>
-            <ShieldCheck size={16} />
-            <p className="text-sm font-bold">Local account data cleared.</p>
+      <div className="flex-1 overflow-y-auto scrollbar-hide main-scroll pt-2">
+        <div className="mx-4 rounded-3xl px-5 pt-5 pb-5 flex flex-col items-center gap-3 animate-fade-in bg-secondary border border-border">
+          <div
+            className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-md"
+            style={{ background: 'linear-gradient(135deg, hsl(265,60%,58%) 0%, hsl(285,55%,62%) 100%)' }}
+          >
+            <UserRound size={34} color="white" strokeWidth={1.8} />
           </div>
-        )}
-
-        {/* App section */}
-        <div>
-          <SectionLabel>App</SectionLabel>
-          <SettingsCard>
-            <SettingsRow
-              icon={Info}
-              iconColor="hsl(265,55%,48%)"
-              iconBg="hsl(265,55%,92%)"
-              label="About NurSync"
-              sublabel="Version 1.0 · Educational reference only"
-              onClick={() => {}}
-            />
-            <SettingsRow
-              icon={BookOpen}
-              iconColor="hsl(152,50%,38%)"
-              iconBg="hsl(152,50%,92%)"
-              label="Disclaimer"
-              sublabel="Not for clinical use. Always follow MOH guidance."
-              onClick={() => {}}
-            />
-          </SettingsCard>
+          <div className="text-center">
+            <p className="text-lg font-black leading-tight text-foreground">
+              {user?.full_name || 'Student Nurse'}
+            </p>
+            <p className="text-xs font-medium mt-0.5 text-muted-foreground">
+              {user?.email || 'Local demo account'}
+            </p>
+          </div>
+          <div className="px-3 py-1 rounded-full text-xs font-black bg-card text-primary border border-border">
+            {roleLabel}
+          </div>
         </div>
 
-        {/* Account section */}
-        <div>
-          <SectionLabel>Account</SectionLabel>
-          <SettingsCard>
-            <SettingsRow
-              icon={ShieldCheck}
-              iconColor="hsl(38,70%,45%)"
-              iconBg="hsl(38,85%,92%)"
-              label="Local demo mode"
-              sublabel="Data is saved on this device only"
-              chevron={false}
-            />
-            <SettingsRow
-              icon={LogOut}
-              iconColor="hsl(265,55%,48%)"
-              iconBg="hsl(265,55%,92%)"
-              label="Log Out"
-              sublabel="Return to the login screen"
-              onClick={() => logout()}
-            />
-            <SettingsRow
-              icon={Trash2}
-              iconColor="hsl(0,58%,48%)"
-              iconBg="hsl(0,60%,95%)"
-              label="Delete Account Data"
-              sublabel="Clear all local saved data and app state"
-              danger
-              onClick={() => setConfirmOpen(true)}
-            />
-          </SettingsCard>
-        </div>
+        <div className="px-4 pt-4 pb-8 space-y-4 animate-fade-in">
+          {deleted && (
+            <StatusPanel tone="success">
+              <ShieldCheck size={16} />
+              <p className="text-sm font-bold">Local account data cleared.</p>
+            </StatusPanel>
+          )}
 
+          {feedbackNotice && (
+            <StatusPanel tone="info">
+              <Info size={16} />
+              <p className="text-sm font-bold">{feedbackNotice}</p>
+            </StatusPanel>
+          )}
+
+          <div>
+            <SectionLabel>Learning Summary</SectionLabel>
+            <div className="grid grid-cols-2 gap-2">
+              <SummaryCard icon={Pill} label="Saved medicines" value={savedMedicines.length} tone="purple" />
+              <SummaryCard icon={ClipboardList} label="Saved procedures" value={savedProcedures.length} tone="green" />
+              <SummaryCard icon={BookOpen} label="Saved quiz items" value={savedQuizQuestions.length} tone="blue" />
+              <SummaryCard icon={Sparkles} label={quizStats.label} value={quizStats.bestScore} tone="amber" />
+            </div>
+          </div>
+
+          <div>
+            <SectionLabel>Learning Profile</SectionLabel>
+            <SettingsCard>
+              <SettingsRow
+                icon={GraduationCap}
+                iconColor="hsl(265,55%,48%)"
+                iconBg="hsl(265,55%,92%)"
+                label="Role"
+                sublabel={roleLabel}
+                chevron={false}
+              />
+              <SettingsRow
+                icon={School}
+                iconColor="hsl(205,70%,38%)"
+                iconBg="hsl(205,70%,92%)"
+                label="Institution"
+                sublabel="Not set yet"
+                chevron={false}
+              />
+              <SettingsRow
+                icon={BookOpen}
+                iconColor="hsl(152,50%,38%)"
+                iconBg="hsl(152,50%,92%)"
+                label="Study level"
+                sublabel="General nursing learning"
+                chevron={false}
+              />
+            </SettingsCard>
+          </div>
+
+          <div>
+            <SectionLabel>Preferences</SectionLabel>
+            <SettingsCard>
+              <SettingsRow
+                icon={Moon}
+                iconColor="hsl(265,55%,48%)"
+                iconBg="hsl(265,55%,92%)"
+                label="Dark mode"
+                sublabel={isDark ? 'Dark theme is active' : 'Light theme is active'}
+                onClick={toggleTheme}
+                chevron={false}
+                accessory={(
+                  <span onClick={event => event.stopPropagation()}>
+                    <Switch checked={isDark} onCheckedChange={toggleTheme} aria-label="Toggle dark mode" />
+                  </span>
+                )}
+              />
+            </SettingsCard>
+          </div>
+
+          <div>
+            <SectionLabel>Safety & Disclaimer</SectionLabel>
+            <SettingsCard>
+              <SettingsRow
+                icon={ShieldAlert}
+                iconColor="hsl(0,58%,48%)"
+                iconBg="hsl(0,60%,95%)"
+                label="Educational use only"
+                sublabel="NurSync supports learning and revision. It is not for clinical decision-making."
+                chevron={false}
+              />
+              <SettingsRow
+                icon={BookOpen}
+                iconColor="hsl(152,50%,38%)"
+                iconBg="hsl(152,50%,92%)"
+                label="Follow local policy"
+                sublabel="Always verify with current MOH guidance, institutional SOPs, and your clinical supervisor."
+                chevron={false}
+              />
+              <SettingsRow
+                icon={Info}
+                iconColor="hsl(38,70%,45%)"
+                iconBg="hsl(38,85%,92%)"
+                label="About NurSync"
+                sublabel="Version 1.0 - prototype educational reference"
+                chevron={false}
+              />
+            </SettingsCard>
+          </div>
+
+          <div>
+            <SectionLabel>Feedback</SectionLabel>
+            <SettingsCard>
+              <SettingsRow
+                icon={Lightbulb}
+                iconColor="hsl(38,70%,45%)"
+                iconBg="hsl(38,85%,92%)"
+                label="Suggest medicine"
+                sublabel="Placeholder only - content requests are not submitted yet"
+                onClick={() => showFeedbackPlaceholder('Medicine suggestion')}
+              />
+              <SettingsRow
+                icon={ClipboardList}
+                iconColor="hsl(152,50%,38%)"
+                iconBg="hsl(152,50%,92%)"
+                label="Suggest procedure"
+                sublabel="Placeholder only - content requests are not submitted yet"
+                onClick={() => showFeedbackPlaceholder('Procedure suggestion')}
+              />
+              <SettingsRow
+                icon={MailQuestion}
+                iconColor="hsl(0,58%,48%)"
+                iconBg="hsl(0,60%,95%)"
+                label="Report incorrect content"
+                sublabel="Placeholder only - no report is sent in this prototype"
+                onClick={() => showFeedbackPlaceholder('Content report')}
+              />
+            </SettingsCard>
+          </div>
+
+          <div>
+            <SectionLabel>Account</SectionLabel>
+            <SettingsCard>
+              <SettingsRow
+                icon={ShieldCheck}
+                iconColor="hsl(38,70%,45%)"
+                iconBg="hsl(38,85%,92%)"
+                label="Plan"
+                sublabel="Free educational prototype"
+                chevron={false}
+              />
+              <SettingsRow
+                icon={ShieldCheck}
+                iconColor="hsl(152,50%,38%)"
+                iconBg="hsl(152,50%,92%)"
+                label="Local demo mode"
+                sublabel="Data is saved on this device only"
+                chevron={false}
+              />
+              <SettingsRow
+                icon={LogOut}
+                iconColor="hsl(265,55%,48%)"
+                iconBg="hsl(265,55%,92%)"
+                label="Log Out"
+                sublabel="Return to the login screen"
+                onClick={() => logout()}
+              />
+              <SettingsRow
+                icon={Trash2}
+                iconColor="hsl(0,58%,48%)"
+                iconBg="hsl(0,60%,95%)"
+                label="Delete Account Data"
+                sublabel="Clear all local saved data and app state"
+                danger
+                onClick={() => setConfirmOpen(true)}
+              />
+            </SettingsCard>
+          </div>
+        </div>
       </div>
 
-      </div>{/* end single scroll container */}
-
-      {/* ── Confirm deletion modal — logic untouched ── */}
       {confirmOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center px-5"
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center px-5"
           style={{ background: 'rgba(20, 16, 28, 0.52)' }}
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-account-title"
         >
           <div className="w-full max-w-sm rounded-3xl border p-5 app-card animate-pop-in">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3"
-              style={{ background: 'hsl(0,60%,95%)', color: 'hsl(0,58%,48%)' }}>
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3 bg-destructive/10 text-destructive">
               <AlertTriangle size={24} />
             </div>
-            <h2 id="delete-account-title" className="text-lg font-black" style={{ color: 'hsl(var(--foreground))' }}>
+            <h2 id="delete-account-title" className="text-lg font-black text-foreground">
               Delete account data?
             </h2>
-            <p className="text-sm leading-relaxed mt-2" style={{ color: 'hsl(var(--muted-foreground))' }}>
+            <p className="text-sm leading-relaxed mt-2 text-muted-foreground">
               This clears local saved data on this device. It does not call a backend yet, so it is safe to wire into Supabase later.
             </p>
             <div className="grid grid-cols-2 gap-2 mt-5">
               <button
                 type="button"
                 onClick={() => setConfirmOpen(false)}
-                className="py-3 rounded-2xl text-sm font-black border"
-                style={{ background: 'hsl(var(--secondary))', color: 'hsl(var(--secondary-foreground))', borderColor: 'hsl(var(--border))' }}
+                className="py-3 rounded-2xl text-sm font-black border bg-secondary text-secondary-foreground border-border"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleDelete}
-                className="py-3 rounded-2xl text-sm font-black"
-                style={{ background: 'hsl(0,58%,52%)', color: 'white' }}
+                className="py-3 rounded-2xl text-sm font-black bg-destructive text-destructive-foreground"
               >
                 Delete
               </button>
