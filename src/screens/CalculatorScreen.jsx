@@ -68,10 +68,10 @@ function BMICalculator({ onBack }) {
         {bmi && bmiCatData && (
           <div className="rounded-2xl p-5 border animate-slide-up"
             style={{ background: bmiCatData.bgHsl, borderColor: bmiCatData.borderHsl }}>
-            <p className="text-xs font-semibold mb-1" style={{ color: 'hsl(265,15%,55%)' }}>Your BMI</p>
+            <p className="text-xs font-semibold mb-1 text-muted-foreground">Your BMI</p>
             <p className="text-4xl font-black" style={{ color: bmiCatData.colorHsl }}>{bmi}</p>
             <p className="text-sm font-bold mt-1" style={{ color: bmiCatData.colorHsl }}>{bmiCatData.label}</p>
-            <p className="text-xs mt-2" style={{ color: 'hsl(265,15%,58%)' }}>Formula: BMI = weight (kg) ÷ height² (m²)</p>
+            <p className="text-xs mt-2 text-muted-foreground">Formula: BMI = weight (kg) ÷ height² (m²)</p>
           </div>
         )}
 
@@ -139,9 +139,9 @@ function IVDripCalculator({ onBack }) {
       </div>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
-        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs border"
-          style={{ background: 'hsl(0,60%,96%)', borderColor: 'hsl(0,48%,84%)', color: 'hsl(0,52%,46%)' }}>
-          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
+        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs border border-destructive/30 bg-destructive/8"
+          style={{ color: 'hsl(0,52%,46%)' }}>
+          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5 text-destructive" />
           <span><span className="font-bold">Safety Warning:</span> Always verify drip rate calculations with a second nurse before administration.</span>
         </div>
 
@@ -177,14 +177,13 @@ function IVDripCalculator({ onBack }) {
         </div>
 
         {dropsPerMin && (
-          <div className="rounded-2xl p-5 border animate-slide-up"
-            style={{ background: 'hsl(265,50%,95%)', borderColor: 'hsl(265,40%,82%)' }}>
-            <p className="text-xs font-semibold mb-1" style={{ color: 'hsl(265,15%,55%)' }}>Drip Rate</p>
-            <p className="text-4xl font-black" style={{ color: 'hsl(265,55%,52%)' }}>
-              {dropsPerMin} <span className="text-lg font-semibold" style={{ color: 'hsl(265,30%,58%)' }}>gtt/min</span>
+          <div className="rounded-2xl p-5 border animate-slide-up bg-secondary border-border">
+            <p className="text-xs font-semibold mb-1 text-muted-foreground">Drip Rate</p>
+            <p className="text-4xl font-black text-primary">
+              {dropsPerMin} <span className="text-lg font-semibold text-muted-foreground">gtt/min</span>
             </p>
-            <p className="text-sm font-medium mt-1" style={{ color: 'hsl(265,20%,56%)' }}>{mlPerHour} mL/hour</p>
-            <p className="text-xs mt-2" style={{ color: 'hsl(265,15%,62%)' }}>Formula: (Volume × Drop factor) ÷ (Time in minutes)</p>
+            <p className="text-sm font-medium mt-1 text-muted-foreground">{mlPerHour} mL/hour</p>
+            <p className="text-xs mt-2 text-muted-foreground">Formula: (Volume × Drop factor) ÷ (Time in minutes)</p>
           </div>
         )}
 
@@ -259,14 +258,14 @@ function FluidBalanceCalculator({ onBack }) {
         </div>
         {balance !== null && (
           <div className="rounded-2xl p-5 border animate-slide-up" style={{ background: balBg, borderColor: balBorder }}>
-            <p className="text-xs font-semibold mb-1" style={{ color: 'hsl(265,15%,55%)' }}>Fluid Balance</p>
+            <p className="text-xs font-semibold mb-1 text-muted-foreground">Fluid Balance</p>
             <p className="text-4xl font-black" style={{ color: balColor }}>
               {balVal > 0 ? '+' : ''}{balance} mL
             </p>
             <p className="text-sm font-semibold mt-1" style={{ color: balColor }}>
               {balVal > 500 ? '⚠️ Positive — monitor for fluid overload' : balVal < -500 ? '⚠️ Negative — monitor for dehydration' : '✓ Roughly balanced'}
             </p>
-            <p className="text-xs mt-2" style={{ color: 'hsl(265,15%,58%)' }}>Intake – Output = {intake} – {output} = {balance} mL</p>
+            <p className="text-xs mt-2 text-muted-foreground">Intake – Output = {intake} – {output} = {balance} mL</p>
           </div>
         )}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
@@ -327,9 +326,9 @@ function DoseCalculator({ onBack }) {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
       <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
-        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs"
-          style={{ background: 'hsl(0,60%,96%)', border: '1px solid hsl(0,48%,84%)', color: 'hsl(0,52%,46%)' }}>
-          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
+        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs border border-destructive/30"
+          style={{ background: 'hsl(0,60%,96%)', color: 'hsl(0,52%,46%)' }}>
+          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5 text-destructive" />
           <span><span className="font-bold">Safety Warning:</span> Always verify doses with prescriber orders, BNF, or local formulary. Double-check with a second nurse.</span>
         </div>
         <div className="rounded-2xl p-4 border card-shadow space-y-3 bg-card border-border">
@@ -363,19 +362,18 @@ function DoseCalculator({ onBack }) {
           </button>
         </div>
         {singleDose && (
-          <div className="rounded-2xl p-5 border animate-slide-up space-y-3"
-            style={{ background: 'hsl(270,50%,95%)', borderColor: 'hsl(270,40%,80%)' }}>
+          <div className="rounded-2xl p-5 border animate-slide-up space-y-3 bg-secondary border-border">
             <div>
-              <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Single Dose</p>
-              <p className="text-4xl font-black" style={{ color: 'hsl(270,50%,48%)' }}>
-                {singleDose} <span className="text-lg font-semibold" style={{ color: 'hsl(270,30%,58%)' }}>mg</span>
+              <p className="text-xs font-semibold text-muted-foreground">Single Dose</p>
+              <p className="text-4xl font-black text-primary">
+                {singleDose} <span className="text-lg font-semibold text-muted-foreground">mg</span>
               </p>
             </div>
-            <div className="pt-3 border-t" style={{ borderColor: 'hsl(270,38%,84%)' }}>
-              <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Total Daily Dose</p>
-              <p className="text-2xl font-black" style={{ color: 'hsl(270,45%,52%)' }}>{dailyDose} mg/day</p>
+            <div className="pt-3 border-t border-border">
+              <p className="text-xs font-semibold text-muted-foreground">Total Daily Dose</p>
+              <p className="text-2xl font-black text-primary">{dailyDose} mg/day</p>
             </div>
-            <p className="text-xs" style={{ color: 'hsl(265,15%,58%)' }}>Formula: {weight} kg × {dosePerKg} mg/kg = {singleDose} mg</p>
+            <p className="text-xs text-muted-foreground">Formula: {weight} kg × {dosePerKg} mg/kg = {singleDose} mg</p>
           </div>
         )}
         <DisclaimerBanner compact />
@@ -436,12 +434,11 @@ function InfusionTimeCalculator({ onBack }) {
           </button>
         </div>
         {totalMinutes !== null && (
-          <div className="rounded-2xl p-5 border animate-slide-up"
-            style={{ background: 'hsl(245,50%,95%)', borderColor: 'hsl(245,40%,80%)' }}>
-            <p className="text-xs font-semibold mb-1" style={{ color: 'hsl(265,15%,55%)' }}>Infusion Duration</p>
-            <p className="text-4xl font-black" style={{ color: 'hsl(245,55%,50%)' }}>{hours}h {minutes}m</p>
-            <p className="text-sm font-medium mt-1" style={{ color: 'hsl(245,25%,55%)' }}>{totalMinutes.toFixed(0)} minutes total</p>
-            <p className="text-xs mt-2" style={{ color: 'hsl(265,15%,58%)' }}>Formula: {volume} ÷ {rate} × 60</p>
+          <div className="rounded-2xl p-5 border animate-slide-up bg-secondary border-border">
+            <p className="text-xs font-semibold mb-1 text-muted-foreground">Infusion Duration</p>
+            <p className="text-4xl font-black text-primary">{hours}h {minutes}m</p>
+            <p className="text-sm font-medium mt-1 text-muted-foreground">{totalMinutes.toFixed(0)} minutes total</p>
+            <p className="text-xs mt-2 text-muted-foreground">Formula: {volume} ÷ {rate} × 60</p>
           </div>
         )}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
@@ -494,9 +491,9 @@ function BloodTransfusionCalculator({ onBack }) {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
       <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
-        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs"
-          style={{ background: 'hsl(0,60%,96%)', border: '1px solid hsl(0,48%,84%)', color: 'hsl(0,52%,46%)' }}>
-          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
+        <div className="flex items-start gap-2.5 px-3 py-3 rounded-2xl text-xs border border-destructive/30"
+          style={{ background: 'hsl(0,60%,96%)', color: 'hsl(0,52%,46%)' }}>
+          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5 text-destructive" />
           <span><span className="font-bold">Clinical Note:</span> Always follow local blood transfusion protocol. Monitor patient closely. Standard blood set = 15 gtt/mL.</span>
         </div>
         <div className="rounded-2xl p-4 border card-shadow space-y-3 bg-card border-border">
@@ -527,16 +524,16 @@ function BloodTransfusionCalculator({ onBack }) {
           <div className="rounded-2xl p-5 border animate-slide-up space-y-3"
             style={{ background: 'hsl(0,55%,96%)', borderColor: 'hsl(0,45%,82%)' }}>
             <div>
-              <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Infusion Rate</p>
+              <p className="text-xs font-semibold text-muted-foreground">Infusion Rate</p>
               <p className="text-4xl font-black" style={{ color: 'hsl(0,52%,48%)' }}>
-                {mlPerHour} <span className="text-lg font-semibold" style={{ color: 'hsl(0,35%,58%)' }}>mL/hr</span>
+                {mlPerHour} <span className="text-lg font-semibold text-muted-foreground">mL/hr</span>
               </p>
             </div>
-            <div className="pt-3 border-t" style={{ borderColor: 'hsl(0,40%,86%)' }}>
-              <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Drip Rate (15 gtt/mL set)</p>
+            <div className="pt-3 border-t border-border">
+              <p className="text-xs font-semibold text-muted-foreground">Drip Rate (15 gtt/mL set)</p>
               <p className="text-2xl font-black" style={{ color: 'hsl(0,48%,52%)' }}>{dropsPerMin} gtt/min</p>
             </div>
-            <p className="text-xs" style={{ color: 'hsl(265,15%,58%)' }}>Volume ÷ Duration = {volume} ÷ {hours}h = {mlPerHour} mL/hr</p>
+            <p className="text-xs text-muted-foreground">Volume ÷ Duration = {volume} ÷ {hours}h = {mlPerHour} mL/hr</p>
           </div>
         )}
         <DisclaimerBanner compact />
@@ -612,12 +609,12 @@ function EDDCalculator({ onBack }) {
           <div className="rounded-2xl p-5 border animate-slide-up space-y-3"
             style={{ background: 'hsl(340,55%,96%)', borderColor: 'hsl(340,45%,82%)' }}>
             <div>
-              <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Estimated Due Date</p>
+              <p className="text-xs font-semibold text-muted-foreground">Estimated Due Date</p>
               <p className="text-2xl font-black" style={{ color: 'hsl(340,52%,48%)' }}>{formatDate(edd)}</p>
             </div>
             {weeksPregnant !== null && weeksPregnant >= 0 && (
               <div className="pt-3 border-t space-y-1.5" style={{ borderColor: 'hsl(340,40%,86%)' }}>
-                <p className="text-xs font-semibold" style={{ color: 'hsl(265,15%,55%)' }}>Gestational Age Today</p>
+                <p className="text-xs font-semibold text-muted-foreground">Gestational Age Today</p>
                 <p className="text-xl font-black" style={{ color: 'hsl(340,48%,52%)' }}>{weeksPregnant}w {daysPregnant % 7}d</p>
                 {trimester && (
                   <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-bold border"
@@ -627,7 +624,7 @@ function EDDCalculator({ onBack }) {
                 )}
               </div>
             )}
-            <p className="text-xs" style={{ color: 'hsl(265,15%,58%)' }}>LMP + 280 days (Naegele's Rule)</p>
+            <p className="text-xs text-muted-foreground">LMP + 280 days (Naegele's Rule)</p>
           </div>
         )}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
@@ -687,8 +684,8 @@ export default function CalculatorScreen() {
       </div>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
-        <div className="flex items-start gap-2.5 px-4 py-3 rounded-2xl text-xs"
-          style={{ background: 'hsl(38,80%,96%)', border: '1px solid hsl(38,60%,82%)', color: 'hsl(38,55%,42%)' }}>
+        <div className="flex items-start gap-2.5 px-4 py-3 rounded-2xl text-xs border"
+          style={{ background: 'hsl(38,80%,96%)', borderColor: 'hsl(38,60%,82%)', color: 'hsl(38,55%,42%)' }}>
           <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" style={{ color: 'hsl(38,65%,48%)' }} />
           <span>Always verify clinical calculations with a qualified practitioner. Educational reference only.</span>
         </div>
@@ -697,22 +694,18 @@ export default function CalculatorScreen() {
           <button
             key={calc.id}
             onClick={() => setActiveCalc(calc.id)}
-            className="w-full rounded-2xl p-4 border text-left flex items-center justify-between transition-all active:scale-[0.98] card-shadow"
-            style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}
-            onMouseEnter={e => e.currentTarget.style.background = 'hsl(270,28%,98%)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'white'}
+            className="w-full rounded-2xl p-4 border text-left flex items-center justify-between transition-all active:scale-[0.98] card-shadow bg-card border-border hover:bg-muted"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0"
-                style={{ background: 'hsl(265,45%,94%)', border: '1px solid hsl(265,35%,86%)' }}>
+              <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0 bg-secondary border border-border">
                 {calc.icon}
               </div>
               <div>
-                <p className="font-bold text-sm" style={{ color: 'hsl(265,35%,22%)' }}>{calc.name}</p>
-                <p className="text-xs font-medium mt-0.5" style={{ color: 'hsl(265,15%,58%)' }}>{calc.desc}</p>
+                <p className="font-bold text-sm text-foreground">{calc.name}</p>
+                <p className="text-xs font-medium mt-0.5 text-muted-foreground">{calc.desc}</p>
               </div>
             </div>
-            <ChevronRight size={15} style={{ color: 'hsl(265,20%,70%)' }} />
+            <ChevronRight size={15} className="text-muted-foreground" />
           </button>
         ))}
 
