@@ -193,7 +193,7 @@ export default function ProceduresScreen() {
     <div className="flex flex-col h-full">
       <div className="sticky top-0 z-30 flex-shrink-0 bg-background" ref={dropdownRef}>
         <div className="px-5 pt-4 pb-2 flex items-center gap-1">
-          <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/83c26fcba_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply', transform: 'scale(1.8)', transformOrigin: 'center' }} />
+          <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/78c915ed4_AdobeExpressPhotos_11c9aae2c81946bf8b344aaae5704a8a_CopyEdited.png" alt="" style={{ objectFit: 'none', objectPosition: '-168px -105px', width: 80, height: 80, flexShrink: 0 }} />
           <div className="animate-fade-in">
             <h1 className="text-2xl font-black text-foreground">Procedures</h1>
             <p className="text-xs font-medium text-muted-foreground">Step-by-step nursing guides</p>
@@ -240,8 +240,7 @@ export default function ProceduresScreen() {
       </div>
 
       {/* List */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-4 space-y-2.5 animate-fade-in">
-        <PullToRefreshIndicator />
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>

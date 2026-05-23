@@ -671,9 +671,7 @@ export default function CalculatorScreen() {
     <div className="flex flex-col h-full">
       <div className="sticky top-0 z-30 flex-shrink-0 bg-background">
         <div className="px-5 pt-4 pb-2 flex items-center gap-1">
-          <div className="w-20 h-20 flex-shrink-0 overflow-hidden flex items-center justify-center bg-background">
-            <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/fc2d7ca5f_generated_image.png" alt="" className="w-full h-full object-contain" style={{ transform: 'scale(2.0)', transformOrigin: 'center', mixBlendMode: 'multiply' }} />
-          </div>
+          <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/78c915ed4_AdobeExpressPhotos_11c9aae2c81946bf8b344aaae5704a8a_CopyEdited.png" alt="" style={{ objectFit: 'none', objectPosition: '-86px -105px', width: 80, height: 80, flexShrink: 0 }} />
           <div className="animate-fade-in">
             <h1 className="text-2xl font-black text-foreground">Calculators</h1>
             <p className="text-xs font-medium text-muted-foreground">Nursing clinical calculators</p>
