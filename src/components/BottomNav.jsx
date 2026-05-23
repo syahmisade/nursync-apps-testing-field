@@ -13,11 +13,8 @@ const tabs = [
 export default function BottomNav() {
   return (
     <nav
-      className="flex justify-around items-center px-2 pt-2 border-t w-full z-50"
+      className="flex justify-around items-center px-2 pt-2 border-t border-border w-full z-50 bg-card/90 backdrop-blur-xl"
       style={{
-        background: 'rgba(255,255,255,0.92)',
-        backdropFilter: 'blur(20px)',
-        borderColor: 'hsl(270,25%,90%)',
         boxShadow: '0 -4px 20px rgba(147,92,210,0.07)',
         paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
       }}
@@ -43,12 +40,12 @@ export default function BottomNav() {
                   <Icon
                     size={18}
                     strokeWidth={isActive ? 2.5 : 1.8}
-                    style={{ color: isActive ? 'white' : 'hsl(265,20%,62%)' }}
+                    style={{ color: isActive ? 'white' : 'hsl(var(--muted-foreground))' }}
                   />
                 </div>
                 <span
                   className="text-[9px] font-bold transition-colors duration-200"
-                  style={{ color: isActive ? 'hsl(265,55%,48%)' : 'hsl(265,15%,62%)' }}
+                  style={{ color: isActive ? 'hsl(265,55%,48%)' : 'hsl(var(--muted-foreground))' }}
                 >
                   {label}
                 </span>

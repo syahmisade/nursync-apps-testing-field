@@ -6,7 +6,7 @@ import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import PullToRefreshIndicator from '../components/PullToRefreshIndicator';
 
-// ── Shared colour maps ────────────────────────────────────────────────────────
+// Category pills use fixed semantic colours (same light/dark) — readable on both themes
 const categoryColors = {
   "Analgesic":         { bg: 'hsl(220,75%,94%)', text: 'hsl(220,65%,50%)', border: 'hsl(220,55%,82%)' },
   "Antibiotic":        { bg: 'hsl(152,55%,93%)', text: 'hsl(152,55%,36%)', border: 'hsl(152,45%,78%)' },
@@ -67,9 +67,8 @@ function MedicineDetail({ medicine, onBack }) {
   return (
     <div className="flex flex-col h-full">
       {/* Sticky Header */}
-      <div className="flex-shrink-0 flex items-center justify-between px-4 pt-3 pb-3" style={{ background: 'hsl(270, 40%, 97%)' }}>
-        <button onClick={onBack} className="flex items-center gap-1.5 transition-colors rounded-xl px-3 py-1.5"
-          style={{ color: 'hsl(265,40%,52%)', background: 'hsl(265,50%,94%)' }}>
+      <div className="flex-shrink-0 flex items-center justify-between px-4 pt-3 pb-3 bg-background border-b border-border">
+        <button onClick={onBack} className="flex items-center gap-1.5 transition-colors rounded-xl px-3 py-1.5 bg-secondary text-primary">
           <ArrowLeft size={15} />
           <span className="text-xs font-semibold">Back</span>
         </button>
@@ -84,39 +83,34 @@ function MedicineDetail({ medicine, onBack }) {
 
       <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-6 space-y-3">
         {/* Title block */}
-        <div className="rounded-3xl p-5 border card-shadow"
-          style={{ background: 'white', borderColor: 'hsl(270,25%,90%)' }}>
+        <div className="rounded-3xl p-5 border card-shadow bg-card border-border">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h1 className="text-lg font-black" style={{ color: 'hsl(265,40%,22%)' }}>{medicine.genericName}</h1>
-              <p className="text-xs font-medium mt-0.5" style={{ color: 'hsl(265,15%,56%)' }}>{medicine.brandName}</p>
+              <h1 className="text-lg font-black text-foreground">{medicine.genericName}</h1>
+              <p className="text-xs font-medium mt-0.5 text-muted-foreground">{medicine.brandName}</p>
             </div>
             <CategoryPill category={medicine.category} />
           </div>
           {medicine.glamourName && (
-            <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
-              style={{ background: 'hsl(265,45%,95%)', border: '1px solid hsl(265,35%,88%)' }}>
-              <span className="text-[10px] font-medium" style={{ color: 'hsl(265,25%,58%)' }}>Also known as:</span>
-              <span className="text-[10px] font-bold" style={{ color: 'hsl(265,45%,42%)' }}>{medicine.glamourName}</span>
+            <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-secondary border border-border">
+              <span className="text-[10px] font-medium text-muted-foreground">Also known as:</span>
+              <span className="text-[10px] font-bold text-primary">{medicine.glamourName}</span>
             </div>
           )}
         </div>
 
         {medicine.id === 8 && (
-          <div className="flex items-start gap-2.5 px-4 py-3 rounded-2xl text-xs"
-            style={{ background: 'hsl(0,60%,96%)', border: '1px solid hsl(0,55%,85%)', color: 'hsl(0,55%,45%)' }}>
+          <div className="flex items-start gap-2.5 px-4 py-3 rounded-2xl text-xs border"
+            style={{ background: 'hsl(0,60%,96%)', borderColor: 'hsl(0,55%,85%)', color: 'hsl(0,55%,45%)' }}>
             <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
             <span><span className="font-bold">Controlled Substance.</span> Strict documentation, prescriber authorisation, and storage protocols apply.</span>
           </div>
         )}
 
         {sections.filter(({ label }) => !['Generic Name', 'Brand Name', 'Common / Glamour Name'].includes(label)).map(({ label, value }) => (
-          <div key={label} className="rounded-2xl p-4 border card-shadow"
-            style={{ background: 'white', borderColor: 'hsl(270,22%,91%)' }}>
-            <p className="text-[10px] font-black uppercase tracking-widest mb-1.5"
-              style={{ color: 'hsl(265,55%,54%)' }}>{label}</p>
-            <p className="text-sm leading-relaxed font-medium"
-              style={{ color: 'hsl(265,25%,28%)' }}>{value}</p>
+          <div key={label} className="rounded-2xl p-4 border card-shadow bg-card border-border">
+            <p className="text-[10px] font-black uppercase tracking-widest mb-1.5 text-primary">{label}</p>
+            <p className="text-sm leading-relaxed font-medium text-foreground">{value}</p>
           </div>
         ))}
 
@@ -182,36 +176,34 @@ export default function MedicineScreen() {
   return (
     <div className="flex flex-col h-full">
       {/* Sticky header + search */}
-      <div className="flex-shrink-0" style={{ background: 'hsl(270, 40%, 97%)' }}>
+      <div className="flex-shrink-0 bg-background">
         <div className="px-5 pt-4 pb-2 flex items-center gap-1">
           <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/f1fd0031d_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply', transform: 'scale(1.5)', transformOrigin: 'center' }} />
           <div className="animate-fade-in">
-            <h1 className="text-2xl font-black" style={{ color: 'hsl(265,45%,22%)' }}>Medicine</h1>
-            <p className="text-xs font-medium" style={{ color: 'hsl(265,15%,56%)' }}>Drug reference guide</p>
+            <h1 className="text-2xl font-black text-foreground">Medicine</h1>
+            <p className="text-xs font-medium text-muted-foreground">Drug reference guide</p>
           </div>
         </div>
 
       {/* Search + Filter */}
       <div className="px-4 mb-3 relative animate-fade-in" ref={dropdownRef}>
         <div className="flex items-center gap-2" ref={searchRef}>
-          <div className="flex-1 flex items-center gap-2.5 rounded-2xl px-4 py-3 border transition-colors relative"
+          <div className="flex-1 flex items-center gap-2.5 rounded-2xl px-4 py-3 border transition-colors relative bg-card border-border"
             style={{
-              background: 'white',
-              borderColor: searchFocused ? 'hsl(265,50%,68%)' : 'hsl(270,22%,88%)',
+              borderColor: searchFocused ? 'hsl(265,50%,68%)' : undefined,
               boxShadow: searchFocused ? '0 0 0 3px hsl(265,55%,92%)' : '0 1px 4px rgba(147,92,210,0.06)'
             }}>
-            <Search size={15} style={{ color: 'hsl(265,30%,62%)', flexShrink: 0 }} />
+            <Search size={15} className="text-muted-foreground flex-shrink-0" />
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               onFocus={() => { setSearchFocused(true); setDropdownOpen(false); }}
               placeholder="Search medicines..."
-              className="flex-1 bg-transparent text-sm outline-none font-medium"
-              style={{ color: 'hsl(265,30%,25%)' }}
+              className="flex-1 bg-transparent text-sm outline-none font-medium text-foreground placeholder:text-muted-foreground"
             />
             {search && (
               <button onClick={() => setSearch('')}>
-                <X size={14} style={{ color: 'hsl(265,20%,62%)' }} />
+                <X size={14} className="text-muted-foreground" />
               </button>
             )}
           </div>
@@ -220,7 +212,8 @@ export default function MedicineScreen() {
             className="flex items-center justify-center p-3 rounded-2xl border transition-all active:scale-95"
             style={activeCategory !== 'All'
               ? { background: 'hsl(265,55%,92%)', borderColor: 'hsl(265,45%,75%)', color: 'hsl(265,55%,48%)' }
-              : { background: 'white', borderColor: 'hsl(270,22%,88%)', color: 'hsl(265,20%,60%)', boxShadow: '0 1px 4px rgba(147,92,210,0.06)' }}
+              : undefined}
+            {...(activeCategory === 'All' ? { className: "flex items-center justify-center p-3 rounded-2xl border transition-all active:scale-95 bg-card border-border text-muted-foreground" } : {})}
           >
             <SlidersHorizontal size={16} />
           </button>
@@ -228,18 +221,15 @@ export default function MedicineScreen() {
 
         {/* Recent searches */}
         {searchFocused && !search && recentSearches.length > 0 && (
-          <div className="absolute left-4 right-16 top-full mt-2 z-50 rounded-2xl overflow-hidden"
-            style={{ background: 'white', border: '1px solid hsl(270,22%,88%)', boxShadow: '0 8px 32px rgba(147,92,210,0.14)' }}>
-            <p className="text-[9px] font-black uppercase tracking-widest px-4 pt-3 pb-1" style={{ color: 'hsl(265,30%,62%)' }}>Recent</p>
+          <div className="absolute left-4 right-16 top-full mt-2 z-50 rounded-2xl overflow-hidden bg-card border border-border"
+            style={{ boxShadow: '0 8px 32px rgba(147,92,210,0.14)' }}>
+            <p className="text-[9px] font-black uppercase tracking-widest px-4 pt-3 pb-1 text-muted-foreground">Recent</p>
             {recentSearches.slice(0, 5).map(s => (
               <button key={s}
                 onMouseDown={e => { e.preventDefault(); setSearch(s); setSearchFocused(false); }}
-                className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left transition-colors border-t"
-                style={{ borderColor: 'hsl(270,20%,93%)' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'hsl(270,30%,97%)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                <Clock size={12} style={{ color: 'hsl(265,25%,65%)' }} />
-                <span className="font-medium" style={{ color: 'hsl(265,25%,38%)' }}>{s}</span>
+                className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left transition-colors border-t border-border hover:bg-muted">
+                <Clock size={12} className="text-muted-foreground" />
+                <span className="font-medium text-foreground">{s}</span>
               </button>
             ))}
           </div>
@@ -247,16 +237,14 @@ export default function MedicineScreen() {
 
         {/* Category dropdown */}
         {dropdownOpen && (
-          <div className="absolute left-4 right-4 top-full mt-2 z-50 rounded-2xl overflow-hidden"
-            style={{ background: 'white', border: '1px solid hsl(270,22%,88%)', boxShadow: '0 8px 32px rgba(147,92,210,0.14)' }}>
-            <p className="text-[9px] font-black uppercase tracking-widest px-4 pt-3 pb-1" style={{ color: 'hsl(265,30%,62%)' }}>Filter by Category</p>
+          <div className="absolute left-4 right-4 top-full mt-2 z-50 rounded-2xl overflow-hidden bg-card border border-border"
+            style={{ boxShadow: '0 8px 32px rgba(147,92,210,0.14)' }}>
+            <p className="text-[9px] font-black uppercase tracking-widest px-4 pt-3 pb-1 text-muted-foreground">Filter by Category</p>
             {categories.map(cat => (
               <button key={cat}
                 onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
-                className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold text-left transition-colors border-t"
-                style={{ borderColor: 'hsl(270,20%,93%)', color: catTextColor[cat] || 'hsl(265,30%,40%)' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'hsl(270,30%,97%)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold text-left transition-colors border-t border-border hover:bg-muted"
+                style={{ color: catTextColor[cat] || 'hsl(265,30%,40%)' }}>
                 <span className={activeCategory === cat ? 'font-black' : ''}>{cat}</span>
                 {activeCategory === cat && <Check size={14} style={{ color: catTextColor[cat] }} />}
               </button>
@@ -278,15 +266,14 @@ export default function MedicineScreen() {
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
-            <p className="text-sm font-semibold" style={{ color: 'hsl(265,20%,58%)' }}>No medicines found</p>
-            <p className="text-xs mt-1" style={{ color: 'hsl(265,15%,68%)' }}>Try a different search term</p>
+            <p className="text-sm font-semibold text-muted-foreground">No medicines found</p>
+            <p className="text-xs mt-1 text-muted-foreground">Try a different search term</p>
           </div>
         )}
         {filtered.map(medicine => {
           const isSaved = savedMedicines.includes(medicine.id);
           return (
-            <div key={medicine.id} className="rounded-2xl border overflow-hidden card-shadow"
-              style={{ background: 'white', borderColor: 'hsl(270,22%,90%)' }}>
+            <div key={medicine.id} className="rounded-2xl border overflow-hidden card-shadow bg-card border-border">
               <div
                 role="button"
                 tabIndex={0}
@@ -297,19 +284,16 @@ export default function MedicineScreen() {
                     handleSelect(medicine);
                   }
                 }}
-                className="w-full p-4 text-left transition-all active:scale-[0.99] cursor-pointer"
-                style={{ background: 'white' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'hsl(270,30%,98%)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'white'}>
+                className="w-full p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-bold text-sm" style={{ color: 'hsl(265,35%,22%)' }}>{medicine.genericName}</h3>
+                      <h3 className="font-bold text-sm text-foreground">{medicine.genericName}</h3>
                       <CategoryPill category={medicine.category} />
                     </div>
-                    <p className="text-xs font-medium mt-0.5" style={{ color: 'hsl(265,15%,58%)' }}>{medicine.brandName}</p>
+                    <p className="text-xs font-medium mt-0.5 text-muted-foreground">{medicine.brandName}</p>
                     {medicine.glamourName && (
-                      <p className="text-xs mt-0.5 font-medium" style={{ color: 'hsl(265,45%,56%)' }}>Also: {medicine.glamourName}</p>
+                      <p className="text-xs mt-0.5 font-medium text-primary">Also: {medicine.glamourName}</p>
                     )}
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
@@ -318,7 +302,7 @@ export default function MedicineScreen() {
                       style={{ color: isSaved ? 'hsl(265,55%,52%)' : 'hsl(265,15%,68%)' }}>
                       {isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
                     </button>
-                    <ChevronRight size={15} style={{ color: 'hsl(265,20%,72%)' }} />
+                    <ChevronRight size={15} className="text-muted-foreground" />
                   </div>
                 </div>
               </div>
