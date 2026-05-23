@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
 import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, Check, SlidersHorizontal, Clock } from 'lucide-react';
 import { medicines, categories } from '../data/medicines';
 import { useApp } from '../context/AppContext';
@@ -123,7 +122,6 @@ function MedicineDetail({ medicine, onBack }) {
 
 export default function MedicineScreen() {
   const navigate = useNavigate();
-  const { isDark } = useTheme();
   const { id } = useParams();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
@@ -179,7 +177,7 @@ export default function MedicineScreen() {
       {/* Sticky header + search */}
       <div className="flex-shrink-0 bg-background">
         <div className="px-5 pt-4 pb-2 flex items-center gap-1">
-          <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/f1fd0031d_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ transform: 'scale(1.5)', transformOrigin: 'center', mixBlendMode: isDark ? 'screen' : 'multiply' }} />
+          <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/f1fd0031d_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply', transform: 'scale(1.5)', transformOrigin: 'center' }} />
           <div className="animate-fade-in">
             <h1 className="text-2xl font-black text-foreground">Medicine</h1>
             <p className="text-xs font-medium text-muted-foreground">Drug reference guide</p>
