@@ -65,6 +65,8 @@ export default function ProfileScreen() {
   return (
     <div className="flex flex-col h-full">
 
+      <div className="flex-1 overflow-y-auto scrollbar-hide main-scroll">
+
       {/* ── Hero / Avatar section ── */}
       <div className="px-5 pt-6 pb-5 flex flex-col items-center gap-3 animate-fade-in"
         style={{ background: 'linear-gradient(160deg, hsl(270,50%,96%) 0%, hsl(265,40%,97%) 100%)' }}>
@@ -87,8 +89,8 @@ export default function ProfileScreen() {
         </div>
       </div>
 
-      {/* ── Scrollable settings body ── */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-8 space-y-4 animate-fade-in">
+      {/* ── Settings body ── */}
+      <div className="px-4 pb-8 space-y-4 animate-fade-in">
 
         {deleted && (
           <div className="rounded-2xl border p-3.5 flex items-center gap-2.5"
@@ -154,6 +156,8 @@ export default function ProfileScreen() {
         </div>
 
       </div>
+
+      </div>{/* end single scroll container */}
 
       {/* ── Confirm deletion modal — logic untouched ── */}
       {confirmOpen && (
