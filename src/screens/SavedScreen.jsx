@@ -78,13 +78,7 @@ export default function SavedScreen() {
     <div className="flex flex-col h-full">
       <div className="sticky top-0 z-30 flex-shrink-0 bg-background">
         <div className="px-5 pt-4 pb-2 flex items-center gap-1">
-          <div style={{
-            width: 72, height: 72, flexShrink: 0,
-            backgroundImage: "url('https://media.base44.com/images/public/6a0f188f950f15d08b991324/5b6745fd0_ChatGPTImageMay23202604_49_53PM-Edited.png')",
-            backgroundSize: 'auto',
-            backgroundPosition: '-820px -500px',
-            backgroundRepeat: 'no-repeat',
-          }} />
+          <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/9745fab6d_generated_image.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ mixBlendMode: 'multiply', transform: 'scale(1.6)', transformOrigin: 'center' }} />
           <div className="animate-fade-in">
             <h1 className="text-2xl font-black text-foreground">Saved</h1>
             <p className="text-xs font-medium text-muted-foreground">Your bookmarked items</p>
@@ -115,7 +109,7 @@ export default function SavedScreen() {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-4 space-y-2.5 animate-fade-in">
         {/* Medicines */}
         {activeTab === 'medicines' && (
           savedMeds.length === 0 ? <EmptyState label="medicines" /> :

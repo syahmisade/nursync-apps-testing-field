@@ -253,13 +253,9 @@ export default function QuizScreen() {
     <div className="flex flex-col h-full">
       <div className="sticky top-0 z-30 flex-shrink-0 bg-background">
         <div className="px-5 pt-4 pb-2 flex items-center gap-1">
-          <div style={{
-            width: 72, height: 72, flexShrink: 0,
-            backgroundImage: "url('https://media.base44.com/images/public/6a0f188f950f15d08b991324/5b6745fd0_ChatGPTImageMay23202604_49_53PM-Edited.png')",
-            backgroundSize: 'auto',
-            backgroundPosition: '-135px -500px',
-            backgroundRepeat: 'no-repeat',
-          }} />
+          <div className="w-20 h-20 flex-shrink-0 overflow-hidden flex items-center justify-center bg-background">
+            <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/b7b6d0ba5_generated_image.png" alt="" className="w-full h-full object-contain" style={{ mixBlendMode: 'multiply', transform: 'scale(1.8)', transformOrigin: 'center' }} />
+          </div>
           <div className="animate-fade-in">
             <h1 className="text-2xl font-black text-foreground">Quiz</h1>
             <p className="text-xs font-medium text-muted-foreground">Exam-style practice questions</p>
@@ -269,7 +265,8 @@ export default function QuizScreen() {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-3 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-4 space-y-3 animate-fade-in">
+        <PullToRefreshIndicator />
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2">
           {[

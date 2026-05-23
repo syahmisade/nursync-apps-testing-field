@@ -48,8 +48,10 @@ export default function NurSync() {
           </div>
 
           {/* Screen content */}
-          <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
-            <Outlet />
+          <div className="flex-1 min-h-0">
+            <div className="h-full overflow-y-auto scrollbar-hide main-scroll">
+              <Outlet />
+            </div>
           </div>
 
           {/* Bottom nav */}
