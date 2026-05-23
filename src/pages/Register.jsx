@@ -8,7 +8,7 @@ import { UserPlus, Mail, Lock, Loader2 } from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
-import { toast } from "@/components/ui/use-toast";
+
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -18,6 +18,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+  const [resendSuccess, setResendSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,12 +56,10 @@ export default function Register() {
 
   const handleResend = async () => {
     setError("");
+    setResendSuccess(false);
     try {
       await base44.auth.resendOtp(email);
-      toast({
-        title: "Code sent",
-        description: "Check your email for the new code.",
-      });
+      setResendSuccess(true);
     } catch (err) {
       setError(err.message || "Failed to resend code");
     }
@@ -78,8 +77,15 @@ export default function Register() {
         subtitle={`We sent a code to ${email}`}
       >
         {error && (
-          <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+          <div className="mb-4 px-3 py-2 rounded-xl text-xs font-semibold"
+            style={{ background: 'hsl(0,60%,96%)', color: 'hsl(0,58%,45%)', border: '1px solid hsl(0,55%,88%)' }}>
             {error}
+          </div>
+        )}
+        {resendSuccess && (
+          <div className="mb-4 px-3 py-2 rounded-xl text-xs font-semibold"
+            style={{ background: 'hsl(152,50%,94%)', color: 'hsl(152,50%,32%)', border: '1px solid hsl(152,40%,78%)' }}>
+            Code sent! Check your email.
           </div>
         )}
         <div className="flex justify-center mb-6">
