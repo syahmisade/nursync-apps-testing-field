@@ -670,7 +670,7 @@ export default function CalculatorScreen() {
   return (
     <div className="flex flex-col h-full">
       <div className="sticky top-0 z-30 flex-shrink-0 bg-background">
-        <div className="px-5 pt-4 pb-2 flex items-center gap-1">
+        <div className="px-5 pt-4 pb-2 flex items-center gap-3">
           <div className="w-20 h-20 flex-shrink-0 overflow-hidden flex items-center justify-center bg-background">
             <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/ba864a7e8_Pic2.png" alt="" className="w-full h-full object-contain" style={{ transform: 'scale(1.1)', transformOrigin: 'center' }} />
           </div>
