@@ -177,6 +177,7 @@ export default function MedicineScreen() {
       {/* Sticky header + search */}
       <div className="flex-shrink-0 bg-background">
         <div className="px-5 pt-4 pb-2 flex items-center gap-1">
+          <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/a376bcc11_generated_image.png" alt="" className="w-14 h-14 object-contain flex-shrink-0" />
           <div className="animate-fade-in">
             <h1 className="text-2xl font-black text-foreground">Medicine</h1>
             <p className="text-xs font-medium text-muted-foreground">Drug reference guide</p>
