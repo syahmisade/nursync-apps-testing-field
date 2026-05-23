@@ -180,8 +180,8 @@ export default function MedicineScreen() {
           <div style={{
             width: 72, height: 72, flexShrink: 0,
             backgroundImage: "url('https://media.base44.com/images/public/6a0f188f950f15d08b991324/5b6745fd0_ChatGPTImageMay23202604_49_53PM-Edited.png')",
-            backgroundSize: '216px auto',
-            backgroundPosition: '0px -72px',
+            backgroundSize: 'auto',
+            backgroundPosition: '-135px -310px',
             backgroundRepeat: 'no-repeat',
           }} />
           <div className="animate-fade-in">

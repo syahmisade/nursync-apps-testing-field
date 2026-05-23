@@ -193,9 +193,13 @@ export default function ProceduresScreen() {
     <div className="flex flex-col h-full">
       <div className="sticky top-0 z-30 flex-shrink-0 bg-background" ref={dropdownRef}>
         <div className="px-5 pt-4 pb-2 flex items-center gap-1">
-          <div style={{ width: 72, height: 72, flexShrink: 0, overflow: 'hidden', position: 'relative', borderRadius: 8 }}>
-            <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/5b6745fd0_ChatGPTImageMay23202604_49_53PM-Edited.png" alt="" style={{ position: 'absolute', width: 460, height: 'auto', top: -168, left: -320 }} />
-          </div>
+          <div style={{
+            width: 72, height: 72, flexShrink: 0,
+            backgroundImage: "url('https://media.base44.com/images/public/6a0f188f950f15d08b991324/5b6745fd0_ChatGPTImageMay23202604_49_53PM-Edited.png')",
+            backgroundSize: 'auto',
+            backgroundPosition: '-820px -170px',
+            backgroundRepeat: 'no-repeat',
+          }} />
           <div className="animate-fade-in">
             <h1 className="text-2xl font-black text-foreground">Procedures</h1>
             <p className="text-xs font-medium text-muted-foreground">Step-by-step nursing guides</p>
