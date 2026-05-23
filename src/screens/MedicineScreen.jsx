@@ -4,7 +4,6 @@ import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTrian
 import { medicines, categories } from '../data/medicines';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import PullToRefreshIndicator from '../components/PullToRefreshIndicator';
 
 // Category pills use fixed semantic colours (same light/dark) — readable on both themes
 const categoryColors = {
@@ -261,8 +260,7 @@ export default function MedicineScreen() {
       </div>{/* end sticky wrapper */}
 
       {/* Medicine list */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pb-4 space-y-2.5 animate-fade-in">
-        <PullToRefreshIndicator />
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4 space-y-2.5 animate-fade-in">
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
