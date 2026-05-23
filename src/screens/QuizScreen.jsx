@@ -253,9 +253,7 @@ export default function QuizScreen() {
     <div className="flex flex-col h-full">
       <div className="sticky top-0 z-30 flex-shrink-0 bg-background">
         <div className="px-5 pt-4 pb-2 flex items-center gap-1">
-          <div className="w-20 h-20 flex-shrink-0 overflow-hidden flex items-center justify-center bg-background">
-            <img src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/b7b6d0ba5_generated_image.png" alt="" className="w-full h-full object-contain" style={{ mixBlendMode: 'multiply', transform: 'scale(1.8)', transformOrigin: 'center' }} />
-          </div>
+          <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/27e4b79cb_Pic4.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ transform: 'scale(1.1)', transformOrigin: 'center' }} />
           <div className="animate-fade-in">
             <h1 className="text-2xl font-black text-foreground">Quiz</h1>
             <p className="text-xs font-medium text-muted-foreground">Exam-style practice questions</p>
