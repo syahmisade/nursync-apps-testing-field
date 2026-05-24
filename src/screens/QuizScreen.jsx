@@ -208,7 +208,7 @@ export default function QuizScreen() {
   const [lastResult, setLastResult] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef(null);
-  const { quizProgress } = useApp();
+  const { quizProgress, saveQuizProgress } = useApp();
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -224,16 +224,25 @@ export default function QuizScreen() {
   }, [id]);
 
   const handleFinish = (score, total) => {
+    if (activeCategory) {
+      saveQuizProgress(activeCategory.id, score, total);
+    }
     setLastResult({ score, total });
     setQuizState('results');
   };
 
+  const handleBackToCategories = () => {
+    setLastResult(null);
+    setQuizState('menu');
+    navigate('/quiz');
+  };
+
   if (quizState === 'session' && activeCategory)
-    return <QuizSession category={activeCategory} onBack={() => navigate('/quiz')} onFinish={handleFinish} />;
-  if (quizState === 'results' && lastResult)
+    return <QuizSession category={activeCategory} onBack={handleBackToCategories} onFinish={handleFinish} />;
+  if (quizState === 'results' && activeCategory && lastResult)
     return <QuizResults category={activeCategory} score={lastResult.score} total={lastResult.total}
       onRetry={() => setQuizState('session')}
-      onBack={() => navigate('/quiz')} />;
+      onBack={handleBackToCategories} />;
 
   return (
     <div className="flex flex-col h-full">

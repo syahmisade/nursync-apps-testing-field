@@ -28,6 +28,13 @@ function CategoryPill({ category }) {
   );
 }
 
+// Driven by data fields rather than a hardcoded id, so it keeps working after
+// the move to a backend where record ids will differ.
+function isControlledSubstance(medicine) {
+  return /controlled/i.test(medicine.prescriberCategory || '')
+    || /controlled/i.test(medicine.nemlStatus || '');
+}
+
 function MedicineDetail({ medicine, onBack }) {
   const { savedMedicines, toggleSaveMedicine } = useApp();
   const isSaved = savedMedicines.includes(medicine.id);
@@ -83,7 +90,7 @@ function MedicineDetail({ medicine, onBack }) {
           )}
         </div>
 
-        {medicine.id === 8 && (
+        {isControlledSubstance(medicine) && (
           <StatusPanel tone="danger">
             <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
             <span><span className="font-bold">Controlled Substance.</span> Strict documentation, prescriber authorisation, and storage protocols apply.</span>

@@ -169,7 +169,8 @@ export default function ProfileScreen() {
     savedMedicines,
     savedProcedures,
     savedQuizQuestions,
-    quizProgress
+    quizProgress,
+    clearAllData
   } = useApp();
   const { isDark, toggleTheme } = useTheme();
 
@@ -196,7 +197,11 @@ export default function ProfileScreen() {
   }, [quizProgress]);
 
   const handleDelete = () => {
-    localStorage.removeItem('nursync_saved_state');
+    clearAllData();
+    localStorage.removeItem(LEARNING_PROFILE_KEY);
+    localStorage.removeItem(DEFAULT_START_SECTION_KEY);
+    setLearningProfile(defaultLearningProfile);
+    setDefaultStartSection('medicine');
     setDeleted(true);
     setConfirmOpen(false);
   };
