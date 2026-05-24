@@ -1,14 +1,45 @@
 import React, { useMemo, useState } from 'react';
 import {
-  AlertTriangle, BookOpen, ChevronRight, ClipboardList, GraduationCap,
-  Info, Lightbulb, LogOut, MailQuestion, Moon, Pill, School,
-  ShieldAlert, ShieldCheck, Sparkles, Trash2, UserRound
+  AlertTriangle, BookOpen, Calculator, Check, ChevronRight, ClipboardList,
+  GraduationCap, Info, Lightbulb, LogOut, MailQuestion, Moon, Pill, School,
+  ShieldAlert, ShieldCheck, Sparkles, Trash2, UserRound, X
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useApp } from '@/context/AppContext';
 import { useTheme } from '@/context/ThemeContext';
 import { StatusPanel } from '@/components/Semantic';
+import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+
+const LEARNING_PROFILE_KEY = 'nursync_learning_profile';
+const DEFAULT_START_SECTION_KEY = 'nursync_default_start_section';
+
+const defaultLearningProfile = {
+  institution: '',
+  studyLevel: 'General nursing learning'
+};
+
+const startSectionOptions = [
+  { value: 'medicine', label: 'Medicine', path: '/medicine' },
+  { value: 'calculators', label: 'Calculators', path: '/calculators' },
+  { value: 'procedures', label: 'Procedures', path: '/procedures' },
+  { value: 'quiz', label: 'Quiz', path: '/quiz' },
+  { value: 'saved', label: 'Saved', path: '/saved' }
+];
+
+function loadLearningProfile() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LEARNING_PROFILE_KEY) || '{}');
+    return { ...defaultLearningProfile, ...saved };
+  } catch {
+    return defaultLearningProfile;
+  }
+}
+
+function loadDefaultStartSection() {
+  const saved = localStorage.getItem(DEFAULT_START_SECTION_KEY);
+  return startSectionOptions.some(option => option.value === saved) ? saved : 'medicine';
+}
 
 function SectionLabel({ children }) {
   return (
@@ -31,16 +62,8 @@ function SettingsRow({
   accessory = null
 }) {
   const interactive = Boolean(onClick) && !disabled;
-
-  return (
-    <button
-      type="button"
-      onClick={interactive ? onClick : undefined}
-      disabled={disabled}
-      className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-all ${
-        interactive ? 'active:scale-[0.99]' : 'cursor-default'
-      } ${disabled ? 'opacity-75' : ''}`}
-    >
+  const content = (
+    <>
       <div
         className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
         style={{ background: iconBg, color: iconColor }}
@@ -62,6 +85,31 @@ function SettingsRow({
       </div>
       {accessory}
       {chevron && interactive && <ChevronRight size={15} className="text-muted-foreground" />}
+    </>
+  );
+
+  if (!interactive) {
+    return (
+      <div
+        className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-all cursor-default ${
+          disabled ? 'opacity-75' : ''
+        }`}
+      >
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-all active:scale-[0.99] ${
+        disabled ? 'opacity-75' : ''
+      }`}
+    >
+      {content}
     </button>
   );
 }
@@ -100,10 +148,22 @@ function SummaryCard({ icon: Icon, label, value, tone }) {
   );
 }
 
+function FieldLabel({ children }) {
+  return (
+    <label className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+      {children}
+    </label>
+  );
+}
+
 export default function ProfileScreen() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [feedbackNotice, setFeedbackNotice] = useState('');
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [learningProfile, setLearningProfile] = useState(loadLearningProfile);
+  const [profileDraft, setProfileDraft] = useState(learningProfile);
+  const [defaultStartSection, setDefaultStartSection] = useState(loadDefaultStartSection);
   const { user, logout } = useAuth();
   const {
     savedMedicines,
@@ -144,6 +204,30 @@ export default function ProfileScreen() {
   const showFeedbackPlaceholder = (type) => {
     setFeedbackNotice(`${type} is planned for a later version. For now, this is a prototype placeholder.`);
   };
+
+  const openProfileEditor = () => {
+    setProfileDraft(learningProfile);
+    setProfileOpen(true);
+  };
+
+  const saveLearningProfile = () => {
+    const nextProfile = {
+      institution: profileDraft.institution.trim(),
+      studyLevel: profileDraft.studyLevel
+    };
+
+    localStorage.setItem(LEARNING_PROFILE_KEY, JSON.stringify(nextProfile));
+    setLearningProfile(nextProfile);
+    setProfileOpen(false);
+  };
+
+  const saveDefaultStartSection = (value) => {
+    localStorage.setItem(DEFAULT_START_SECTION_KEY, value);
+    setDefaultStartSection(value);
+  };
+
+  const selectedStartSection = startSectionOptions.find(option => option.value === defaultStartSection)
+    || startSectionOptions[0];
 
   return (
     <div className="flex flex-col h-full">
@@ -202,23 +286,23 @@ export default function ProfileScreen() {
                 iconBg="hsl(265,55%,92%)"
                 label="Role"
                 sublabel={roleLabel}
-                chevron={false}
+                onClick={openProfileEditor}
               />
               <SettingsRow
                 icon={School}
                 iconColor="hsl(205,70%,38%)"
                 iconBg="hsl(205,70%,92%)"
                 label="Institution"
-                sublabel="Not set yet"
-                chevron={false}
+                sublabel={learningProfile.institution || 'Not set yet'}
+                onClick={openProfileEditor}
               />
               <SettingsRow
                 icon={BookOpen}
                 iconColor="hsl(152,50%,38%)"
                 iconBg="hsl(152,50%,92%)"
                 label="Study level"
-                sublabel="General nursing learning"
-                chevron={false}
+                sublabel={learningProfile.studyLevel}
+                onClick={openProfileEditor}
               />
             </SettingsCard>
           </div>
@@ -238,6 +322,29 @@ export default function ProfileScreen() {
                   <span onClick={event => event.stopPropagation()}>
                     <Switch checked={isDark} onCheckedChange={toggleTheme} aria-label="Toggle dark mode" />
                   </span>
+                )}
+              />
+              <SettingsRow
+                icon={Calculator}
+                iconColor="hsl(205,70%,38%)"
+                iconBg="hsl(205,70%,92%)"
+                label="Default start section"
+                sublabel={`Open ${selectedStartSection.label} when launching NurSync`}
+                chevron={false}
+                accessory={(
+                  <select
+                    value={defaultStartSection}
+                    onClick={event => event.stopPropagation()}
+                    onChange={event => saveDefaultStartSection(event.target.value)}
+                    className="max-w-[132px] rounded-xl border border-border bg-background px-2 py-1.5 text-xs font-bold text-foreground outline-none"
+                    aria-label="Default start section"
+                  >
+                    {startSectionOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
                 )}
               />
             </SettingsCard>
@@ -343,6 +450,82 @@ export default function ProfileScreen() {
           </div>
         </div>
       </div>
+
+      {profileOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center px-5"
+          style={{ background: 'rgba(20, 16, 28, 0.52)' }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="learning-profile-title"
+        >
+          <div className="w-full max-w-sm rounded-3xl border p-5 app-card animate-pop-in">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h2 id="learning-profile-title" className="text-lg font-black text-foreground">
+                  Learning profile
+                </h2>
+                <p className="text-sm leading-relaxed mt-1 text-muted-foreground">
+                  These details stay on this device and help personalize the profile page.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setProfileOpen(false)}
+                className="w-9 h-9 rounded-xl flex items-center justify-center bg-secondary text-secondary-foreground"
+                aria-label="Close learning profile editor"
+              >
+                <X size={17} />
+              </button>
+            </div>
+
+            <div className="space-y-3 mt-5">
+              <div className="space-y-1.5">
+                <FieldLabel>Institution</FieldLabel>
+                <Input
+                  value={profileDraft.institution}
+                  onChange={event => setProfileDraft(prev => ({ ...prev, institution: event.target.value }))}
+                  placeholder="e.g. Nursing college or hospital"
+                  className="rounded-xl"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <FieldLabel>Study level</FieldLabel>
+                <select
+                  value={profileDraft.studyLevel}
+                  onChange={event => setProfileDraft(prev => ({ ...prev, studyLevel: event.target.value }))}
+                  className="flex h-9 w-full rounded-xl border border-input bg-background px-3 py-1 text-sm font-semibold text-foreground outline-none"
+                >
+                  <option>General nursing learning</option>
+                  <option>Year 1 nursing student</option>
+                  <option>Year 2 nursing student</option>
+                  <option>Year 3 nursing student</option>
+                  <option>Clinical placement</option>
+                  <option>Staff nurse revision</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 mt-5">
+              <button
+                type="button"
+                onClick={() => setProfileOpen(false)}
+                className="py-3 rounded-2xl text-sm font-black border bg-secondary text-secondary-foreground border-border"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={saveLearningProfile}
+                className="py-3 rounded-2xl text-sm font-black bg-primary text-primary-foreground flex items-center justify-center gap-1.5"
+              >
+                <Check size={16} />
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {confirmOpen && (
         <div

@@ -19,6 +19,21 @@ import QuizScreen from './screens/QuizScreen';
 import SavedScreen from './screens/SavedScreen';
 import ProfileScreen from './screens/ProfileScreen';
 
+const DEFAULT_START_SECTIONS = {
+  medicine: '/medicine',
+  calculators: '/calculators',
+  procedures: '/procedures',
+  quiz: '/quiz',
+  saved: '/saved'
+};
+
+const DefaultStartRedirect = () => {
+  const savedSection = localStorage.getItem('nursync_default_start_section') || 'medicine';
+  const targetPath = DEFAULT_START_SECTIONS[savedSection] || DEFAULT_START_SECTIONS.medicine;
+
+  return <Navigate to={targetPath} replace />;
+};
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
@@ -49,7 +64,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={<NurSync />}>
-        <Route index element={<Navigate to="/medicine" replace />} />
+        <Route index element={<DefaultStartRedirect />} />
         <Route path="medicine" element={<MedicineScreen />} />
         <Route path="medicine/:id" element={<MedicineScreen />} />
         <Route path="calculators" element={<CalculatorScreen />} />
