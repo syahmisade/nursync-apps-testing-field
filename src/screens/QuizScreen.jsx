@@ -5,6 +5,7 @@ import { quizCategories, quizQuestions } from '../data/quiz';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import { SemanticPill, StatusPanel, toneForQuizCategory } from '../components/Semantic';
+import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
 
 function QuizSession({ category, onBack, onFinish }) {
   const questions = useMemo(() =>
@@ -237,15 +238,43 @@ export default function QuizScreen() {
     navigate('/quiz');
   };
 
-  if (quizState === 'session' && activeCategory)
-    return <QuizSession category={activeCategory} onBack={handleBackToCategories} onFinish={handleFinish} />;
-  if (quizState === 'results' && activeCategory && lastResult)
-    return <QuizResults category={activeCategory} score={lastResult.score} total={lastResult.total}
-      onRetry={() => setQuizState('session')}
-      onBack={handleBackToCategories} />;
+  const showSession = quizState === 'session' && activeCategory;
+  const showResults = quizState === 'results' && activeCategory && lastResult;
+  const isDetail = showSession || showResults;
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="relative h-full overflow-hidden">
+      <AnimatePresence initial={false}>
+        {isDetail ? (
+          <motion.div
+            key="detail"
+            className="absolute inset-0"
+            variants={detailVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={slideTransition}
+          >
+            {showSession && (
+              <QuizSession category={activeCategory} onBack={handleBackToCategories} onFinish={handleFinish} />
+            )}
+            {showResults && (
+              <QuizResults category={activeCategory} score={lastResult.score} total={lastResult.total}
+                onRetry={() => setQuizState('session')}
+                onBack={handleBackToCategories} />
+            )}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="list"
+            className="absolute inset-0"
+            variants={listVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={slideTransition}
+          >
+            <div className="flex flex-col h-full">
       <div className="sticky top-0 z-30 flex-shrink-0 bg-background">
         <div className="px-5 pt-4 pb-2 flex items-center gap-3">
           <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/27e4b79cb_Pic4.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ transform: 'scale(1.1)', transformOrigin: 'center' }} />
@@ -302,6 +331,10 @@ export default function QuizScreen() {
         <DisclaimerBanner compact />
         <div className="h-2" />
       </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

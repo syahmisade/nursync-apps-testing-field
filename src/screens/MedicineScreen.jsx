@@ -5,6 +5,8 @@ import { medicines, categories } from '../data/medicines';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import { SemanticPill, StatusPanel, toneForCategory } from '../components/Semantic';
+import PullToRefresh from '../components/PullToRefresh';
+import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
 
 const catTextColor = {
   "All":              'hsl(265,30%,40%)',
@@ -156,15 +158,39 @@ export default function MedicineScreen() {
     navigate(`/medicine/${medicine.id}`);
   };
 
+  // Data is static today; this is the hook to swap in a real backend fetch.
+  const handleRefresh = () => new Promise(res => setTimeout(res, 600));
+
   const selectedMedicine = id ? medicines.find(m => String(m.id) === id) : null;
-  if (id) {
-    return selectedMedicine
-      ? <MedicineDetail medicine={selectedMedicine} onBack={() => navigate(-1)} />
-      : <MedicineDetail medicine={medicines[0]} onBack={() => navigate('/medicine', { replace: true })} />;
-  }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="relative h-full overflow-hidden">
+      <AnimatePresence initial={false}>
+        {id ? (
+          <motion.div
+            key="detail"
+            className="absolute inset-0"
+            variants={detailVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={slideTransition}
+          >
+            {selectedMedicine
+              ? <MedicineDetail medicine={selectedMedicine} onBack={() => navigate(-1)} />
+              : <MedicineDetail medicine={medicines[0]} onBack={() => navigate('/medicine', { replace: true })} />}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="list"
+            className="absolute inset-0"
+            variants={listVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={slideTransition}
+          >
+            <div className="flex flex-col h-full">
       {/* Sticky header + search */}
       <div className="flex-shrink-0 bg-background">
         <div className="px-5 pt-4 pb-2 flex items-center gap-3">
@@ -251,7 +277,7 @@ export default function MedicineScreen() {
       </div>{/* end sticky wrapper */}
 
       {/* Medicine list */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
+      <PullToRefresh scrollRef={scrollRef} onRefresh={handleRefresh} className="px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
@@ -300,7 +326,11 @@ export default function MedicineScreen() {
         })}
         <DisclaimerBanner compact />
         <div className="h-2" />
-      </div>
+      </PullToRefresh>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

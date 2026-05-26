@@ -5,6 +5,8 @@ import { procedures, procedureCategories } from '../data/procedures';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import { SemanticPill, StatusPanel, toneForCategory } from '../components/Semantic';
+import PullToRefresh from '../components/PullToRefresh';
+import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
 
 const catTextColor = {
   "All":                      'hsl(265,30%,40%)',
@@ -169,15 +171,39 @@ export default function ProceduresScreen() {
     });
   }, [search, activeCategory]);
 
+  // Data is static today; this is the hook to swap in a real backend fetch.
+  const handleRefresh = () => new Promise(res => setTimeout(res, 600));
+
   const selected = id ? procedures.find(p => String(p.id) === id) : null;
-  if (id) {
-    return selected
-      ? <ProcedureDetail procedure={selected} onBack={() => navigate(-1)} />
-      : <ProcedureDetail procedure={procedures[0]} onBack={() => navigate('/procedures', { replace: true })} />;
-  }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="relative h-full overflow-hidden">
+      <AnimatePresence initial={false}>
+        {id ? (
+          <motion.div
+            key="detail"
+            className="absolute inset-0"
+            variants={detailVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={slideTransition}
+          >
+            {selected
+              ? <ProcedureDetail procedure={selected} onBack={() => navigate(-1)} />
+              : <ProcedureDetail procedure={procedures[0]} onBack={() => navigate('/procedures', { replace: true })} />}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="list"
+            className="absolute inset-0"
+            variants={listVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={slideTransition}
+          >
+            <div className="flex flex-col h-full">
       <div className="sticky top-0 z-30 flex-shrink-0 bg-background" ref={dropdownRef}>
         <div className="px-5 pt-4 pb-2 flex items-center gap-3">
           <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/07dad48dc_Pic3.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ transform: 'scale(1.1)', transformOrigin: 'center' }} />
@@ -227,7 +253,7 @@ export default function ProceduresScreen() {
       </div>
 
       {/* List */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
+      <PullToRefresh scrollRef={scrollRef} onRefresh={handleRefresh} className="main-scroll px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
         {filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
@@ -271,7 +297,11 @@ export default function ProceduresScreen() {
         })}
         <DisclaimerBanner compact />
         <div className="h-2" />
-      </div>
+      </PullToRefresh>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

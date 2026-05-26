@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
+import { MotionConfig } from 'framer-motion';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -91,10 +92,12 @@ function App() {
     <ThemeProvider>
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <AuthenticatedApp />
-        </Router>
-        <Toaster />
+        <MotionConfig reducedMotion="user">
+          <Router>
+            <AuthenticatedApp />
+          </Router>
+          <Toaster />
+        </MotionConfig>
       </QueryClientProvider>
     </AuthProvider>
     </ThemeProvider>
