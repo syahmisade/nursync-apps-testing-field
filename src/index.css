@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -75,6 +75,7 @@
   body {
     @apply bg-background text-foreground font-nunito antialiased;
     background: hsl(var(--background));
+    -webkit-overscroll-behavior: none;
     overscroll-behavior: none;
     -webkit-tap-highlight-color: transparent;
   }
@@ -84,8 +85,8 @@
   a[role="button"],
   [role="tab"],
   [role="button"] {
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
   }
 
   ::-webkit-scrollbar {
@@ -96,6 +97,7 @@
 @layer utilities {
   .scrollbar-hide {
     -ms-overflow-style: none;
+    -webkit-scrollbar-width: none;
     scrollbar-width: none;
   }
   .scrollbar-hide::-webkit-scrollbar {
@@ -103,6 +105,7 @@
   }
   .glass {
     background: hsl(var(--card) / 0.72);
+    -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
     border: 1px solid hsl(var(--border) / 0.8);
   }
@@ -110,21 +113,49 @@
     box-shadow: 0 4px 24px rgba(147, 92, 210, 0.18);
   }
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(265, 60%, 58%) 0%, hsl(285, 55%, 62%) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(265, 60%, 58%) 0%,
+      hsl(285, 55%, 62%) 100%
+    );
   }
   .gradient-soft {
-    background: linear-gradient(135deg, hsl(270, 50%, 92%) 0%, hsl(300, 40%, 91%) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(270, 50%, 92%) 0%,
+      hsl(300, 40%, 91%) 100%
+    );
   }
   .card-shadow {
-    box-shadow: 0 2px 16px rgba(147, 92, 210, 0.08), 0 1px 4px rgba(0,0,0,0.04);
+    box-shadow:
+      0 2px 16px rgba(147, 92, 210, 0.08),
+      0 1px 4px rgba(0, 0, 0, 0.04);
   }
   .card-shadow-hover {
-    box-shadow: 0 6px 24px rgba(147, 92, 210, 0.14), 0 2px 8px rgba(0,0,0,0.06);
+    box-shadow:
+      0 6px 24px rgba(147, 92, 210, 0.14),
+      0 2px 8px rgba(0, 0, 0, 0.06);
   }
   .main-scroll {
+    -webkit-overscroll-behavior: none;
+    -ms-overscroll-behavior: none;
     overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
-    mask-image: linear-gradient(to bottom, black 0, black calc(100% - 20px), transparent 100%);
+    /* enable momentum scrolling only where supported */
+    @supports (-webkit-overflow-scrolling: touch) {
+      -webkit-overflow-scrolling: touch;
+    }
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      black 0,
+      black calc(100% - 20px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      black 0,
+      black calc(100% - 20px),
+      transparent 100%
+    );
   }
   .app-surface {
     background: hsl(var(--background));
@@ -261,15 +292,33 @@
     --pill-bg: hsl(var(--secondary));
     --pill-border: hsl(var(--border));
   }
-  .dark .semantic-pill[data-tone="blue"] { --pill-text: hsl(220 82% 78%); }
-  .dark .semantic-pill[data-tone="success"] { --pill-text: hsl(152 70% 76%); }
-  .dark .semantic-pill[data-tone="purple"] { --pill-text: hsl(270 78% 82%); }
-  .dark .semantic-pill[data-tone="rose"] { --pill-text: hsl(350 78% 80%); }
-  .dark .semantic-pill[data-tone="orange"] { --pill-text: hsl(28 82% 76%); }
-  .dark .semantic-pill[data-tone="cyan"] { --pill-text: hsl(188 76% 76%); }
-  .dark .semantic-pill[data-tone="amber"] { --pill-text: hsl(45 82% 76%); }
-  .dark .semantic-pill[data-tone="danger"] { --pill-text: hsl(0 78% 80%); }
-  .dark .semantic-pill[data-tone="pink"] { --pill-text: hsl(330 78% 80%); }
+  .dark .semantic-pill[data-tone="blue"] {
+    --pill-text: hsl(220 82% 78%);
+  }
+  .dark .semantic-pill[data-tone="success"] {
+    --pill-text: hsl(152 70% 76%);
+  }
+  .dark .semantic-pill[data-tone="purple"] {
+    --pill-text: hsl(270 78% 82%);
+  }
+  .dark .semantic-pill[data-tone="rose"] {
+    --pill-text: hsl(350 78% 80%);
+  }
+  .dark .semantic-pill[data-tone="orange"] {
+    --pill-text: hsl(28 82% 76%);
+  }
+  .dark .semantic-pill[data-tone="cyan"] {
+    --pill-text: hsl(188 76% 76%);
+  }
+  .dark .semantic-pill[data-tone="amber"] {
+    --pill-text: hsl(45 82% 76%);
+  }
+  .dark .semantic-pill[data-tone="danger"] {
+    --pill-text: hsl(0 78% 80%);
+  }
+  .dark .semantic-pill[data-tone="pink"] {
+    --pill-text: hsl(330 78% 80%);
+  }
   .choice-option {
     --choice-bg: hsl(var(--card));
     --choice-border: hsl(var(--border));
