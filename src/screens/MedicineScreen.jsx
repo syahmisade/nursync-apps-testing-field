@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, Check, SlidersHorizontal, Clock } from 'lucide-react';
-import { medicines, categories } from '../data/medicines';
 import { useApp } from '../context/AppContext';
+import { useMedicines } from '../hooks/useMedicines';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import { SemanticPill, StatusPanel, toneForCategory } from '../components/Semantic';
 import PullToRefresh from '../components/PullToRefresh';
@@ -143,6 +143,7 @@ export default function MedicineScreen() {
   }, []);
 
   const { savedMedicines, toggleSaveMedicine, addRecentSearch, recentSearches } = useApp();
+  const { medicines, categories, isLoading } = useMedicines();
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -151,7 +152,7 @@ export default function MedicineScreen() {
       const matchCat = activeCategory === 'All' || m.category === activeCategory;
       return matchSearch && matchCat;
     });
-  }, [search, activeCategory]);
+  }, [medicines, search, activeCategory]);
 
   const handleSelect = (medicine) => {
     addRecentSearch(medicine.genericName);
@@ -178,7 +179,9 @@ export default function MedicineScreen() {
           >
             {selectedMedicine
               ? <MedicineDetail medicine={selectedMedicine} onBack={() => navigate(-1)} />
-              : <MedicineDetail medicine={medicines[0]} onBack={() => navigate('/medicine', { replace: true })} />}
+              : !isLoading && medicines[0]
+                ? <MedicineDetail medicine={medicines[0]} onBack={() => navigate('/medicine', { replace: true })} />
+                : <div className="flex items-center justify-center h-full"><div className="w-7 h-7 border-4 border-secondary border-t-primary rounded-full animate-spin" /></div>}
           </motion.div>
         ) : (
           <motion.div
@@ -278,7 +281,13 @@ export default function MedicineScreen() {
 
       {/* Medicine list */}
       <PullToRefresh scrollRef={scrollRef} onRefresh={handleRefresh} className="px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
-        {filtered.length === 0 && (
+        {isLoading && (
+          <div className="text-center py-14">
+            <div className="w-7 h-7 mx-auto border-4 border-secondary border-t-primary rounded-full animate-spin" />
+            <p className="text-sm font-semibold mt-3 text-muted-foreground">Loading medicines…</p>
+          </div>
+        )}
+        {!isLoading && filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
             <p className="text-sm font-semibold text-muted-foreground">No medicines found</p>
