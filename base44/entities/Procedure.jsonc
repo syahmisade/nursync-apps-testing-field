@@ -1,0 +1,61 @@
+{
+  "name": "Procedure",
+  "type": "object",
+  "properties": {
+    "legacyId": {
+      "type": "number",
+      "description": "Matches the id field from the original procedures.js data file"
+    },
+    "title": {
+      "type": "string",
+      "description": "Name of the clinical procedure"
+    },
+    "category": {
+      "type": "string",
+      "description": "Clinical category of the procedure"
+    },
+    "overview": {
+      "type": "string",
+      "description": "Overview/summary of the procedure"
+    },
+    "indications": {
+      "type": "string",
+      "description": "Clinical indications for the procedure"
+    },
+    "equipment": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of required equipment in order"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Step-by-step procedure instructions in order"
+    },
+    "precautions": {
+      "type": "string",
+      "description": "Precautions and safety considerations"
+    },
+    "documentation": {
+      "type": "string",
+      "description": "Documentation requirements"
+    },
+    "references": {
+      "type": "string",
+      "description": "Reference sources"
+    },
+    "isFeatured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this procedure is featured/highlighted"
+    }
+  },
+  "required": [
+    "legacyId",
+    "title"
+  ]
+}
