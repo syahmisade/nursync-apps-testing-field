@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bookmark, BookmarkCheck, Pill, ClipboardList, BookOpen, ChevronRight, BookmarkX, ArrowLeft, AlertTriangle, CheckCircle2 } from 'lucide-react';
-import { medicines } from '../data/medicines';
-import { procedures } from '../data/procedures';
-import { quizQuestions } from '../data/quiz';
+import { useMedicines } from '../hooks/useMedicines';
+import { useProcedures } from '../hooks/useProcedures';
+import { useQuiz } from '../hooks/useQuiz';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import { SemanticPill, toneForCategory, toneForQuizCategory } from '../components/Semantic';
@@ -34,6 +34,9 @@ export default function SavedScreen() {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef(null);
   const { savedMedicines, savedProcedures, savedQuizQuestions, toggleSaveMedicine, toggleSaveProcedure, toggleSaveQuestion } = useApp();
+  const { medicines } = useMedicines();
+  const { procedures } = useProcedures();
+  const { quizQuestions } = useQuiz();
 
   useEffect(() => {
     const el = scrollRef.current;

@@ -430,8 +430,8 @@ export default function ProfileScreen() {
                 icon={ShieldCheck}
                 iconColor="hsl(152,50%,38%)"
                 iconBg="hsl(152,50%,92%)"
-                label="Local demo mode"
-                sublabel="Data is saved on this device only"
+                label="Cloud sync"
+                sublabel="Saved items and quiz progress sync to your account"
                 chevron={false}
               />
               <SettingsRow
@@ -447,7 +447,7 @@ export default function ProfileScreen() {
                 iconColor="hsl(0,58%,48%)"
                 iconBg="hsl(0,60%,95%)"
                 label="Delete Account Data"
-                sublabel="Clear all local saved data and app state"
+                sublabel="Clear all your saved items and quiz progress"
                 danger
                 onClick={() => setConfirmOpen(true)}
               />
@@ -548,7 +548,7 @@ export default function ProfileScreen() {
               Delete account data?
             </h2>
             <p className="text-sm leading-relaxed mt-2 text-muted-foreground">
-              This clears local saved data on this device. It does not call a backend yet, so it is safe to wire into Supabase later.
+              This permanently clears all your saved items and quiz progress from your account. This cannot be undone.
             </p>
             <div className="grid grid-cols-2 gap-2 mt-5">
               <button
