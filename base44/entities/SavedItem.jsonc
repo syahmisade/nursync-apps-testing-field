@@ -1,0 +1,23 @@
+{
+  "name": "SavedItem",
+  "type": "object",
+  "properties": {
+    "itemType": {
+      "type": "string",
+      "enum": [
+        "medicine",
+        "procedure",
+        "quiz"
+      ],
+      "description": "The type of content that was saved"
+    },
+    "itemLegacyId": {
+      "type": "number",
+      "description": "The legacyId of the saved Medicine, Procedure, or QuizQuestion"
+    }
+  },
+  "required": [
+    "itemType",
+    "itemLegacyId"
+  ]
+}
