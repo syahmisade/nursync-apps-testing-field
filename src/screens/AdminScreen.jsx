@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShieldAlert, Pill, ClipboardList } from 'lucide-react';
+import { ArrowLeft, ShieldAlert, Pill, ClipboardList, HelpCircle } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import AdminEntityManager from '../components/admin/AdminEntityManager';
 import { StatusPanel } from '../components/Semantic';
@@ -34,6 +34,15 @@ const procedureFields = [
   { key: 'references', label: 'References', type: 'textarea' },
 ];
 
+const quizFields = [
+  { key: 'categoryKey', label: 'Category key', type: 'text', placeholder: 'e.g. pharmacology, infection' },
+  { key: 'question', label: 'Question', type: 'textarea' },
+  { key: 'options', label: 'Options (4)', type: 'list', placeholder: 'Option A\nOption B\nOption C\nOption D' },
+  { key: 'correctIndex', label: 'Correct option index (0–3)', type: 'number', placeholder: '0 = first option' },
+  { key: 'explanation', label: 'Explanation', type: 'textarea' },
+  { key: 'reference', label: 'Reference', type: 'text' },
+];
+
 export default function AdminScreen() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -64,13 +73,14 @@ export default function AdminScreen() {
         </div>
 
         <div className="px-4 pb-3">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {[
               { key: 'medicines', label: 'Medicines', Icon: Pill, color: 'hsl(220,60%,46%)', bg: 'hsl(220,60%,93%)' },
               { key: 'procedures', label: 'Procedures', Icon: ClipboardList, color: 'hsl(270,50%,48%)', bg: 'hsl(270,50%,93%)' },
+              { key: 'quiz', label: 'Quiz', Icon: HelpCircle, color: 'hsl(152,50%,38%)', bg: 'hsl(152,50%,93%)' },
             ].map(({ key, label, Icon, color, bg }) => (
               <button key={key} onClick={() => setTab(key)}
-                className="rounded-2xl p-2.5 border flex items-center justify-center gap-2 transition-all active:scale-95"
+                className="rounded-2xl p-2.5 border flex items-center justify-center gap-1.5 transition-all active:scale-95"
                 style={tab === key ? { background: bg, borderColor: color + '55' } : { background: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}>
                 <Icon size={15} style={{ color }} />
                 <span className="text-sm font-bold" style={{ color: tab === key ? color : 'hsl(var(--muted-foreground))' }}>{label}</span>
@@ -81,7 +91,7 @@ export default function AdminScreen() {
       </div>
 
       <div className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pt-1 pb-4 animate-fade-in">
-        {tab === 'medicines' ? (
+        {tab === 'medicines' && (
           <AdminEntityManager
             entityName="Medicine"
             queryKey="medicines"
@@ -90,13 +100,24 @@ export default function AdminScreen() {
             fields={medicineFields}
             sortField="legacyId"
           />
-        ) : (
+        )}
+        {tab === 'procedures' && (
           <AdminEntityManager
             entityName="Procedure"
             queryKey="procedures"
             titleField="title"
             subtitleField="category"
             fields={procedureFields}
+            sortField="legacyId"
+          />
+        )}
+        {tab === 'quiz' && (
+          <AdminEntityManager
+            entityName="QuizQuestion"
+            queryKey="quiz"
+            titleField="question"
+            subtitleField="categoryKey"
+            fields={quizFields}
             sortField="legacyId"
           />
         )}
