@@ -1,6 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { categories as staticCategories } from '../data/medicines';
+
+const staticCategories = [
+  'All',
+  'Analgesic',
+  'Antibiotic',
+  'Antidiabetic',
+  'Antihypertensive',
+  'Antilipid',
+  'Bronchodilator',
+  'Antacid/PPI',
+  'Opioid Analgesic',
+  'Anticoagulant',
+  'Corticosteroid',
+];
 
 // Reads medicines from the Base44 `Medicine` entity and maps `legacyId` -> `id`
 // so the existing screen/save logic (which keys off `medicine.id`) keeps working.
