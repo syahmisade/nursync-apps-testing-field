@@ -1,0 +1,42 @@
+{
+  "name": "QuizQuestion",
+  "type": "object",
+  "properties": {
+    "legacyId": {
+      "type": "number",
+      "description": "Matches the id field from the original quiz.js data file"
+    },
+    "categoryKey": {
+      "type": "string",
+      "description": "Matches QuizCategory.categoryKey (e.g. pharmacology, fundamentals)"
+    },
+    "question": {
+      "type": "string",
+      "description": "The quiz question text"
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of 4 answer options in order"
+    },
+    "correctIndex": {
+      "type": "number",
+      "description": "0-based index of the correct option (0-3)"
+    },
+    "explanation": {
+      "type": "string",
+      "description": "Explanation of the correct answer"
+    },
+    "reference": {
+      "type": "string",
+      "description": "Reference source for the question"
+    }
+  },
+  "required": [
+    "legacyId",
+    "categoryKey",
+    "question"
+  ]
+}
