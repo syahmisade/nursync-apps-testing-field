@@ -1,0 +1,51 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "user"
+      ],
+      "default": "user"
+    },
+    "institution": {
+      "type": "string",
+      "default": "",
+      "description": "User's institution or hospital"
+    },
+    "studyLevel": {
+      "type": "string",
+      "enum": [
+        "General nursing learning",
+        "Year 1 nursing student",
+        "Year 2 nursing student",
+        "Year 3 nursing student",
+        "Clinical placement",
+        "Staff nurse revision"
+      ],
+      "default": "General nursing learning",
+      "description": "User's current study or practice level"
+    },
+    "defaultStartSection": {
+      "type": "string",
+      "enum": [
+        "medicine",
+        "calculators",
+        "procedures",
+        "quiz",
+        "saved"
+      ],
+      "default": "medicine",
+      "description": "Which section the app opens to by default"
+    },
+    "recentSearches": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Most recent search terms, newest first, max 8 items"
+    }
+  }
+}
