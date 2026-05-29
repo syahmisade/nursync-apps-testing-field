@@ -1,0 +1,75 @@
+{
+  "name": "Medicine",
+  "type": "object",
+  "properties": {
+    "legacyId": {
+      "type": "number",
+      "description": "Matches the id field from the original medicines.js data file"
+    },
+    "genericName": {
+      "type": "string",
+      "description": "Generic/chemical name of the medicine"
+    },
+    "brandName": {
+      "type": "string",
+      "description": "Brand/trade name(s) of the medicine"
+    },
+    "glamourName": {
+      "type": "string",
+      "description": "Common or colloquial name for the medicine"
+    },
+    "category": {
+      "type": "string",
+      "description": "Therapeutic category"
+    },
+    "indications": {
+      "type": "string",
+      "description": "Clinical indications for use"
+    },
+    "adverseReactions": {
+      "type": "string",
+      "description": "Known adverse drug reactions"
+    },
+    "contraindications": {
+      "type": "string",
+      "description": "Contraindications for use"
+    },
+    "interactions": {
+      "type": "string",
+      "description": "Drug interactions"
+    },
+    "precautions": {
+      "type": "string",
+      "description": "Clinical precautions"
+    },
+    "dosage": {
+      "type": "string",
+      "description": "Dosage guidelines"
+    },
+    "prescriberCategory": {
+      "type": "string",
+      "description": "Prescriber category / schedule"
+    },
+    "prescribingRestrictions": {
+      "type": "string",
+      "description": "Prescribing restrictions"
+    },
+    "nemlStatus": {
+      "type": "string",
+      "description": "National Essential Medicines List status"
+    },
+    "references": {
+      "type": "string",
+      "description": "Reference sources"
+    },
+    "isFeatured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this medicine is featured/highlighted"
+    }
+  },
+  "required": [
+    "legacyId",
+    "genericName"
+  ]
+}
