@@ -19,6 +19,7 @@ import ProceduresScreen from './screens/ProceduresScreen';
 import QuizScreen from './screens/QuizScreen';
 import SavedScreen from './screens/SavedScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import AdminScreen from './screens/AdminScreen';
 
 const DEFAULT_START_SECTIONS = {
   medicine: '/medicine',
@@ -75,6 +76,7 @@ const AuthenticatedApp = () => {
         <Route path="quiz/:id" element={<QuizScreen />} />
         <Route path="saved" element={<SavedScreen />} />
         <Route path="profile" element={<ProfileScreen />} />
+        <Route path="admin" element={<AdminScreen />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

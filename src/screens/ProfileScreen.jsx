@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   AlertTriangle, BookOpen, Calculator, Check, ChevronRight, ClipboardList,
-  GraduationCap, Info, Lightbulb, LogOut, MailQuestion, Moon, Pill, School,
+  Database, GraduationCap, Info, Lightbulb, LogOut, MailQuestion, Moon, Pill, School,
   ShieldAlert, ShieldCheck, Sparkles, Trash2, UserRound, X
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
@@ -164,6 +165,7 @@ export default function ProfileScreen() {
   const [learningProfile, setLearningProfile] = useState(loadLearningProfile);
   const [profileDraft, setProfileDraft] = useState(learningProfile);
   const [defaultStartSection, setDefaultStartSection] = useState(loadDefaultStartSection);
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const {
     savedMedicines,
@@ -311,6 +313,22 @@ export default function ProfileScreen() {
               />
             </SettingsCard>
           </div>
+
+          {user?.role === 'admin' && (
+            <div>
+              <SectionLabel>Admin</SectionLabel>
+              <SettingsCard>
+                <SettingsRow
+                  icon={Database}
+                  iconColor="hsl(265,55%,48%)"
+                  iconBg="hsl(265,55%,92%)"
+                  label="Content Manager"
+                  sublabel="Add, edit & remove medicines and procedures"
+                  onClick={() => navigate('/admin')}
+                />
+              </SettingsCard>
+            </div>
+          )}
 
           <div>
             <SectionLabel>Preferences</SectionLabel>
