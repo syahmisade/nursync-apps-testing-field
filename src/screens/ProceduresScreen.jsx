@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, CheckCircle2, SlidersHorizontal, Check } from 'lucide-react';
-import { procedures, procedureCategories } from '../data/procedures';
 import { useApp } from '../context/AppContext';
+import { useProcedures } from '../hooks/useProcedures';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import { SemanticPill, StatusPanel, toneForCategory } from '../components/Semantic';
 import PullToRefresh from '../components/PullToRefresh';
@@ -145,6 +145,7 @@ export default function ProceduresScreen() {
   const dropdownRef = useRef(null);
   const scrollRef = useRef(null);
   const { savedProcedures, toggleSaveProcedure } = useApp();
+  const { procedures, procedureCategories, isLoading } = useProcedures();
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -169,7 +170,7 @@ export default function ProceduresScreen() {
       const matchCat = activeCategory === 'All' || p.category === activeCategory;
       return matchSearch && matchCat;
     });
-  }, [search, activeCategory]);
+  }, [procedures, search, activeCategory]);
 
   // Data is static today; this is the hook to swap in a real backend fetch.
   const handleRefresh = () => new Promise(res => setTimeout(res, 600));
@@ -191,7 +192,9 @@ export default function ProceduresScreen() {
           >
             {selected
               ? <ProcedureDetail procedure={selected} onBack={() => navigate(-1)} />
-              : <ProcedureDetail procedure={procedures[0]} onBack={() => navigate('/procedures', { replace: true })} />}
+              : !isLoading && procedures[0]
+                ? <ProcedureDetail procedure={procedures[0]} onBack={() => navigate('/procedures', { replace: true })} />
+                : <div className="flex items-center justify-center h-full"><div className="w-7 h-7 border-4 border-secondary border-t-primary rounded-full animate-spin" /></div>}
           </motion.div>
         ) : (
           <motion.div
@@ -254,7 +257,13 @@ export default function ProceduresScreen() {
 
       {/* List */}
       <PullToRefresh scrollRef={scrollRef} onRefresh={handleRefresh} className="main-scroll px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
-        {filtered.length === 0 && (
+        {isLoading && (
+          <div className="text-center py-14">
+            <div className="w-7 h-7 mx-auto border-4 border-secondary border-t-primary rounded-full animate-spin" />
+            <p className="text-sm font-semibold mt-3 text-muted-foreground">Loading procedures…</p>
+          </div>
+        )}
+        {!isLoading && filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
             <p className="text-sm font-semibold text-muted-foreground">No procedures found</p>
