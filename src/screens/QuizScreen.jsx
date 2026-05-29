@@ -1,15 +1,15 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Bookmark, BookmarkCheck, CheckCircle2, XCircle, RotateCcw, ChevronRight, Trophy } from 'lucide-react';
-import { quizCategories, quizQuestions } from '../data/quiz';
 import { useApp } from '../context/AppContext';
+import { useQuiz } from '../hooks/useQuiz';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import { SemanticPill, StatusPanel, toneForQuizCategory } from '../components/Semantic';
 import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
 
-function QuizSession({ category, onBack, onFinish }) {
+function QuizSession({ category, allQuestions, onBack, onFinish }) {
   const questions = useMemo(() =>
-    quizQuestions.filter(q => q.category === category.id), [category]);
+    allQuestions.filter(q => q.category === category.id), [category, allQuestions]);
 
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selected, setSelected] = useState(null);
@@ -204,6 +204,7 @@ function QuizResults({ category, score, total, onRetry, onBack }) {
 export default function QuizScreen() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { quizCategories, quizQuestions, isLoading } = useQuiz();
   const activeCategory = id ? quizCategories.find(cat => cat.id === id) : null;
   const [quizState, setQuizState] = useState(id ? 'session' : 'menu');
   const [lastResult, setLastResult] = useState(null);
@@ -256,7 +257,7 @@ export default function QuizScreen() {
             transition={slideTransition}
           >
             {showSession && (
-              <QuizSession category={activeCategory} onBack={handleBackToCategories} onFinish={handleFinish} />
+              <QuizSession category={activeCategory} allQuestions={quizQuestions} onBack={handleBackToCategories} onFinish={handleFinish} />
             )}
             {showResults && (
               <QuizResults category={activeCategory} score={lastResult.score} total={lastResult.total}
@@ -288,6 +289,13 @@ export default function QuizScreen() {
       </div>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pt-2 pb-4 space-y-3 animate-fade-in">
+        {isLoading ? (
+          <div className="text-center py-14">
+            <div className="w-7 h-7 mx-auto border-4 border-secondary border-t-primary rounded-full animate-spin" />
+            <p className="text-sm font-semibold mt-3 text-muted-foreground">Loading quiz…</p>
+          </div>
+        ) : (
+          <>
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2">
           {[
@@ -330,6 +338,8 @@ export default function QuizScreen() {
 
         <DisclaimerBanner compact />
         <div className="h-2" />
+          </>
+        )}
       </div>
             </div>
           </motion.div>
