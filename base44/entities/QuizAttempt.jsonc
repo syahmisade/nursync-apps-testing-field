@@ -1,0 +1,23 @@
+{
+  "name": "QuizAttempt",
+  "type": "object",
+  "properties": {
+    "categoryKey": {
+      "type": "string",
+      "description": "Matches QuizCategory.categoryKey (e.g. pharmacology, fundamentals)"
+    },
+    "score": {
+      "type": "number",
+      "description": "Number of correct answers in this attempt"
+    },
+    "total": {
+      "type": "number",
+      "description": "Total number of questions in this attempt"
+    }
+  },
+  "required": [
+    "categoryKey",
+    "score",
+    "total"
+  ]
+}
