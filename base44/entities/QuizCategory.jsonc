@@ -1,0 +1,22 @@
+{
+  "name": "QuizCategory",
+  "type": "object",
+  "properties": {
+    "categoryKey": {
+      "type": "string",
+      "description": "Unique key for this category (e.g. pharmacology, fundamentals). Maps to id in quiz.js."
+    },
+    "label": {
+      "type": "string",
+      "description": "Display label for the category"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Emoji icon for the category"
+    }
+  },
+  "required": [
+    "categoryKey",
+    "label"
+  ]
+}
