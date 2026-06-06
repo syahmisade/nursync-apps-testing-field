@@ -194,7 +194,7 @@ export default function ProceduresScreen() {
             transition={slideTransition}
           >
             {selected
-              ? <ProcedureDetail procedure={selected} onBack={() => navigate(-1)} />
+              ? <ProcedureDetail procedure={selected} onBack={() => navigate('/procedures')} />
               : !isLoading && procedures[0]
                 ? <ProcedureDetail procedure={procedures[0]} onBack={() => navigate('/procedures', { replace: true })} />
                 : <div className="flex items-center justify-center h-full"><div className="w-7 h-7 border-4 border-secondary border-t-primary rounded-full animate-spin" /></div>}
