@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Check, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import MobileSelect from '@/components/MobileSelect';
@@ -50,9 +51,9 @@ export default function AdminFormModal({ title, fields, initial, onSave, onClose
     onSave(out);
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center px-5"
+      className="fixed inset-0 z-[200] flex items-center justify-center px-5"
       style={{ background: 'rgba(20, 16, 28, 0.52)' }}
       role="dialog"
       aria-modal="true"
@@ -134,6 +135,7 @@ export default function AdminFormModal({ title, fields, initial, onSave, onClose
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
