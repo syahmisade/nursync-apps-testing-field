@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, Pencil, Trash2, AlertTriangle } from 'lucide-react';
 import AdminFormModal from './AdminFormModal';
+import AdminCsvBar from './AdminCsvBar';
 
 // Reusable CRUD manager for a Base44 entity.
 // props:
@@ -42,6 +43,20 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
     onSuccess: () => { invalidate(); setConfirmDelete(null); },
   });
 
+  const handleImport = async (rows) => {
+    let nextLegacy = records.reduce((m, r) => Math.max(m, r.legacyId || 0), 0);
+    const payload = rows.map(r => {
+      const clean = { ...r };
+      delete clean.legacyId;
+      if (noLegacyId) return clean;
+      nextLegacy += 1;
+      return { ...clean, legacyId: nextLegacy };
+    });
+    await base44.entities[entityName].bulkCreate(payload);
+    invalidate();
+    return payload.length;
+  };
+
   return (
     <div className="space-y-2.5">
       <button
@@ -51,6 +66,13 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
       >
         <Plus size={16} /> Add {entityName}
       </button>
+
+      <AdminCsvBar
+        entityName={entityName}
+        fields={fields}
+        records={records}
+        onImport={handleImport}
+      />
 
       {isLoading ? (
         <div className="text-center py-10">
