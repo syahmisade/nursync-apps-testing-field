@@ -1,13 +1,48 @@
-import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { AppProvider } from '../context/AppContext';
 import BottomNav from '../components/BottomNav';
 import WelcomeOverlay from '../components/WelcomeOverlay';
 import { Settings, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
+const TAB_ROOTS = ['/medicine', '/calculators', '/procedures', '/quiz', '/saved'];
+const TAB_VIEW_STATE_KEY = 'nursync_tab_view_state';
+
+function getTabRoot(pathname) {
+  return TAB_ROOTS.find(root => pathname === root || pathname.startsWith(`${root}/`));
+}
+
+function loadTabViewState() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(TAB_VIEW_STATE_KEY) || '{}');
+    return TAB_ROOTS.reduce((acc, root) => ({ ...acc, [root]: stored[root] || root }), {});
+  } catch {
+    return TAB_ROOTS.reduce((acc, root) => ({ ...acc, [root]: root }), {});
+  }
+}
+
 export default function NurSync() {
   const { isDark, toggleTheme } = useTheme();
+  const { pathname } = useLocation();
+  const [tabViewState, setTabViewState] = useState(loadTabViewState);
+
+  useEffect(() => {
+    const activeRoot = getTabRoot(pathname);
+    if (!activeRoot) return;
+
+    setTabViewState(prev => {
+      if (prev[activeRoot] === pathname) return prev;
+      const next = { ...prev, [activeRoot]: pathname };
+      try {
+        localStorage.setItem(TAB_VIEW_STATE_KEY, JSON.stringify(next));
+      } catch {
+        // Non-critical mobile nicety; tab roots still work without storage.
+      }
+      return next;
+    });
+  }, [pathname]);
+
   return (
     <AppProvider>
       {/* Full-screen background */}
@@ -59,7 +94,7 @@ export default function NurSync() {
 
           {/* Bottom nav */}
           <div className="flex-shrink-0">
-            <BottomNav />
+            <BottomNav tabViewState={tabViewState} />
           </div>
 
         </div>

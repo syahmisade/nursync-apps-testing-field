@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Check, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import MobileSelect from '@/components/MobileSelect';
 
 // Generic add/edit modal driven by a `fields` config.
 // fields: [{ key, label, type: 'text'|'textarea'|'number'|'list'|'select', placeholder, options, required }]
@@ -33,18 +34,18 @@ export default function AdminFormModal({ title, fields, initial, onSave, onClose
       }
     });
 
-    // Required-field check
     const missing = fields.find(f => f.required && (out[f.key] === '' || out[f.key] == null || (Array.isArray(out[f.key]) && out[f.key].length === 0)));
     if (missing) {
       setError(`${missing.label} is required.`);
       return;
     }
-    // Custom validation
+
     const customError = validate ? validate(out) : null;
     if (customError) {
       setError(customError);
       return;
     }
+
     setError('');
     onSave(out);
   };
@@ -76,16 +77,13 @@ export default function AdminFormModal({ title, fields, initial, onSave, onClose
                 {f.label}
               </label>
               {f.type === 'select' ? (
-                <select
+                <MobileSelect
                   value={draft[f.key]}
-                  onChange={e => setField(f.key, e.target.value)}
-                  className="w-full h-9 rounded-xl border border-input bg-background px-3 text-sm font-semibold text-foreground outline-none"
-                >
-                  <option value="">Select…</option>
-                  {(f.options || []).map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
+                  onChange={nextValue => setField(f.key, nextValue)}
+                  placeholder="Select..."
+                  label={f.label}
+                  options={f.options || []}
+                />
               ) : f.type === 'textarea' || f.type === 'list' ? (
                 <textarea
                   value={draft[f.key]}
@@ -132,7 +130,7 @@ export default function AdminFormModal({ title, fields, initial, onSave, onClose
             className="py-3 rounded-2xl text-sm font-black bg-primary text-primary-foreground flex items-center justify-center gap-1.5 disabled:opacity-60"
           >
             <Check size={16} />
-            {saving ? 'Saving…' : 'Save'}
+            {saving ? 'Saving...' : 'Save'}
           </button>
         </div>
       </div>

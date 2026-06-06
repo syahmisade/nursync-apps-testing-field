@@ -8,10 +8,12 @@ import {
 import { useAuth } from '@/lib/AuthContext';
 import { useApp } from '@/context/AppContext';
 import { useTheme } from '@/context/ThemeContext';
+import { base44 } from '@/api/base44Client';
 import { StatusPanel } from '@/components/Semantic';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import FeedbackModal from '@/components/feedback/FeedbackModal';
+import MobileSelect from '@/components/MobileSelect';
 
 const LEARNING_PROFILE_KEY = 'nursync_learning_profile';
 const DEFAULT_START_SECTION_KEY = 'nursync_default_start_section';
@@ -20,6 +22,15 @@ const defaultLearningProfile = {
   institution: '',
   studyLevel: 'General nursing learning'
 };
+
+const studyLevelOptions = [
+  'General nursing learning',
+  'Year 1 nursing student',
+  'Year 2 nursing student',
+  'Year 3 nursing student',
+  'Clinical placement',
+  'Staff nurse revision'
+].map(value => ({ value, label: value }));
 
 const startSectionOptions = [
   { value: 'medicine', label: 'Medicine', path: '/medicine' },
@@ -160,6 +171,9 @@ function FieldLabel({ children }) {
 
 export default function ProfileScreen() {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [accountConfirmOpen, setAccountConfirmOpen] = useState(false);
+  const [accountDeleting, setAccountDeleting] = useState(false);
+  const [accountDeleteError, setAccountDeleteError] = useState('');
   const [deleted, setDeleted] = useState(false);
   const [feedbackModal, setFeedbackModal] = useState(null); // { type, title }
   const [profileOpen, setProfileOpen] = useState(false);
@@ -199,8 +213,24 @@ export default function ProfileScreen() {
     };
   }, [quizProgress]);
 
-  const handleDelete = () => {
-    clearAllData();
+  const deleteUserProfile = async () => {
+    const deleteMethods = ['deleteMe', 'deleteAccount', 'deleteUser', 'removeMe'];
+    const methodName = deleteMethods.find(name => typeof base44.auth?.[name] === 'function');
+
+    if (methodName) {
+      await base44.auth[methodName]();
+      return;
+    }
+
+    const currentUser = await base44.auth.me();
+    if (!currentUser?.id) {
+      throw new Error('Could not identify the current user profile.');
+    }
+    await base44.entities.User.delete(currentUser.id);
+  };
+
+  const handleDelete = async () => {
+    await clearAllData();
     localStorage.removeItem(LEARNING_PROFILE_KEY);
     localStorage.removeItem(DEFAULT_START_SECTION_KEY);
     setLearningProfile(defaultLearningProfile);
@@ -228,6 +258,21 @@ export default function ProfileScreen() {
   const saveDefaultStartSection = (value) => {
     localStorage.setItem(DEFAULT_START_SECTION_KEY, value);
     setDefaultStartSection(value);
+  };
+
+  const handleDeleteAccount = async () => {
+    setAccountDeleteError('');
+    setAccountDeleting(true);
+    try {
+      await clearAllData();
+      await deleteUserProfile();
+      localStorage.removeItem(LEARNING_PROFILE_KEY);
+      localStorage.removeItem(DEFAULT_START_SECTION_KEY);
+      logout('/login');
+    } catch (error) {
+      setAccountDeleteError(error?.message || 'Could not delete your account. Please try again.');
+      setAccountDeleting(false);
+    }
   };
 
   const selectedStartSection = startSectionOptions.find(option => option.value === defaultStartSection)
@@ -345,19 +390,16 @@ export default function ProfileScreen() {
                 sublabel={`Open ${selectedStartSection.label} when launching NurSync`}
                 chevron={false}
                 accessory={(
-                  <select
+                  <span className="w-[142px]" onClick={event => event.stopPropagation()}>
+                    <MobileSelect
                     value={defaultStartSection}
-                    onClick={event => event.stopPropagation()}
-                    onChange={event => saveDefaultStartSection(event.target.value)}
-                    className="max-w-[132px] rounded-xl border border-border bg-background px-2 py-1.5 text-xs font-bold text-foreground outline-none"
-                    aria-label="Default start section"
-                  >
-                    {startSectionOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={saveDefaultStartSection}
+                    label="Default start section"
+                    description="Choose the first section NurSync opens."
+                    options={startSectionOptions}
+                    buttonClassName="min-h-8 px-2 py-1.5 text-xs"
+                  />
+                  </span>
                 )}
               />
             </SettingsCard>
@@ -454,10 +496,19 @@ export default function ProfileScreen() {
                 icon={Trash2}
                 iconColor="hsl(0,58%,48%)"
                 iconBg="hsl(0,60%,95%)"
-                label="Delete Account Data"
+                label="Delete Data"
                 sublabel="Clear all your saved items and quiz progress"
                 danger
                 onClick={() => setConfirmOpen(true)}
+              />
+              <SettingsRow
+                icon={ShieldAlert}
+                iconColor="hsl(0,58%,48%)"
+                iconBg="hsl(0,60%,95%)"
+                label="Delete Account"
+                sublabel="Permanently delete your user profile"
+                danger
+                onClick={() => setAccountConfirmOpen(true)}
               />
             </SettingsCard>
           </div>
@@ -512,18 +563,12 @@ export default function ProfileScreen() {
               </div>
               <div className="space-y-1.5">
                 <FieldLabel>Study level</FieldLabel>
-                <select
+                <MobileSelect
                   value={profileDraft.studyLevel}
-                  onChange={event => setProfileDraft(prev => ({ ...prev, studyLevel: event.target.value }))}
-                  className="flex h-9 w-full rounded-xl border border-input bg-background px-3 py-1 text-sm font-semibold text-foreground outline-none"
-                >
-                  <option>General nursing learning</option>
-                  <option>Year 1 nursing student</option>
-                  <option>Year 2 nursing student</option>
-                  <option>Year 3 nursing student</option>
-                  <option>Clinical placement</option>
-                  <option>Staff nurse revision</option>
-                </select>
+                  onChange={nextValue => setProfileDraft(prev => ({ ...prev, studyLevel: nextValue }))}
+                  label="Study level"
+                  options={studyLevelOptions}
+                />
               </div>
             </div>
 
@@ -580,6 +625,55 @@ export default function ProfileScreen() {
                 className="py-3 rounded-2xl text-sm font-black bg-destructive text-destructive-foreground"
               >
                 Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {accountConfirmOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center px-5"
+          style={{ background: 'rgba(20, 16, 28, 0.52)' }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-user-account-title"
+        >
+          <div className="w-full max-w-sm rounded-3xl border p-5 app-card animate-pop-in">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3 bg-destructive/10 text-destructive">
+              <ShieldAlert size={24} />
+            </div>
+            <h2 id="delete-user-account-title" className="text-lg font-black text-foreground">
+              Delete account?
+            </h2>
+            <p className="text-sm leading-relaxed mt-2 text-muted-foreground">
+              This permanently deletes your user profile. Saved items and quiz progress will be cleared before deletion.
+            </p>
+            {accountDeleteError && (
+              <div className="mt-4 flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-destructive">
+                <AlertTriangle size={15} className="flex-shrink-0 mt-0.5" />
+                <p className="text-xs font-bold leading-snug">{accountDeleteError}</p>
+              </div>
+            )}
+            <div className="grid grid-cols-2 gap-2 mt-5">
+              <button
+                type="button"
+                onClick={() => {
+                  setAccountConfirmOpen(false);
+                  setAccountDeleteError('');
+                }}
+                disabled={accountDeleting}
+                className="py-3 rounded-2xl text-sm font-black border bg-secondary text-secondary-foreground border-border disabled:opacity-60"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteAccount}
+                disabled={accountDeleting}
+                className="py-3 rounded-2xl text-sm font-black bg-destructive text-destructive-foreground disabled:opacity-60"
+              >
+                {accountDeleting ? 'Deleting...' : 'Delete Account'}
               </button>
             </div>
           </div>

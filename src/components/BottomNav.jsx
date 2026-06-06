@@ -10,7 +10,7 @@ const tabs = [
   { path: '/saved', label: 'Saved', Icon: Bookmark },
 ];
 
-export default function BottomNav() {
+export default function BottomNav({ tabViewState = {} }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -27,10 +27,9 @@ export default function BottomNav() {
         // /medicine/123 keeps the Medicine tab highlighted).
         const isActive = pathname === path || pathname.startsWith(`${path}/`);
 
-        // Tapping the tab always returns to its root path; from a detail page
-        // this pops back to the list. If already at the root, it's a no-op.
         const handleClick = () => {
-          if (pathname !== path) navigate(path);
+          const targetPath = tabViewState[path] || path;
+          if (pathname !== targetPath) navigate(targetPath);
         };
 
         return (
