@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, ShieldAlert, Pill, ClipboardList, HelpCircle, Tags } from 'lucide-react';
+import { ArrowLeft, ShieldAlert, Pill, ClipboardList, HelpCircle, Tags, Inbox } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
 import AdminEntityManager from '../components/admin/AdminEntityManager';
+import AdminFeedbackList from '../components/admin/AdminFeedbackList';
 import { StatusPanel } from '../components/Semantic';
 
 const medicineFields = [
@@ -101,12 +102,13 @@ export default function AdminScreen() {
         </div>
 
         <div className="px-4 pb-3">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {[
               { key: 'medicines', label: 'Medicines', Icon: Pill, color: 'hsl(220,60%,46%)', bg: 'hsl(220,60%,93%)' },
               { key: 'procedures', label: 'Procedures', Icon: ClipboardList, color: 'hsl(270,50%,48%)', bg: 'hsl(270,50%,93%)' },
               { key: 'quiz', label: 'Quiz', Icon: HelpCircle, color: 'hsl(152,50%,38%)', bg: 'hsl(152,50%,93%)' },
               { key: 'categories', label: 'Categories', Icon: Tags, color: 'hsl(28,70%,45%)', bg: 'hsl(28,80%,93%)' },
+              { key: 'feedback', label: 'Feedback', Icon: Inbox, color: 'hsl(330,55%,48%)', bg: 'hsl(330,60%,94%)' },
             ].map(({ key, label, Icon, color, bg }) => (
               <button key={key} onClick={() => setTab(key)}
                 className="rounded-2xl p-2.5 border flex items-center justify-center gap-1.5 transition-all active:scale-95"
@@ -162,6 +164,7 @@ export default function AdminScreen() {
             noLegacyId
           />
         )}
+        {tab === 'feedback' && <AdminFeedbackList />}
         <div className="h-2" />
       </div>
     </div>

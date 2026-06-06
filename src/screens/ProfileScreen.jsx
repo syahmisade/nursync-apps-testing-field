@@ -11,6 +11,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { StatusPanel } from '@/components/Semantic';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+import FeedbackModal from '@/components/feedback/FeedbackModal';
 
 const LEARNING_PROFILE_KEY = 'nursync_learning_profile';
 const DEFAULT_START_SECTION_KEY = 'nursync_default_start_section';
@@ -160,7 +161,7 @@ function FieldLabel({ children }) {
 export default function ProfileScreen() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleted, setDeleted] = useState(false);
-  const [feedbackNotice, setFeedbackNotice] = useState('');
+  const [feedbackModal, setFeedbackModal] = useState(null); // { type, title }
   const [profileOpen, setProfileOpen] = useState(false);
   const [learningProfile, setLearningProfile] = useState(loadLearningProfile);
   const [profileDraft, setProfileDraft] = useState(learningProfile);
@@ -206,10 +207,6 @@ export default function ProfileScreen() {
     setDefaultStartSection('medicine');
     setDeleted(true);
     setConfirmOpen(false);
-  };
-
-  const showFeedbackPlaceholder = (type) => {
-    setFeedbackNotice(`${type} is planned for a later version. For now, this is a prototype placeholder.`);
   };
 
   const openProfileEditor = () => {
@@ -264,13 +261,6 @@ export default function ProfileScreen() {
             <StatusPanel tone="success">
               <ShieldCheck size={16} />
               <p className="text-sm font-bold">Local account data cleared.</p>
-            </StatusPanel>
-          )}
-
-          {feedbackNotice && (
-            <StatusPanel tone="info">
-              <Info size={16} />
-              <p className="text-sm font-bold">{feedbackNotice}</p>
             </StatusPanel>
           )}
 
@@ -411,24 +401,24 @@ export default function ProfileScreen() {
                 iconColor="hsl(38,70%,45%)"
                 iconBg="hsl(38,85%,92%)"
                 label="Suggest medicine"
-                sublabel="Placeholder only - content requests are not submitted yet"
-                onClick={() => showFeedbackPlaceholder('Medicine suggestion')}
+                sublabel="Tell us about a medicine we should add"
+                onClick={() => setFeedbackModal({ type: 'medicine_suggestion', title: 'Suggest a medicine' })}
               />
               <SettingsRow
                 icon={ClipboardList}
                 iconColor="hsl(152,50%,38%)"
                 iconBg="hsl(152,50%,92%)"
                 label="Suggest procedure"
-                sublabel="Placeholder only - content requests are not submitted yet"
-                onClick={() => showFeedbackPlaceholder('Procedure suggestion')}
+                sublabel="Tell us about a procedure we should add"
+                onClick={() => setFeedbackModal({ type: 'procedure_suggestion', title: 'Suggest a procedure' })}
               />
               <SettingsRow
                 icon={MailQuestion}
                 iconColor="hsl(0,58%,48%)"
                 iconBg="hsl(0,60%,95%)"
                 label="Report incorrect content"
-                sublabel="Placeholder only - no report is sent in this prototype"
-                onClick={() => showFeedbackPlaceholder('Content report')}
+                sublabel="Flag something that needs fixing"
+                onClick={() => setFeedbackModal({ type: 'content_report', title: 'Report incorrect content' })}
               />
             </SettingsCard>
           </div>
@@ -473,6 +463,14 @@ export default function ProfileScreen() {
           </div>
         </div>
       </div>
+
+      {feedbackModal && (
+        <FeedbackModal
+          type={feedbackModal.type}
+          title={feedbackModal.title}
+          onClose={() => setFeedbackModal(null)}
+        />
+      )}
 
       {profileOpen && (
         <div

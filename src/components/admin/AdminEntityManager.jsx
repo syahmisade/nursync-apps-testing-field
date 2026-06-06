@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Pencil, Trash2, AlertTriangle } from 'lucide-react';
+import { Plus, Pencil, Trash2, AlertTriangle, Search } from 'lucide-react';
 import AdminFormModal from './AdminFormModal';
 import AdminCsvBar from './AdminCsvBar';
 
@@ -17,6 +17,7 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
   const qc = useQueryClient();
   const [editing, setEditing] = useState(null); // record or {} for new
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [search, setSearch] = useState('');
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: [queryKey, 'admin'],
@@ -42,6 +43,15 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
     mutationFn: (id) => base44.entities[entityName].delete(id),
     onSuccess: () => { invalidate(); setConfirmDelete(null); },
   });
+
+  const q = search.trim().toLowerCase();
+  const filtered = q
+    ? records.filter(r =>
+        [r[titleField], r[subtitleField]]
+          .filter(Boolean)
+          .some(v => String(v).toLowerCase().includes(q))
+      )
+    : records;
 
   const handleImport = async (rows) => {
     let nextLegacy = records.reduce((m, r) => Math.max(m, r.legacyId || 0), 0);
@@ -74,12 +84,26 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
         onImport={handleImport}
       />
 
+      <div className="relative">
+        <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder={`Search ${entityName.toLowerCase()}…`}
+          className="w-full h-10 rounded-2xl border border-border bg-card pl-9 pr-3 text-sm text-foreground outline-none focus:border-primary/50"
+        />
+      </div>
+
       {isLoading ? (
         <div className="text-center py-10">
           <div className="w-7 h-7 mx-auto border-4 border-secondary border-t-primary rounded-full animate-spin" />
         </div>
+      ) : filtered.length === 0 ? (
+        <p className="text-center text-sm text-muted-foreground py-8">
+          {q ? `No matches for “${search.trim()}”.` : 'No records yet.'}
+        </p>
       ) : (
-        records.map(rec => (
+        filtered.map(rec => (
           <div key={rec.id} className="rounded-2xl border p-3.5 flex items-start gap-3 bg-card border-border card-shadow">
             <div className="flex-1 min-w-0">
               <p className="font-bold text-sm text-foreground truncate">{rec[titleField]}</p>

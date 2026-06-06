@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { AppProvider } from '../context/AppContext';
 import BottomNav from '../components/BottomNav';
+import WelcomeOverlay from '../components/WelcomeOverlay';
 import { Settings, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -14,6 +15,8 @@ export default function NurSync() {
         {/* Centered phone-width container */}
         <div className="relative flex flex-col h-dvh min-h-dvh mx-auto overflow-hidden bg-background border-x border-border"
           style={{ maxWidth: '430px' }}>
+
+          <WelcomeOverlay />
 
           {/* App header */}
           <div className="flex items-center justify-between px-5 py-2.5 border-b border-border sticky top-0 z-40 bg-background"
