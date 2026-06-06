@@ -47,5 +47,8 @@
       },
       "description": "Most recent search terms, newest first, max 8 items"
     }
-  }
+  },
+  "required": [
+    "recentSearches"
+  ]
 }
