@@ -28,13 +28,16 @@ function loadTabViewState() {
 
 export default function NurSync() {
   const { isDark, toggleTheme } = useTheme();
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname, state } = location;
   const [tabViewState, setTabViewState] = useState(loadTabViewState);
   const hideAppHeader = isDetailRoute(pathname);
+  const openedFromSaved = state?.fromSaved === true;
 
   useEffect(() => {
     const activeRoot = getTabRoot(pathname);
     if (!activeRoot) return;
+    if (openedFromSaved && isDetailRoute(pathname)) return;
 
     setTabViewState(prev => {
       if (prev[activeRoot] === pathname) return prev;
@@ -46,7 +49,7 @@ export default function NurSync() {
       }
       return next;
     });
-  }, [pathname]);
+  }, [openedFromSaved, pathname]);
 
   return (
     <AppProvider>
@@ -100,7 +103,7 @@ export default function NurSync() {
 
           {/* Bottom nav */}
           <div className="flex-shrink-0">
-            <BottomNav tabViewState={tabViewState} />
+            <BottomNav openedFromSaved={openedFromSaved} tabViewState={tabViewState} />
           </div>
 
         </div>

@@ -17,6 +17,8 @@ const quizCatLabel = {
   "calculations": "Calculations",
 };
 
+const fromSavedState = { fromSaved: true };
+
 const EmptyState = ({ label }) => (
   <div className="flex flex-col items-center justify-center py-14 gap-3">
     <div className="text-5xl">🐱</div>
@@ -92,11 +94,11 @@ export default function SavedScreen() {
           savedMeds.map(med => {
             return (
               <div key={med.id} role="button" tabIndex={0}
-                onClick={() => navigate(`/medicine/${med.id}`)}
+                onClick={() => navigate(`/medicine/${med.id}`, { state: fromSavedState })}
                 onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    navigate(`/medicine/${med.id}`);
+                    navigate(`/medicine/${med.id}`, { state: fromSavedState });
                   }
                 }}
                 className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer bg-card border-border hover:bg-muted">
@@ -124,11 +126,11 @@ export default function SavedScreen() {
           savedProcs.map(proc => {
             return (
               <div key={proc.id} role="button" tabIndex={0}
-                onClick={() => navigate(`/procedures/${proc.id}`)}
+                onClick={() => navigate(`/procedures/${proc.id}`, { state: fromSavedState })}
                 onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    navigate(`/procedures/${proc.id}`);
+                    navigate(`/procedures/${proc.id}`, { state: fromSavedState });
                   }
                 }}
                 className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer bg-card border-border hover:bg-muted">
@@ -156,11 +158,11 @@ export default function SavedScreen() {
           savedQuestions.map(q => {
             return (
               <div key={q.id} role="button" tabIndex={0}
-                onClick={() => navigate(`/quiz/${q.category}`)}
+                onClick={() => navigate(`/quiz/${q.category}`, { state: fromSavedState })}
                 onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    navigate(`/quiz/${q.category}`);
+                    navigate(`/quiz/${q.category}`, { state: fromSavedState });
                   }
                 }}
                 className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer bg-card border-border hover:bg-muted">
