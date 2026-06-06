@@ -181,7 +181,7 @@ export default function MedicineScreen() {
             transition={slideTransition}
           >
             {selectedMedicine
-              ? <MedicineDetail medicine={selectedMedicine} onBack={() => navigate('/medicine')} />
+              ? <MedicineDetail medicine={selectedMedicine} onBack={() => navigate(-1)} />
               : !isLoading && medicines[0]
                 ? <MedicineDetail medicine={medicines[0]} onBack={() => navigate('/medicine', { replace: true })} />
                 : <div className="flex items-center justify-center h-full"><div className="w-7 h-7 border-4 border-secondary border-t-primary rounded-full animate-spin" /></div>}
