@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { X, Check } from 'lucide-react';
+import { X, Check, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 // Generic add/edit modal driven by a `fields` config.
-// fields: [{ key, label, type: 'text'|'textarea'|'number'|'list', placeholder }]
-export default function AdminFormModal({ title, fields, initial, onSave, onClose, saving }) {
+// fields: [{ key, label, type: 'text'|'textarea'|'number'|'list'|'select', placeholder, options, required }]
+// `options` (for select): [{ value, label }]
+// `validate(out)` (optional prop): returns an error string or null.
+export default function AdminFormModal({ title, fields, initial, onSave, onClose, saving, validate }) {
+  const [error, setError] = useState('');
   const [draft, setDraft] = useState(() => {
     const base = {};
     fields.forEach(f => {
@@ -26,9 +29,23 @@ export default function AdminFormModal({ title, fields, initial, onSave, onClose
       } else if (f.type === 'number') {
         out[f.key] = raw === '' ? null : Number(raw);
       } else {
-        out[f.key] = raw;
+        out[f.key] = typeof raw === 'string' ? raw.trim() : raw;
       }
     });
+
+    // Required-field check
+    const missing = fields.find(f => f.required && (out[f.key] === '' || out[f.key] == null || (Array.isArray(out[f.key]) && out[f.key].length === 0)));
+    if (missing) {
+      setError(`${missing.label} is required.`);
+      return;
+    }
+    // Custom validation
+    const customError = validate ? validate(out) : null;
+    if (customError) {
+      setError(customError);
+      return;
+    }
+    setError('');
     onSave(out);
   };
 
@@ -58,7 +75,18 @@ export default function AdminFormModal({ title, fields, initial, onSave, onClose
               <label className="text-xs font-black uppercase tracking-wide text-muted-foreground">
                 {f.label}
               </label>
-              {f.type === 'textarea' || f.type === 'list' ? (
+              {f.type === 'select' ? (
+                <select
+                  value={draft[f.key]}
+                  onChange={e => setField(f.key, e.target.value)}
+                  className="w-full h-9 rounded-xl border border-input bg-background px-3 text-sm font-semibold text-foreground outline-none"
+                >
+                  <option value="">Select…</option>
+                  {(f.options || []).map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              ) : f.type === 'textarea' || f.type === 'list' ? (
                 <textarea
                   value={draft[f.key]}
                   onChange={e => setField(f.key, e.target.value)}
@@ -81,6 +109,13 @@ export default function AdminFormModal({ title, fields, initial, onSave, onClose
             </div>
           ))}
         </div>
+
+        {error && (
+          <div className="mt-4 flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-destructive">
+            <AlertTriangle size={15} className="flex-shrink-0 mt-0.5" />
+            <p className="text-xs font-bold leading-snug">{error}</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-2 mt-5">
           <button

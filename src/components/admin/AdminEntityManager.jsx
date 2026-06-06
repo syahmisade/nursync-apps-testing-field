@@ -12,7 +12,7 @@ import AdminFormModal from './AdminFormModal';
 //   subtitleField - optional field shown under the title
 //   fields      - field config passed to AdminFormModal
 //   nextLegacyId - given current records, returns next legacyId
-export default function AdminEntityManager({ entityName, queryKey, titleField, subtitleField, fields, sortField }) {
+export default function AdminEntityManager({ entityName, queryKey, titleField, subtitleField, fields, sortField, validate, noLegacyId }) {
   const qc = useQueryClient();
   const [editing, setEditing] = useState(null); // record or {} for new
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -30,6 +30,7 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
   const saveMutation = useMutation({
     mutationFn: (values) => {
       if (editing?.id) return base44.entities[entityName].update(editing.id, values);
+      if (noLegacyId) return base44.entities[entityName].create(values);
       const maxLegacy = records.reduce((m, r) => Math.max(m, r.legacyId || 0), 0);
       return base44.entities[entityName].create({ ...values, legacyId: maxLegacy + 1 });
     },
@@ -82,6 +83,7 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
           fields={fields}
           initial={editing}
           saving={saveMutation.isPending}
+          validate={validate}
           onSave={(values) => saveMutation.mutate(values)}
           onClose={() => setEditing(null)}
         />
