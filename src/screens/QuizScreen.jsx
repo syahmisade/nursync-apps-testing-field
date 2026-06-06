@@ -45,7 +45,10 @@ function QuizSession({ category, allQuestions, onBack, onFinish }) {
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="px-4 pt-4 pb-3 sticky top-0 z-30 bg-background border-b border-border">
+      <div
+        className="px-4 pt-4 pb-3 sticky top-0 z-30 bg-background border-b border-border"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 12px)' }}
+      >
         <div className="flex items-center justify-between mb-3">
           <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold bg-secondary text-primary">
             <ArrowLeft size={14} /> Exit
@@ -140,7 +143,10 @@ function QuizResults({ category, score, total, onRetry, onBack }) {
 
   return (
     <div className="flex flex-col h-full animate-slide-up">
-      <div className="px-4 pt-4 pb-1 sticky top-0 z-30 bg-background border-b border-border">
+      <div
+        className="px-4 pt-4 pb-1 sticky top-0 z-30 bg-background border-b border-border"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 12px)' }}
+      >
         <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold bg-secondary text-primary">
           <ArrowLeft size={14} /> Quiz Menu
         </button>

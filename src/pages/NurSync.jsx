@@ -13,6 +13,10 @@ function getTabRoot(pathname) {
   return TAB_ROOTS.find(root => pathname === root || pathname.startsWith(`${root}/`));
 }
 
+function isDetailRoute(pathname) {
+  return /^\/(medicine|procedures|quiz)\/[^/]+$/.test(pathname);
+}
+
 function loadTabViewState() {
   try {
     const stored = JSON.parse(localStorage.getItem(TAB_VIEW_STATE_KEY) || '{}');
@@ -26,6 +30,7 @@ export default function NurSync() {
   const { isDark, toggleTheme } = useTheme();
   const { pathname } = useLocation();
   const [tabViewState, setTabViewState] = useState(loadTabViewState);
+  const hideAppHeader = isDetailRoute(pathname);
 
   useEffect(() => {
     const activeRoot = getTabRoot(pathname);
@@ -53,37 +58,38 @@ export default function NurSync() {
 
           <WelcomeOverlay />
 
-          {/* App header */}
-          <div className="flex items-center justify-between px-5 py-2.5 border-b border-border sticky top-0 z-40 bg-background"
-            style={{ paddingTop: 'max(10px, env(safe-area-inset-top))' }}>
-            <div className="flex items-center gap-2.5">
-              <img
-                src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/883e60a2e_AppsLogoUpdate.png"
-                alt="NurSync logo"
-                className="w-8 h-8 rounded-xl object-contain"
-              />
-              <div className="flex flex-col leading-none">
-                <span className="text-sm font-black tracking-tight text-primary">NurSync</span>
-                <span className="text-[11px] font-medium text-muted-foreground">Sync to better care</span>
+          {!hideAppHeader && (
+            <div className="flex items-center justify-between px-5 py-2.5 border-b border-border sticky top-0 z-40 bg-background"
+              style={{ paddingTop: 'max(10px, env(safe-area-inset-top))' }}>
+              <div className="flex items-center gap-2.5">
+                <img
+                  src="https://media.base44.com/images/public/6a09fb9ae5c8de3d68cfbc57/883e60a2e_AppsLogoUpdate.png"
+                  alt="NurSync logo"
+                  className="w-8 h-8 rounded-xl object-contain"
+                />
+                <div className="flex flex-col leading-none">
+                  <span className="text-sm font-black tracking-tight text-primary">NurSync</span>
+                  <span className="text-[11px] font-medium text-muted-foreground">Sync to better care</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleTheme}
+                  aria-label="Toggle dark mode"
+                  className="p-2 rounded-2xl transition-all active:scale-95 text-primary bg-secondary"
+                >
+                  {isDark ? <Sun size={17} /> : <Moon size={17} />}
+                </button>
+                <Link
+                  to="/profile"
+                  aria-label="Open profile settings"
+                  className="p-2 rounded-2xl transition-all active:scale-95 text-primary bg-secondary"
+                >
+                  <Settings size={17} />
+                </Link>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={toggleTheme}
-                aria-label="Toggle dark mode"
-                className="p-2 rounded-2xl transition-all active:scale-95 text-primary bg-secondary"
-              >
-                {isDark ? <Sun size={17} /> : <Moon size={17} />}
-              </button>
-              <Link
-                to="/profile"
-                aria-label="Open profile settings"
-                className="p-2 rounded-2xl transition-all active:scale-95 text-primary bg-secondary"
-              >
-                <Settings size={17} />
-              </Link>
-            </div>
-          </div>
+          )}
 
           {/* Screen content */}
           <div className="flex-1 min-h-0">

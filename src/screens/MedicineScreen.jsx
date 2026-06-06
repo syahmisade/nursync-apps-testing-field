@@ -60,7 +60,10 @@ function MedicineDetail({ medicine, onBack }) {
   return (
     <div className="flex flex-col h-full">
       {/* Sticky Header */}
-      <div className="flex-shrink-0 flex items-center justify-between px-4 pt-3 pb-3 bg-background border-b border-border">
+      <div
+        className="flex-shrink-0 flex items-center justify-between px-4 pt-3 pb-3 bg-background border-b border-border"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 12px)' }}
+      >
         <button onClick={onBack} className="flex items-center gap-1.5 transition-colors rounded-xl px-3 py-1.5 bg-secondary text-primary">
           <ArrowLeft size={15} />
           <span className="text-xs font-semibold">Back</span>

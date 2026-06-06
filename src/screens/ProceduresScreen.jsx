@@ -36,7 +36,10 @@ function ProcedureDetail({ procedure, onBack }) {
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center justify-between px-4 pt-4 pb-3 sticky top-0 z-30 bg-background border-b border-border">
+      <div
+        className="flex items-center justify-between px-4 pt-4 pb-3 sticky top-0 z-30 bg-background border-b border-border"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 12px)' }}
+      >
         <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 transition-colors bg-secondary text-primary">
           <ArrowLeft size={15} /><span className="text-xs font-semibold">Back</span>
         </button>
