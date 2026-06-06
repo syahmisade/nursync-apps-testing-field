@@ -259,9 +259,10 @@ export default function MedicineScreen() {
 
         {/* Category dropdown */}
         {dropdownOpen && (
-          <div className="absolute left-4 right-4 top-full mt-2 z-50 rounded-2xl overflow-hidden bg-card border border-border"
+          <div className="absolute left-4 right-4 top-full mt-2 z-50 rounded-2xl overflow-hidden bg-card border border-border flex flex-col max-h-[55vh]"
             style={{ boxShadow: '0 8px 32px rgba(147,92,210,0.14)' }}>
-            <p className="text-[11px] font-black uppercase tracking-widest px-4 pt-3 pb-1 text-muted-foreground">Filter by Category</p>
+            <p className="text-[11px] font-black uppercase tracking-widest px-4 pt-3 pb-1 text-muted-foreground flex-shrink-0">Filter by Category</p>
+            <div className="overflow-y-auto scrollbar-hide">
             {categories.map(cat => (
               <button key={cat}
                 onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
@@ -271,6 +272,7 @@ export default function MedicineScreen() {
                 {activeCategory === cat && <Check size={14} style={{ color: catTextColor[cat] }} />}
               </button>
             ))}
+            </div>
           </div>
         )}
       </div>
