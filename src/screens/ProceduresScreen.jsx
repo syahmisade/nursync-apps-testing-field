@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, CheckCircle2, SlidersHorizontal, Check } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useProcedures } from '../hooks/useProcedures';
@@ -140,6 +140,7 @@ function ProcedureDetail({ procedure, onBack }) {
 
 export default function ProceduresScreen() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
@@ -179,6 +180,13 @@ export default function ProceduresScreen() {
   const handleRefresh = () => new Promise(res => setTimeout(res, 600));
 
   const selected = id ? procedures.find(p => String(p.id) === id) : null;
+  const handleBack = () => {
+    if (location.state?.fromSaved) {
+      navigate('/saved', { state: { activeTab: location.state.savedTab || 'procedures' } });
+      return;
+    }
+    navigate('/procedures');
+  };
 
   return (
     <div className="relative h-full overflow-hidden">
@@ -194,7 +202,7 @@ export default function ProceduresScreen() {
             transition={slideTransition}
           >
             {selected
-              ? <ProcedureDetail procedure={selected} onBack={() => navigate(-1)} />
+              ? <ProcedureDetail procedure={selected} onBack={handleBack} />
               : !isLoading && procedures[0]
                 ? <ProcedureDetail procedure={procedures[0]} onBack={() => navigate('/procedures', { replace: true })} />
                 : <div className="flex items-center justify-center h-full"><div className="w-7 h-7 border-4 border-secondary border-t-primary rounded-full animate-spin" /></div>}

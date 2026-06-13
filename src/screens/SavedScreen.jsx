@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Bookmark, BookmarkCheck, Pill, ClipboardList, BookOpen, ChevronRight, BookmarkX, ArrowLeft, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { useMedicines } from '../hooks/useMedicines';
 import { useProcedures } from '../hooks/useProcedures';
@@ -17,7 +17,7 @@ const quizCatLabel = {
   "calculations": "Calculations",
 };
 
-const fromSavedState = { fromSaved: true };
+const fromSavedState = (savedTab) => ({ fromSaved: true, savedTab });
 
 const EmptyState = ({ label }) => (
   <div className="flex flex-col items-center justify-center py-14 gap-3">
@@ -32,7 +32,9 @@ const EmptyState = ({ label }) => (
 
 export default function SavedScreen() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('medicines');
+  const location = useLocation();
+  const initialTab = location.state?.activeTab || 'medicines';
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef(null);
   const { savedMedicines, savedProcedures, savedQuizQuestions, toggleSaveMedicine, toggleSaveProcedure, toggleSaveQuestion } = useApp();
@@ -94,11 +96,11 @@ export default function SavedScreen() {
           savedMeds.map(med => {
             return (
               <div key={med.id} role="button" tabIndex={0}
-                onClick={() => navigate(`/medicine/${med.id}`, { state: fromSavedState })}
+                onClick={() => navigate(`/medicine/${med.id}`, { state: fromSavedState('medicines') })}
                 onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    navigate(`/medicine/${med.id}`, { state: fromSavedState });
+                    navigate(`/medicine/${med.id}`, { state: fromSavedState('medicines') });
                   }
                 }}
                 className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer bg-card border-border hover:bg-muted">
@@ -126,11 +128,11 @@ export default function SavedScreen() {
           savedProcs.map(proc => {
             return (
               <div key={proc.id} role="button" tabIndex={0}
-                onClick={() => navigate(`/procedures/${proc.id}`, { state: fromSavedState })}
+                onClick={() => navigate(`/procedures/${proc.id}`, { state: fromSavedState('procedures') })}
                 onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    navigate(`/procedures/${proc.id}`, { state: fromSavedState });
+                    navigate(`/procedures/${proc.id}`, { state: fromSavedState('procedures') });
                   }
                 }}
                 className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer bg-card border-border hover:bg-muted">
@@ -158,11 +160,11 @@ export default function SavedScreen() {
           savedQuestions.map(q => {
             return (
               <div key={q.id} role="button" tabIndex={0}
-                onClick={() => navigate(`/quiz/${q.category}`, { state: fromSavedState })}
+                onClick={() => navigate(`/quiz/${q.category}`, { state: fromSavedState('quiz') })}
                 onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    navigate(`/quiz/${q.category}`, { state: fromSavedState });
+                    navigate(`/quiz/${q.category}`, { state: fromSavedState('quiz') });
                   }
                 }}
                 className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer bg-card border-border hover:bg-muted">
