@@ -80,6 +80,15 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  @media (max-width: 767px) {
+    input,
+    textarea,
+    select,
+    [cmdk-input] {
+      font-size: 16px;
+    }
+  }
+
   nav,
   button,
   a[role="button"],
