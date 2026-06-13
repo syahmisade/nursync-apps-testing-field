@@ -6,12 +6,13 @@ import { Input } from '@/components/ui/input';
 
 // Modal that submits a Feedback record to the backend.
 // props:
-//   type    - 'medicine_suggestion' | 'procedure_suggestion' | 'content_report'
+//   type    - 'medicine_suggestion' | 'procedure_suggestion' | 'feature_suggestion' | 'content_report'
 //   title   - heading shown to the user
 //   onClose - close handler
 const PLACEHOLDERS = {
   medicine_suggestion: 'Which medicine should we add? Include generic/brand name and any references.',
   procedure_suggestion: 'Which procedure should we add? Describe it briefly.',
+  feature_suggestion: 'What feature would help you most? Tell us the problem, your idea, and why it matters.',
   content_report: 'What looks incorrect? Tell us the item and what needs fixing.',
 };
 

@@ -455,6 +455,14 @@ export default function ProfileScreen() {
                 onClick={() => setFeedbackModal({ type: 'procedure_suggestion', title: 'Suggest a procedure' })}
               />
               <SettingsRow
+                icon={Sparkles}
+                iconColor="hsl(265,55%,48%)"
+                iconBg="hsl(265,55%,92%)"
+                label="Suggest feature"
+                sublabel="Tell us what NurSync should add next"
+                onClick={() => setFeedbackModal({ type: 'feature_suggestion', title: 'Suggest a feature' })}
+              />
+              <SettingsRow
                 icon={MailQuestion}
                 iconColor="hsl(0,58%,48%)"
                 iconBg="hsl(0,60%,95%)"

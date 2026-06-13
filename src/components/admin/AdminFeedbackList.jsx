@@ -1,12 +1,13 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Trash2, Lightbulb, ClipboardList, MailQuestion, MessageSquare } from 'lucide-react';
+import { Trash2, Lightbulb, ClipboardList, MailQuestion, MessageSquare, Sparkles } from 'lucide-react';
 import { format } from 'date-fns';
 
 const TYPE_META = {
   medicine_suggestion: { label: 'Medicine', Icon: Lightbulb, tone: 'amber' },
   procedure_suggestion: { label: 'Procedure', Icon: ClipboardList, tone: 'success' },
+  feature_suggestion: { label: 'Feature', Icon: Sparkles, tone: 'blue' },
   content_report: { label: 'Report', Icon: MailQuestion, tone: 'danger' },
   general: { label: 'General', Icon: MessageSquare, tone: 'blue' },
 };
