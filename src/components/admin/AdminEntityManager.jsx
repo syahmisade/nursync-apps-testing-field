@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Pencil, Trash2, AlertTriangle, Search } from 'lucide-react';
+import { Plus, Pencil, Trash2, AlertTriangle, Search, CheckSquare, Square, X } from 'lucide-react';
 import AdminFormModal from './AdminFormModal';
 import AdminCsvBar from './AdminCsvBar';
 
@@ -17,7 +17,9 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
   const qc = useQueryClient();
   const [editing, setEditing] = useState(null); // record or {} for new
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [confirmBulkDelete, setConfirmBulkDelete] = useState(false);
   const [search, setSearch] = useState('');
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: [queryKey, 'admin'],
@@ -44,6 +46,15 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
     onSuccess: () => { invalidate(); setConfirmDelete(null); },
   });
 
+  const bulkDeleteMutation = useMutation({
+    mutationFn: (ids) => Promise.all(ids.map(id => base44.entities[entityName].delete(id))),
+    onSuccess: () => {
+      invalidate();
+      setSelectedIds([]);
+      setConfirmBulkDelete(false);
+    },
+  });
+
   const q = search.trim().toLowerCase();
   const filtered = q
     ? records.filter(r =>
@@ -52,6 +63,21 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
           .some(v => String(v).toLowerCase().includes(q))
       )
     : records;
+  const visibleIds = filtered.map(r => r.id);
+  const selectedVisibleCount = selectedIds.filter(id => visibleIds.includes(id)).length;
+  const allVisibleSelected = visibleIds.length > 0 && selectedVisibleCount === visibleIds.length;
+  const selectedCount = selectedIds.length;
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  };
+
+  const toggleSelectVisible = () => {
+    setSelectedIds(prev => {
+      if (allVisibleSelected) return prev.filter(id => !visibleIds.includes(id));
+      return Array.from(new Set([...prev, ...visibleIds]));
+    });
+  };
 
   const handleImport = async (rows) => {
     let nextLegacy = records.reduce((m, r) => Math.max(m, r.legacyId || 0), 0);
@@ -94,6 +120,47 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
         />
       </div>
 
+      {records.length > 0 && (
+        <div className="rounded-2xl border border-border bg-card p-2.5 card-shadow">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleSelectVisible}
+              disabled={filtered.length === 0}
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-secondary px-3 py-2 text-xs font-black text-secondary-foreground transition-all active:scale-[0.98] disabled:opacity-50"
+            >
+              {allVisibleSelected ? <CheckSquare size={15} /> : <Square size={15} />}
+              {allVisibleSelected ? 'Unselect visible' : 'Select visible'}
+            </button>
+            {selectedCount > 0 && (
+              <button
+                type="button"
+                onClick={() => setSelectedIds([])}
+                className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary text-muted-foreground"
+                aria-label="Clear selection"
+              >
+                <X size={15} />
+              </button>
+            )}
+          </div>
+          {selectedCount > 0 && (
+            <div className="mt-2 flex items-center gap-2">
+              <p className="flex-1 text-xs font-bold text-muted-foreground">
+                {selectedCount} selected
+              </p>
+              <button
+                type="button"
+                onClick={() => setConfirmBulkDelete(true)}
+                className="flex items-center gap-1.5 rounded-xl bg-destructive px-3 py-2 text-xs font-black text-destructive-foreground"
+              >
+                <Trash2 size={14} />
+                Delete selected
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       {isLoading ? (
         <div className="text-center py-10">
           <div className="w-7 h-7 mx-auto border-4 border-secondary border-t-primary rounded-full animate-spin" />
@@ -103,8 +170,23 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
           {q ? `No matches for “${search.trim()}”.` : 'No records yet.'}
         </p>
       ) : (
-        filtered.map(rec => (
+        filtered.map(rec => {
+          const isSelected = selectedIds.includes(rec.id);
+          return (
           <div key={rec.id} className="rounded-2xl border p-3.5 flex items-start gap-3 bg-card border-border card-shadow">
+            <button
+              type="button"
+              onClick={() => toggleSelect(rec.id)}
+              className={`mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl border transition-all ${
+                isSelected
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-border bg-secondary text-muted-foreground'
+              }`}
+              aria-label={isSelected ? `Unselect ${rec[titleField]}` : `Select ${rec[titleField]}`}
+              aria-pressed={isSelected}
+            >
+              {isSelected ? <CheckSquare size={16} /> : <Square size={16} />}
+            </button>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-sm text-foreground truncate">{rec[titleField]}</p>
               {subtitleField && (
@@ -120,7 +202,8 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
               </button>
             </div>
           </div>
-        ))
+          );
+        })
       )}
 
       {editing && (
@@ -151,6 +234,32 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
               </button>
               <button onClick={() => deleteMutation.mutate(confirmDelete.id)} disabled={deleteMutation.isPending} className="py-3 rounded-2xl text-sm font-black bg-destructive text-destructive-foreground disabled:opacity-60">
                 {deleteMutation.isPending ? 'Deleting…' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmBulkDelete && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center px-5" style={{ background: 'rgba(20, 16, 28, 0.52)' }} role="dialog" aria-modal="true">
+          <div className="w-full max-w-sm rounded-3xl border p-5 app-card animate-pop-in">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3 bg-destructive/10 text-destructive">
+              <AlertTriangle size={24} />
+            </div>
+            <h2 className="text-lg font-black text-foreground">Delete selected {entityName.toLowerCase()} records?</h2>
+            <p className="text-sm leading-relaxed mt-2 text-muted-foreground">
+              {selectedCount} selected record{selectedCount === 1 ? '' : 's'} will be permanently removed for all users. This cannot be undone.
+            </p>
+            <div className="grid grid-cols-2 gap-2 mt-5">
+              <button onClick={() => setConfirmBulkDelete(false)} className="py-3 rounded-2xl text-sm font-black border bg-secondary text-secondary-foreground border-border">
+                Cancel
+              </button>
+              <button
+                onClick={() => bulkDeleteMutation.mutate(selectedIds)}
+                disabled={bulkDeleteMutation.isPending}
+                className="py-3 rounded-2xl text-sm font-black bg-destructive text-destructive-foreground disabled:opacity-60"
+              >
+                {bulkDeleteMutation.isPending ? 'Deleting...' : 'Delete selected'}
               </button>
             </div>
           </div>
