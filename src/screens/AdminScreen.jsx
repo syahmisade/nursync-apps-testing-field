@@ -56,10 +56,12 @@ export default function AdminScreen() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [tab, setTab] = useState('medicines');
+  const isAdmin = user?.role === 'admin';
 
   const { data: categories = [] } = useQuery({
     queryKey: ['quizCategories', 'admin'],
     queryFn: () => base44.entities.QuizCategory.list('label', 100),
+    enabled: isAdmin,
   });
 
   const quizFields = [
@@ -77,7 +79,7 @@ export default function AdminScreen() {
     { key: 'reference', label: 'Reference', type: 'text' },
   ];
 
-  if (user && user.role !== 'admin') {
+  if (!isAdmin) {
     return (
       <div className="p-5">
         <StatusPanel tone="danger">
