@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, Check, SlidersHorizontal, Clock } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useMedicines } from '../hooks/useMedicines';
@@ -118,6 +118,7 @@ function MedicineDetail({ medicine, onBack }) {
 
 export default function MedicineScreen() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
@@ -166,6 +167,13 @@ export default function MedicineScreen() {
   const handleRefresh = () => new Promise(res => setTimeout(res, 600));
 
   const selectedMedicine = id ? medicines.find(m => String(m.id) === id) : null;
+  const handleBack = () => {
+    if (location.state?.fromSaved) {
+      navigate('/saved', { state: { activeTab: location.state.savedTab || 'medicines' } });
+      return;
+    }
+    navigate('/medicine');
+  };
 
   return (
     <div className="relative h-full overflow-hidden">
@@ -181,7 +189,7 @@ export default function MedicineScreen() {
             transition={slideTransition}
           >
             {selectedMedicine
-              ? <MedicineDetail medicine={selectedMedicine} onBack={() => navigate(-1)} />
+              ? <MedicineDetail medicine={selectedMedicine} onBack={handleBack} />
               : !isLoading && medicines[0]
                 ? <MedicineDetail medicine={medicines[0]} onBack={() => navigate('/medicine', { replace: true })} />
                 : <div className="flex items-center justify-center h-full"><div className="w-7 h-7 border-4 border-secondary border-t-primary rounded-full animate-spin" /></div>}
