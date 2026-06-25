@@ -21,10 +21,6 @@
       },
       "description": "Overview points about the procedure, in order"
     },
-    "indications": {
-      "type": "string",
-      "description": "Clinical indications for the procedure"
-    },
     "equipment": {
       "type": "array",
       "items": {

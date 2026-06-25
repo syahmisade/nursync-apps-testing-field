@@ -29,7 +29,6 @@ const procedureFields = [
   { key: 'title', label: 'Title', type: 'text', placeholder: 'e.g. IV Cannulation' },
   { key: 'category', label: 'Category', type: 'text', placeholder: 'e.g. Vital Signs' },
   { key: 'overview', label: 'Overview', type: 'list' },
-  { key: 'indications', label: 'Indications', type: 'textarea' },
   { key: 'equipment', label: 'Equipment', type: 'list' },
   { key: 'steps', label: 'Steps', type: 'list' },
   { key: 'references', label: 'References', type: 'textarea' },

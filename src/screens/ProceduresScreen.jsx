@@ -74,12 +74,6 @@ function ProcedureDetail({ procedure, onBack }) {
           </div>
         )}
 
-        {/* Indications */}
-        <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
-          <p className="text-xs font-black uppercase tracking-widest mb-1.5 text-primary">Indications</p>
-          <p className="text-sm leading-relaxed font-medium text-foreground">{procedure.indications}</p>
-        </div>
-
         {/* Equipment */}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
           <p className="text-xs font-black uppercase tracking-widest mb-2.5 text-primary">Equipment Required</p>
