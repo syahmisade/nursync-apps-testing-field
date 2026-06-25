@@ -57,8 +57,22 @@ function ProcedureDetail({ procedure, onBack }) {
         <div className="rounded-3xl p-5 border card-shadow bg-card border-border">
           <ProcCategoryPill category={procedure.category} />
           <h1 className="text-lg font-black mt-2 text-foreground">{procedure.title}</h1>
-          <p className="text-sm leading-relaxed mt-1 font-medium text-muted-foreground">{procedure.overview}</p>
         </div>
+
+        {/* Overview */}
+        {procedure.overview?.length > 0 && (
+          <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
+            <p className="text-xs font-black uppercase tracking-widest mb-2.5 text-primary">Overview</p>
+            <div className="space-y-2">
+              {procedure.overview.map((item, i) => (
+                <div key={i} className="flex items-start gap-2.5">
+                  <div className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 bg-primary" />
+                  <p className="text-sm font-medium text-foreground">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Indications */}
         <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
@@ -111,18 +125,6 @@ function ProcedureDetail({ procedure, onBack }) {
               <span className="font-bold">All steps completed!</span>
             </StatusPanel>
           )}
-        </div>
-
-        {/* Precautions */}
-        <StatusPanel tone="warning" className="status-panel-block">
-          <p className="text-xs font-black uppercase tracking-widest mb-1.5">Precautions</p>
-          <p className="text-sm leading-relaxed font-medium">{procedure.precautions}</p>
-        </StatusPanel>
-
-        {/* Documentation */}
-        <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
-          <p className="text-xs font-black uppercase tracking-widest mb-1.5 text-primary">Documentation Notes</p>
-          <p className="text-sm leading-relaxed font-medium text-foreground">{procedure.documentation}</p>
         </div>
 
         {/* References */}
@@ -301,7 +303,7 @@ export default function ProceduresScreen() {
                   <div className="flex-1 min-w-0">
                     <ProcCategoryPill category={proc.category} />
                     <h3 className="font-bold text-sm mt-1.5 text-foreground">{proc.title}</h3>
-                    <p className="text-xs font-medium mt-1 line-clamp-2 text-muted-foreground">{proc.overview}</p>
+                    <p className="text-xs font-medium mt-1 line-clamp-2 text-muted-foreground">{Array.isArray(proc.overview) ? proc.overview.join(' • ') : proc.overview}</p>
                     <p className="text-xs font-semibold mt-1 text-primary">{proc.steps.length} steps</p>
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
