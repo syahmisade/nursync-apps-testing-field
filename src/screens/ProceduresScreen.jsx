@@ -60,7 +60,7 @@ function ProcedureDetail({ procedure, onBack }) {
         </div>
 
         {/* Overview */}
-        {procedure.overview?.length > 0 && (
+        {Array.isArray(procedure.overview) && procedure.overview.length > 0 && (
           <div className="rounded-2xl p-4 border card-shadow bg-card border-border">
             <p className="text-xs font-black uppercase tracking-widest mb-2.5 text-primary">Overview</p>
             <div className="space-y-2">
