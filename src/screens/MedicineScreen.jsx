@@ -401,7 +401,9 @@ export default function MedicineScreen() {
                 className="w-full h-[132px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
                 <div className="grid grid-cols-[1fr_auto] gap-3 h-full">
                   <div className="min-w-0 flex flex-col">
-                    <h3 className="h-[40px] font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{medicine.genericName}</h3>
+                    <div className="h-[40px] flex items-center">
+                      <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{medicine.genericName}</h3>
+                    </div>
                     <div className="h-[26px] flex items-center overflow-hidden">
                       <CategoryPill category={getCategoryLabel(medicine)} fallback={!hasText(medicine.category)} />
                     </div>
