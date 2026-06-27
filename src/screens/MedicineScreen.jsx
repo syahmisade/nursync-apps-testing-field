@@ -50,28 +50,18 @@ function getCategoryLabel(medicine) {
 }
 
 function getMedicineMetaRows(medicine) {
-  const rows = [];
-
-  if (hasText(medicine.brandName)) {
-    rows.push({ label: 'Brand', value: medicine.brandName, muted: false });
-  }
-
-  if (hasText(medicine.glamourName)) {
-    rows.push({ label: 'Also known as', value: medicine.glamourName, muted: false });
-  }
-
-  if (rows.length === 0) {
-    return [
-      { value: 'No brand/common name listed', muted: true },
-      { value: ' ', muted: true },
-    ];
-  }
-
-  if (rows.length === 1) {
-    rows.push({ value: 'No additional name listed', muted: true });
-  }
-
-  return rows.slice(0, 2);
+  return [
+    {
+      label: 'Brand',
+      value: hasText(medicine.brandName) ? medicine.brandName : '-',
+      muted: !hasText(medicine.brandName),
+    },
+    {
+      label: 'Also known as',
+      value: hasText(medicine.glamourName) ? medicine.glamourName : '-',
+      muted: !hasText(medicine.glamourName),
+    },
+  ];
 }
 
 function MedicineCardMeta({ medicine }) {
