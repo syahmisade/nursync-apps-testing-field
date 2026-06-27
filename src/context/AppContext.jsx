@@ -26,6 +26,7 @@ export function AppProvider({ children }) {
   const [savedQuizQuestions, setSavedQuizQuestions] = useState([]);
   const [recentSearches, setRecentSearches] = useState(loadRecentSearches);
   const [quizProgress, setQuizProgress] = useState({});
+  const [isLoadingAppData, setIsLoadingAppData] = useState(true);
   // Maps `${itemType}:${legacyId}` -> SavedItem record id, so we can delete on un-save.
   const [savedRecordIds, setSavedRecordIds] = useState({});
 
@@ -33,35 +34,41 @@ export function AppProvider({ children }) {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [items, attempts] = await Promise.all([
-        base44.entities.SavedItem.list('-created_date', 1000),
-        base44.entities.QuizAttempt.list('-created_date', 1000),
-      ]);
-      if (cancelled) return;
+      try {
+        const [items, attempts] = await Promise.all([
+          base44.entities.SavedItem.list('-created_date', 1000),
+          base44.entities.QuizAttempt.list('-created_date', 1000),
+        ]);
+        if (cancelled) return;
 
-      const ids = {};
-      const meds = [];
-      const procs = [];
-      const quizzes = [];
-      for (const it of items) {
-        ids[`${it.itemType}:${it.itemLegacyId}`] = it.id;
-        if (it.itemType === 'medicine') meds.push(it.itemLegacyId);
-        else if (it.itemType === 'procedure') procs.push(it.itemLegacyId);
-        else if (it.itemType === 'quiz') quizzes.push(it.itemLegacyId);
-      }
-      setSavedRecordIds(ids);
-      setSavedMedicines(meds);
-      setSavedProcedures(procs);
-      setSavedQuizQuestions(quizzes);
-
-      // Attempts are sorted newest-first; keep the first (latest) per category.
-      const progress = {};
-      for (const a of attempts) {
-        if (!progress[a.categoryKey]) {
-          progress[a.categoryKey] = { score: a.score, total: a.total, date: a.created_date };
+        const ids = {};
+        const meds = [];
+        const procs = [];
+        const quizzes = [];
+        for (const it of items) {
+          ids[`${it.itemType}:${it.itemLegacyId}`] = it.id;
+          if (it.itemType === 'medicine') meds.push(it.itemLegacyId);
+          else if (it.itemType === 'procedure') procs.push(it.itemLegacyId);
+          else if (it.itemType === 'quiz') quizzes.push(it.itemLegacyId);
         }
+        setSavedRecordIds(ids);
+        setSavedMedicines(meds);
+        setSavedProcedures(procs);
+        setSavedQuizQuestions(quizzes);
+
+        // Attempts are sorted newest-first; keep the first (latest) per category.
+        const progress = {};
+        for (const a of attempts) {
+          if (!progress[a.categoryKey]) {
+            progress[a.categoryKey] = { score: a.score, total: a.total, date: a.created_date };
+          }
+        }
+        setQuizProgress(progress);
+      } catch (error) {
+        console.error('Failed to load saved NurSync data:', error);
+      } finally {
+        if (!cancelled) setIsLoadingAppData(false);
       }
-      setQuizProgress(progress);
     })();
     return () => { cancelled = true; };
   }, []);
@@ -129,7 +136,7 @@ export function AppProvider({ children }) {
     <AppContext.Provider value={{
       savedMedicines, savedProcedures, savedQuizQuestions, recentSearches, quizProgress,
       toggleSaveMedicine, toggleSaveProcedure, toggleSaveQuestion, addRecentSearch, saveQuizProgress,
-      clearAllData
+      clearAllData, isLoadingAppData
     }}>
       {children}
     </AppContext.Provider>

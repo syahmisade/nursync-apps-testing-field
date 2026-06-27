@@ -37,10 +37,18 @@ export default function SavedScreen() {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef(null);
-  const { savedMedicines, savedProcedures, savedQuizQuestions, toggleSaveMedicine, toggleSaveProcedure, toggleSaveQuestion } = useApp();
-  const { medicines } = useMedicines();
-  const { procedures } = useProcedures();
-  const { quizQuestions } = useQuiz();
+  const {
+    savedMedicines,
+    savedProcedures,
+    savedQuizQuestions,
+    toggleSaveMedicine,
+    toggleSaveProcedure,
+    toggleSaveQuestion,
+    isLoadingAppData
+  } = useApp();
+  const { medicines, isLoading: isLoadingMedicines } = useMedicines();
+  const { procedures, isLoading: isLoadingProcedures } = useProcedures();
+  const { quizQuestions, isLoading: isLoadingQuiz } = useQuiz();
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -53,6 +61,7 @@ export default function SavedScreen() {
   const savedMeds = medicines.filter(m => savedMedicines.includes(m.id));
   const savedProcs = procedures.filter(p => savedProcedures.includes(p.id));
   const savedQuestions = quizQuestions.filter(q => savedQuizQuestions.includes(q.id));
+  const isLoadingSavedContent = isLoadingAppData || isLoadingMedicines || isLoadingProcedures || isLoadingQuiz;
 
   return (
     <div className="flex flex-col h-full">
@@ -90,8 +99,15 @@ export default function SavedScreen() {
       </div>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
+        {isLoadingSavedContent && (
+          <div className="text-center py-14">
+            <div className="w-7 h-7 mx-auto border-4 border-secondary border-t-primary rounded-full animate-spin" />
+            <p className="text-sm font-semibold mt-3 text-muted-foreground">Loading saved items...</p>
+          </div>
+        )}
+
         {/* Medicines */}
-        {activeTab === 'medicines' && (
+        {!isLoadingSavedContent && activeTab === 'medicines' && (
           savedMeds.length === 0 ? <EmptyState label="medicines" /> :
           savedMeds.map(med => {
             return (
@@ -123,7 +139,7 @@ export default function SavedScreen() {
         )}
 
         {/* Procedures */}
-        {activeTab === 'procedures' && (
+        {!isLoadingSavedContent && activeTab === 'procedures' && (
           savedProcs.length === 0 ? <EmptyState label="procedures" /> :
           savedProcs.map(proc => {
             return (
@@ -155,7 +171,7 @@ export default function SavedScreen() {
         )}
 
         {/* Quiz */}
-        {activeTab === 'quiz' && (
+        {!isLoadingSavedContent && activeTab === 'quiz' && (
           savedQuestions.length === 0 ? <EmptyState label="quiz questions" /> :
           savedQuestions.map(q => {
             return (

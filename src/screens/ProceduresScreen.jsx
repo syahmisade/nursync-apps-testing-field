@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, CheckCircle2, SlidersHorizontal, Check } from 'lucide-react';
+import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, CheckCircle2, SlidersHorizontal, Check } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useProcedures } from '../hooks/useProcedures';
 import DisclaimerBanner from '../components/DisclaimerBanner';
@@ -145,7 +145,7 @@ export default function ProceduresScreen() {
   const dropdownRef = useRef(null);
   const scrollRef = useRef(null);
   const { savedProcedures, toggleSaveProcedure } = useApp();
-  const { procedures, procedureCategories, isLoading } = useProcedures();
+  const { procedures, procedureCategories, isLoading, error } = useProcedures();
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -272,7 +272,13 @@ export default function ProceduresScreen() {
             <p className="text-sm font-semibold mt-3 text-muted-foreground">Loading procedures…</p>
           </div>
         )}
-        {!isLoading && filtered.length === 0 && (
+        {!isLoading && error && (
+          <StatusPanel tone="danger" className="status-panel-block">
+            <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
+            <span>Could not load procedures. Please check your connection and try again.</span>
+          </StatusPanel>
+        )}
+        {!isLoading && !error && filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
             <p className="text-sm font-semibold text-muted-foreground">No procedures found</p>

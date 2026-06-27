@@ -24,8 +24,7 @@ export function useProcedures() {
       const records = await base44.entities.Procedure.list('legacyId', 500);
       return records.map(mapRecord);
     },
-    initialData: [],
   });
 
-  return { procedures: data, procedureCategories: staticCategories, isLoading, error };
+  return { procedures: data ?? [], procedureCategories: staticCategories, isLoading, error };
 }

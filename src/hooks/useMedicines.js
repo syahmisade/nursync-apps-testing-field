@@ -28,8 +28,7 @@ export function useMedicines() {
       const records = await base44.entities.Medicine.list('legacyId', 500);
       return records.map(mapRecord);
     },
-    initialData: [],
   });
 
-  return { medicines: data, categories: staticCategories, isLoading, error };
+  return { medicines: data ?? [], categories: staticCategories, isLoading, error };
 }

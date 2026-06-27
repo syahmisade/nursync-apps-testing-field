@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Bookmark, BookmarkCheck, CheckCircle2, XCircle, RotateCcw, ChevronRight, Trophy } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Bookmark, BookmarkCheck, CheckCircle2, XCircle, RotateCcw, ChevronRight, Trophy } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useQuiz } from '../hooks/useQuiz';
 import DisclaimerBanner from '../components/DisclaimerBanner';
@@ -210,7 +210,7 @@ function QuizResults({ category, score, total, onRetry, onBack }) {
 export default function QuizScreen() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { quizCategories, quizQuestions, isLoading } = useQuiz();
+  const { quizCategories, quizQuestions, isLoading, error } = useQuiz();
   const activeCategory = id ? quizCategories.find(cat => cat.id === id) : null;
   const [quizState, setQuizState] = useState(id ? 'session' : 'menu');
   const [lastResult, setLastResult] = useState(null);
@@ -300,6 +300,11 @@ export default function QuizScreen() {
             <div className="w-7 h-7 mx-auto border-4 border-secondary border-t-primary rounded-full animate-spin" />
             <p className="text-sm font-semibold mt-3 text-muted-foreground">Loading quiz…</p>
           </div>
+        ) : error ? (
+          <StatusPanel tone="danger" className="status-panel-block">
+            <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
+            <span>Could not load quiz content. Please check your connection and try again.</span>
+          </StatusPanel>
         ) : (
           <>
         {/* Stats */}

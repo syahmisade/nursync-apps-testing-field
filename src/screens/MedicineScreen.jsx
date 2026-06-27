@@ -147,7 +147,7 @@ export default function MedicineScreen() {
   }, []);
 
   const { savedMedicines, toggleSaveMedicine, addRecentSearch, recentSearches } = useApp();
-  const { medicines, categories, isLoading } = useMedicines();
+  const { medicines, categories, isLoading, error } = useMedicines();
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -300,7 +300,13 @@ export default function MedicineScreen() {
             <p className="text-sm font-semibold mt-3 text-muted-foreground">Loading medicines…</p>
           </div>
         )}
-        {!isLoading && filtered.length === 0 && (
+        {!isLoading && error && (
+          <StatusPanel tone="danger" className="status-panel-block">
+            <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
+            <span>Could not load medicines. Please check your connection and try again.</span>
+          </StatusPanel>
+        )}
+        {!isLoading && !error && filtered.length === 0 && (
           <div className="text-center py-14">
             <p className="text-4xl mb-3">🐱</p>
             <p className="text-sm font-semibold text-muted-foreground">No medicines found</p>

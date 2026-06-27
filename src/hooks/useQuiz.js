@@ -25,8 +25,12 @@ export function useQuiz() {
 
       return { quizCategories, quizQuestions };
     },
-    initialData: { quizCategories: [], quizQuestions: [] },
   });
 
-  return { quizCategories: data.quizCategories, quizQuestions: data.quizQuestions, isLoading, error };
+  return {
+    quizCategories: data?.quizCategories ?? [],
+    quizQuestions: data?.quizQuestions ?? [],
+    isLoading,
+    error
+  };
 }

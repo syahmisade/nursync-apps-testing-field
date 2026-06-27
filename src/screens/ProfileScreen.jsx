@@ -187,7 +187,8 @@ export default function ProfileScreen() {
     savedProcedures,
     savedQuizQuestions,
     quizProgress,
-    clearAllData
+    clearAllData,
+    isLoadingAppData
   } = useApp();
   const { isDark, toggleTheme } = useTheme();
 
@@ -312,10 +313,10 @@ export default function ProfileScreen() {
           <div>
             <SectionLabel>Learning Summary</SectionLabel>
             <div className="grid grid-cols-2 gap-2">
-              <SummaryCard icon={Pill} label="Saved medicines" value={savedMedicines.length} tone="purple" />
-              <SummaryCard icon={ClipboardList} label="Saved procedures" value={savedProcedures.length} tone="green" />
-              <SummaryCard icon={BookOpen} label="Saved quiz items" value={savedQuizQuestions.length} tone="blue" />
-              <SummaryCard icon={Sparkles} label={quizStats.label} value={quizStats.bestScore} tone="amber" />
+              <SummaryCard icon={Pill} label="Saved medicines" value={isLoadingAppData ? '...' : savedMedicines.length} tone="purple" />
+              <SummaryCard icon={ClipboardList} label="Saved procedures" value={isLoadingAppData ? '...' : savedProcedures.length} tone="green" />
+              <SummaryCard icon={BookOpen} label="Saved quiz items" value={isLoadingAppData ? '...' : savedQuizQuestions.length} tone="blue" />
+              <SummaryCard icon={Sparkles} label={isLoadingAppData ? 'Loading quiz progress' : quizStats.label} value={isLoadingAppData ? '...' : quizStats.bestScore} tone="amber" />
             </div>
           </div>
 
