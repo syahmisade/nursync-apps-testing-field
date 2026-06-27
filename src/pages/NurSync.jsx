@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { AppProvider } from '../context/AppContext';
 import BottomNav from '../components/BottomNav';
@@ -10,32 +10,11 @@ function isDetailRoute(pathname) {
   return /^\/(medicine|procedures|quiz)\/[^/]+$/.test(pathname);
 }
 
-const TAB_ROOTS = {
-  medicine: '/medicine',
-  procedures: '/procedures',
-  quiz: '/quiz',
-};
-
-function getMemoryTab(pathname) {
-  return Object.keys(TAB_ROOTS).find((tab) => pathname === TAB_ROOTS[tab] || pathname.startsWith(`${TAB_ROOTS[tab]}/`));
-}
-
 export default function NurSync() {
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
   const { pathname } = location;
-  const openedFromSaved = Boolean(location.state?.fromSaved);
   const hideAppHeader = isDetailRoute(pathname);
-  const [rememberedTabRoutes, setRememberedTabRoutes] = useState(TAB_ROOTS);
-
-  useEffect(() => {
-    const tab = getMemoryTab(pathname);
-    if (!tab || openedFromSaved) return;
-
-    setRememberedTabRoutes((prev) => (
-      prev[tab] === pathname ? prev : { ...prev, [tab]: pathname }
-    ));
-  }, [openedFromSaved, pathname]);
 
   return (
     <AppProvider>
@@ -89,7 +68,7 @@ export default function NurSync() {
 
           {/* Bottom nav */}
           <div className="flex-shrink-0">
-            <BottomNav rememberedTabRoutes={rememberedTabRoutes} openedFromSaved={openedFromSaved} />
+            <BottomNav />
           </div>
 
         </div>
