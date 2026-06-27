@@ -27,7 +27,7 @@ function CategoryPill({ category, fallback = false }) {
 
   return (
     <SemanticPill tone={fallback ? 'neutral' : toneForCategory(label)}>
-      {label}
+      <span className="max-w-[13rem] truncate">{label}</span>
     </SemanticPill>
   );
 }
@@ -43,6 +43,51 @@ function getMedicineSearchText(medicine) {
     medicine.glamourName,
     medicine.category,
   ].filter(hasText).join(' ').toLowerCase();
+}
+
+function getCategoryLabel(medicine) {
+  return hasText(medicine.category) ? medicine.category : 'Uncategorized';
+}
+
+function getMedicineMetaRows(medicine) {
+  const rows = [];
+
+  if (hasText(medicine.brandName)) {
+    rows.push({ label: 'Brand', value: medicine.brandName, muted: false });
+  }
+
+  if (hasText(medicine.glamourName)) {
+    rows.push({ label: 'Also known as', value: medicine.glamourName, muted: false });
+  }
+
+  if (rows.length === 0) {
+    return [
+      { value: 'No brand/common name listed', muted: true },
+      { value: ' ', muted: true },
+    ];
+  }
+
+  if (rows.length === 1) {
+    rows.push({ value: 'No additional name listed', muted: true });
+  }
+
+  return rows.slice(0, 2);
+}
+
+function MedicineCardMeta({ medicine }) {
+  return (
+    <div className="h-[38px] space-y-0.5">
+      {getMedicineMetaRows(medicine).map((row, index) => (
+        <p
+          key={`${row.label || 'placeholder'}-${index}`}
+          className={`text-xs leading-4 line-clamp-1 break-words ${row.muted ? 'font-medium text-muted-foreground/70' : 'font-medium text-muted-foreground'}`}
+        >
+          {row.label && <span className="font-bold text-primary">{row.label}: </span>}
+          {row.value}
+        </p>
+      ))}
+    </div>
+  );
 }
 
 function MedicineMeta({ medicine, compact = false, reserveSpace = false }) {
@@ -363,16 +408,16 @@ export default function MedicineScreen() {
                     handleSelect(medicine);
                   }
                 }}
-                className="w-full min-h-[8.25rem] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="min-h-[2.25rem] font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{medicine.genericName}</h3>
-                    <div className="mt-2 min-h-[1.5rem] flex items-start">
-                      <CategoryPill category={medicine.category} fallback={!hasText(medicine.category)} />
+                className="w-full h-[132px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
+                <div className="grid grid-cols-[1fr_auto] gap-3 h-full">
+                  <div className="min-w-0 flex flex-col">
+                    <h3 className="h-[40px] font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{medicine.genericName}</h3>
+                    <div className="h-[26px] flex items-center overflow-hidden">
+                      <CategoryPill category={getCategoryLabel(medicine)} fallback={!hasText(medicine.category)} />
                     </div>
-                    <MedicineMeta medicine={medicine} compact reserveSpace />
+                    <MedicineCardMeta medicine={medicine} />
                   </div>
-                  <div className="flex items-center gap-1 flex-shrink-0 pt-0.5">
+                  <div className="w-12 flex items-start justify-end gap-1 pt-0.5">
                     <button onClick={e => { e.stopPropagation(); toggleSaveMedicine(medicine.id); }}
                       className="p-1.5 rounded-xl transition-all active:scale-90"
                       style={{ color: isSaved ? 'hsl(265,55%,52%)' : 'hsl(265,15%,68%)' }}>
