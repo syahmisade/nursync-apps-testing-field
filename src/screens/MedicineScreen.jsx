@@ -22,12 +22,12 @@ const catTextColor = {
   "Corticosteroid":   'hsl(195,55%,38%)',
 };
 
-function CategoryPill({ category }) {
-  if (!hasText(category)) return null;
+function CategoryPill({ category, fallback = false }) {
+  const label = hasText(category) ? category : 'Uncategorized';
 
   return (
-    <SemanticPill tone={toneForCategory(category)}>
-      {category}
+    <SemanticPill tone={fallback ? 'neutral' : toneForCategory(label)}>
+      {label}
     </SemanticPill>
   );
 }
@@ -45,18 +45,28 @@ function getMedicineSearchText(medicine) {
   ].filter(hasText).join(' ').toLowerCase();
 }
 
-function MedicineMeta({ medicine, compact = false }) {
+function MedicineMeta({ medicine, compact = false, reserveSpace = false }) {
   const items = [
     hasText(medicine.brandName) ? { label: 'Brand', value: medicine.brandName } : null,
     hasText(medicine.glamourName) ? { label: 'Also known as', value: medicine.glamourName } : null,
   ].filter(Boolean);
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    if (!reserveSpace) return null;
+
+    return (
+      <div className={compact ? 'mt-2 min-h-[2rem] flex items-center' : 'mt-3 flex flex-col gap-1.5'}>
+        <p className="text-xs font-medium text-muted-foreground">No brand/common name listed</p>
+      </div>
+    );
+  }
+
+  const rows = reserveSpace ? items.slice(0, 2) : items;
 
   return (
-    <div className={compact ? 'mt-2 space-y-0.5' : 'mt-3 flex flex-col gap-1.5'}>
-      {items.map(({ label, value }) => (
-        <p key={label} className={compact ? 'text-xs font-medium text-muted-foreground' : 'text-xs font-medium text-muted-foreground'}>
+    <div className={compact ? 'mt-2 min-h-[2rem] space-y-0.5' : 'mt-3 flex flex-col gap-1.5'}>
+      {rows.map(({ label, value }) => (
+        <p key={label} className="text-xs font-medium text-muted-foreground line-clamp-1 break-words">
           <span className="font-bold text-primary">{label}:</span> {value}
         </p>
       ))}
@@ -353,18 +363,16 @@ export default function MedicineScreen() {
                     handleSelect(medicine);
                   }
                 }}
-                className="w-full p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
+                className="w-full min-h-[8.25rem] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2">{medicine.genericName}</h3>
-                    {hasText(medicine.category) && (
-                      <div className="mt-2">
-                        <CategoryPill category={medicine.category} />
-                      </div>
-                    )}
-                    <MedicineMeta medicine={medicine} compact />
+                    <h3 className="min-h-[2.25rem] font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{medicine.genericName}</h3>
+                    <div className="mt-2 min-h-[1.5rem] flex items-start">
+                      <CategoryPill category={medicine.category} fallback={!hasText(medicine.category)} />
+                    </div>
+                    <MedicineMeta medicine={medicine} compact reserveSpace />
                   </div>
-                  <div className="flex items-center gap-1 flex-shrink-0">
+                  <div className="flex items-center gap-1 flex-shrink-0 pt-0.5">
                     <button onClick={e => { e.stopPropagation(); toggleSaveMedicine(medicine.id); }}
                       className="p-1.5 rounded-xl transition-all active:scale-90"
                       style={{ color: isSaved ? 'hsl(265,55%,52%)' : 'hsl(265,15%,68%)' }}>
