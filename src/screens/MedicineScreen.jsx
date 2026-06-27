@@ -23,10 +23,44 @@ const catTextColor = {
 };
 
 function CategoryPill({ category }) {
+  if (!hasText(category)) return null;
+
   return (
     <SemanticPill tone={toneForCategory(category)}>
       {category}
     </SemanticPill>
+  );
+}
+
+function hasText(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function getMedicineSearchText(medicine) {
+  return [
+    medicine.genericName,
+    medicine.brandName,
+    medicine.glamourName,
+    medicine.category,
+  ].filter(hasText).join(' ').toLowerCase();
+}
+
+function MedicineMeta({ medicine, compact = false }) {
+  const items = [
+    hasText(medicine.brandName) ? { label: 'Brand', value: medicine.brandName } : null,
+    hasText(medicine.glamourName) ? { label: 'Also known as', value: medicine.glamourName } : null,
+  ].filter(Boolean);
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className={compact ? 'mt-2 space-y-0.5' : 'mt-3 flex flex-col gap-1.5'}>
+      {items.map(({ label, value }) => (
+        <p key={label} className={compact ? 'text-xs font-medium text-muted-foreground' : 'text-xs font-medium text-muted-foreground'}>
+          <span className="font-bold text-primary">{label}:</span> {value}
+        </p>
+      ))}
+    </div>
   );
 }
 
@@ -43,8 +77,6 @@ function MedicineDetail({ medicine, onBack }) {
 
   const sections = [
     { label: "Generic Name", value: medicine.genericName },
-    { label: "Brand Name", value: medicine.brandName },
-    { label: "Common / Glamour Name", value: medicine.glamourName },
     { label: "Indications", value: medicine.indications },
     { label: "Adverse Reactions", value: medicine.adverseReactions },
     { label: "Contraindications", value: medicine.contraindications },
@@ -81,18 +113,12 @@ function MedicineDetail({ medicine, onBack }) {
         {/* Title block */}
         <div className="rounded-3xl p-5 border card-shadow bg-card border-border">
           <div className="flex items-start justify-between gap-2">
-            <div>
+            <div className="min-w-0">
               <h1 className="text-lg font-black text-foreground">{medicine.genericName}</h1>
-              <p className="text-xs font-medium mt-0.5 text-muted-foreground">{medicine.brandName}</p>
             </div>
             <CategoryPill category={medicine.category} />
           </div>
-          {medicine.glamourName && (
-            <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-secondary border border-border">
-              <span className="text-xs font-medium text-muted-foreground">Also known as:</span>
-              <span className="text-xs font-bold text-primary">{medicine.glamourName}</span>
-            </div>
-          )}
+          <MedicineMeta medicine={medicine} />
         </div>
 
         {isControlledSubstance(medicine) && (
@@ -102,7 +128,7 @@ function MedicineDetail({ medicine, onBack }) {
           </StatusPanel>
         )}
 
-        {sections.filter(({ label }) => !['Generic Name', 'Brand Name', 'Common / Glamour Name'].includes(label)).map(({ label, value }) => (
+        {sections.filter(({ value }) => hasText(value)).map(({ label, value }) => (
           <div key={label} className="rounded-2xl p-4 border card-shadow bg-card border-border">
             <p className="text-xs font-black uppercase tracking-widest mb-1.5 text-primary">{label}</p>
             <p className="text-sm leading-relaxed font-medium text-foreground">{value}</p>
@@ -152,7 +178,7 @@ export default function MedicineScreen() {
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return medicines.filter(m => {
-      const matchSearch = !q || m.genericName.toLowerCase().includes(q) || m.brandName.toLowerCase().includes(q) || m.glamourName.toLowerCase().includes(q);
+      const matchSearch = !q || getMedicineSearchText(m).includes(q);
       const matchCat = activeCategory === 'All' || m.category === activeCategory;
       return matchSearch && matchCat;
     });
@@ -328,16 +354,15 @@ export default function MedicineScreen() {
                   }
                 }}
                 className="w-full p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-bold text-sm text-foreground">{medicine.genericName}</h3>
-                      <CategoryPill category={medicine.category} />
-                    </div>
-                    <p className="text-xs font-medium mt-0.5 text-muted-foreground">{medicine.brandName}</p>
-                    {medicine.glamourName && (
-                      <p className="text-xs mt-0.5 font-medium text-primary">Also: {medicine.glamourName}</p>
+                    <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2">{medicine.genericName}</h3>
+                    {hasText(medicine.category) && (
+                      <div className="mt-2">
+                        <CategoryPill category={medicine.category} />
+                      </div>
                     )}
+                    <MedicineMeta medicine={medicine} compact />
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
                     <button onClick={e => { e.stopPropagation(); toggleSaveMedicine(medicine.id); }}
