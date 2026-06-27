@@ -105,7 +105,7 @@ function ProcedureDetail({ procedure, onBack }) {
                       ? 'bg-secondary/80 border-primary/30 text-muted-foreground'
                       : 'bg-muted border-border text-foreground'
                   }`}>
-                  <CheckCircle2 size={16} className={`flex-shrink-0 mt-0.5 transition-colors ${done ? 'text-primary' : 'text-muted-foreground'}`} />
+                  <span className={`flex-shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-black transition-colors ${done ? 'bg-primary text-primary-foreground' : 'bg-secondary text-primary'}`}>{i + 1}</span>
                   <p className="text-xs leading-relaxed font-medium transition-colors text-foreground"
                     style={{ textDecoration: done ? 'line-through' : 'none', opacity: done ? 0.6 : 1 }}>
                     {step}
