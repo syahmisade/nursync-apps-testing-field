@@ -10,7 +10,7 @@ const tabs = [
   { path: '/saved', label: 'Saved', Icon: Bookmark },
 ];
 
-export default function BottomNav() {
+export default function BottomNav({ rememberedTabRoutes = {}, openedFromSaved = false }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -28,7 +28,12 @@ export default function BottomNav() {
         const isActive = pathname === path || pathname.startsWith(`${path}/`);
 
         const handleClick = () => {
-          if (pathname !== path) navigate(path);
+          const rememberedPath = rememberedTabRoutes[path.slice(1)] || path;
+          const targetPath = isActive || (openedFromSaved && pathname.startsWith(`${path}/`))
+            ? path
+            : rememberedPath;
+
+          if (pathname !== targetPath) navigate(targetPath);
         };
 
         return (

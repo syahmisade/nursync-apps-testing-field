@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { AlertTriangle, RotateCcw, ChevronRight, ArrowLeft, Info } from 'lucide-react';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import { StatusPanel } from '../components/Semantic';
+import { AnimatePresence, motion, detailVariants, listVariants, slideTransition } from '../components/PageTransition';
 
 function BMICalculator({ onBack }) {
   const [height, setHeight] = useState('');
@@ -655,58 +656,89 @@ export default function CalculatorScreen() {
     return () => el.removeEventListener('scroll', onScroll);
   }, []);
 
-  if (activeCalc === 'bmi') return <BMICalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'ivdrip') return <IVDripCalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'fluidbalance') return <FluidBalanceCalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'dose') return <DoseCalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'infusiontime') return <InfusionTimeCalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'bloodtransfusion') return <BloodTransfusionCalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'edd') return <EDDCalculator onBack={() => setActiveCalc(null)} />;
+  const calculatorComponents = {
+    bmi: BMICalculator,
+    ivdrip: IVDripCalculator,
+    fluidbalance: FluidBalanceCalculator,
+    dose: DoseCalculator,
+    infusiontime: InfusionTimeCalculator,
+    bloodtransfusion: BloodTransfusionCalculator,
+    edd: EDDCalculator,
+  };
+  const ActiveCalculator = activeCalc ? calculatorComponents[activeCalc] : null;
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="sticky top-0 z-30 flex-shrink-0 bg-background">
-        <div className="px-5 pt-4 pb-2 flex items-center gap-3">
-          <div className="w-20 h-20 flex-shrink-0 overflow-hidden flex items-center justify-center bg-background">
-            <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/ba864a7e8_Pic2.png" alt="" className="w-full h-full object-contain" style={{ transform: 'scale(1.1)', transformOrigin: 'center' }} />
-          </div>
-          <div className="animate-fade-in">
-            <h1 className="text-2xl font-black text-foreground">Calculators</h1>
-            <p className="text-xs font-medium text-muted-foreground">Nursing clinical calculators</p>
-          </div>
-        </div>
-        <div className="h-1.5 pointer-events-none transition-opacity duration-200"
-          style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
-      </div>
-
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
-        <StatusPanel tone="warning" compact>
-          <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
-          <span>Always verify clinical calculations with a qualified practitioner. Educational reference only.</span>
-        </StatusPanel>
-
-        {calculators.map(calc => (
-          <button
-            key={calc.id}
-            onClick={() => setActiveCalc(calc.id)}
-            className="w-full rounded-2xl p-4 border text-left flex items-center justify-between transition-all active:scale-[0.98] card-shadow bg-card border-border hover:bg-muted"
+    <div className="relative h-full overflow-hidden">
+      <AnimatePresence initial={false}>
+        {ActiveCalculator ? (
+          <motion.div
+            key="detail"
+            className="absolute inset-0"
+            variants={detailVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={slideTransition}
           >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0 bg-secondary border border-border">
-                {calc.icon}
+            <ActiveCalculator onBack={() => setActiveCalc(null)} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="list"
+            className="absolute inset-0"
+            variants={listVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={slideTransition}
+          >
+            <div className="flex flex-col h-full">
+              <div className="sticky top-0 z-30 flex-shrink-0 bg-background">
+                <div className="px-5 pt-4 pb-2 flex items-center gap-3">
+                  <div className="w-20 h-20 flex-shrink-0 overflow-hidden flex items-center justify-center bg-background">
+                    <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/ba864a7e8_Pic2.png" alt="" className="w-full h-full object-contain" style={{ transform: 'scale(1.1)', transformOrigin: 'center' }} />
+                  </div>
+                  <div className="animate-fade-in">
+                    <h1 className="text-2xl font-black text-foreground">Calculators</h1>
+                    <p className="text-xs font-medium text-muted-foreground">Nursing clinical calculators</p>
+                  </div>
+                </div>
+                <div className="h-1.5 pointer-events-none transition-opacity duration-200"
+                  style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
               </div>
-              <div>
-                <p className="font-bold text-sm text-foreground">{calc.name}</p>
-                <p className="text-xs font-medium mt-0.5 text-muted-foreground">{calc.desc}</p>
+
+              <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
+                <StatusPanel tone="warning" compact>
+                  <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
+                  <span>Always verify clinical calculations with a qualified practitioner. Educational reference only.</span>
+                </StatusPanel>
+
+                {calculators.map(calc => (
+                  <button
+                    key={calc.id}
+                    onClick={() => setActiveCalc(calc.id)}
+                    className="w-full rounded-2xl p-4 border text-left flex items-center justify-between transition-all active:scale-[0.98] card-shadow bg-card border-border hover:bg-muted"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0 bg-secondary border border-border">
+                        {calc.icon}
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm text-foreground">{calc.name}</p>
+                        <p className="text-xs font-medium mt-0.5 text-muted-foreground">{calc.desc}</p>
+                      </div>
+                    </div>
+                    <ChevronRight size={15} className="text-muted-foreground" />
+                  </button>
+                ))}
+
+                <DisclaimerBanner />
+                <div className="h-2" />
               </div>
             </div>
-            <ChevronRight size={15} className="text-muted-foreground" />
-          </button>
-        ))}
-
-        <DisclaimerBanner />
-        <div className="h-2" />
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
