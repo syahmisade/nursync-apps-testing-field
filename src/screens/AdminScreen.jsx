@@ -120,7 +120,7 @@ export default function AdminScreen() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pt-1 pb-4 animate-fade-in">
+      <div className="flex-1 overflow-y-auto scrollbar-hide main-scroll px-4 pt-1 pb-4">
         {tab === 'medicines' && (
           <AdminEntityManager
             entityName="Medicine"

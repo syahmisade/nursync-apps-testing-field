@@ -34,7 +34,7 @@ function BMICalculator({ onBack }) {
   const bmiCatData = bmi ? getBmiCategory(parseFloat(bmi)) : null;
 
   return (
-    <div className="flex flex-col h-full animate-fade-in">
+    <div className="flex flex-col h-full">
       <div className="flex-shrink-0 bg-background border-b border-border">
         <div className="flex items-center gap-3 px-4 pt-4 pb-3">
           <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 bg-secondary text-primary">
@@ -124,7 +124,7 @@ function IVDripCalculator({ onBack }) {
     : null;
 
   return (
-    <div className="flex flex-col h-full animate-fade-in">
+    <div className="flex flex-col h-full">
       <div className="flex-shrink-0 bg-background border-b border-border">
         <div className="flex items-center gap-3 px-4 pt-4 pb-3">
           <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 bg-secondary text-primary">
@@ -226,7 +226,7 @@ function FluidBalanceCalculator({ onBack }) {
   const balBorder = balVal > 0 ? 'hsl(220,50%,82%)' : balVal < 0 ? 'hsl(28,58%,80%)' : 'hsl(152,40%,78%)';
 
   return (
-    <div className="flex flex-col h-full animate-fade-in">
+    <div className="flex flex-col h-full">
       <div className="flex-shrink-0 bg-background border-b border-border">
         <div className="flex items-center gap-3 px-4 pt-4 pb-3">
           <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 bg-secondary text-primary">
@@ -311,7 +311,7 @@ function DoseCalculator({ onBack }) {
   const dailyDose = singleDose ? (parseFloat(singleDose) * parseFloat(frequency)).toFixed(2) : null;
 
   return (
-    <div className="flex flex-col h-full animate-fade-in">
+    <div className="flex flex-col h-full">
       <div className="flex-shrink-0 bg-background border-b border-border">
         <div className="flex items-center gap-3 px-4 pt-4 pb-3">
           <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 bg-secondary text-primary">
@@ -402,7 +402,7 @@ function InfusionTimeCalculator({ onBack }) {
   const minutes = totalMinutes ? Math.round(totalMinutes % 60) : null;
 
   return (
-    <div className="flex flex-col h-full animate-fade-in">
+    <div className="flex flex-col h-full">
       <div className="flex-shrink-0 bg-background border-b border-border">
         <div className="flex items-center gap-3 px-4 pt-4 pb-3">
           <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 bg-secondary text-primary">
@@ -475,7 +475,7 @@ function BloodTransfusionCalculator({ onBack }) {
   const dropsPerMin = mlPerHour ? ((parseFloat(mlPerHour) * 15) / 60).toFixed(1) : null;
 
   return (
-    <div className="flex flex-col h-full animate-fade-in">
+    <div className="flex flex-col h-full">
       <div className="flex-shrink-0 bg-background border-b border-border">
         <div className="flex items-center gap-3 px-4 pt-4 pb-3">
           <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 bg-secondary text-primary">
@@ -577,7 +577,7 @@ function EDDCalculator({ onBack }) {
   const trimester = weeksPregnant !== null ? getTrimester(weeksPregnant) : null;
 
   return (
-    <div className="flex flex-col h-full animate-fade-in">
+    <div className="flex flex-col h-full">
       <div className="flex-shrink-0 bg-background border-b border-border">
         <div className="flex items-center gap-3 px-4 pt-4 pb-3">
           <button onClick={onBack} className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 bg-secondary text-primary">
@@ -670,7 +670,7 @@ export default function CalculatorScreen() {
           <div className="w-20 h-20 flex-shrink-0 overflow-hidden flex items-center justify-center bg-background">
             <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/ba864a7e8_Pic2.png" alt="" className="w-full h-full object-contain" style={{ transform: 'scale(1.1)', transformOrigin: 'center' }} />
           </div>
-          <div className="animate-fade-in">
+          <div className="">
             <h1 className="text-2xl font-black text-foreground">Calculators</h1>
             <p className="text-xs font-medium text-muted-foreground">Nursing clinical calculators</p>
           </div>
@@ -679,7 +679,7 @@ export default function CalculatorScreen() {
           style={{ background: 'linear-gradient(to bottom, rgba(147,92,210,0.07) 0%, transparent 100%)', opacity: isScrolled ? 1 : 0 }} />
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-2 pb-4 space-y-2.5">
         <StatusPanel tone="warning" compact>
           <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
           <span>Always verify clinical calculations with a qualified practitioner. Educational reference only.</span>

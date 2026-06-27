@@ -35,7 +35,7 @@ function ProcedureDetail({ procedure, onBack }) {
     setCompletedSteps(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]);
 
   return (
-    <div className="flex flex-col h-full animate-fade-in">
+    <div className="flex flex-col h-full">
       <div
         className="flex items-center justify-between px-4 pt-4 pb-3 sticky top-0 z-30 bg-background border-b border-border"
         style={{ paddingTop: 'calc(env(safe-area-inset-top) + 12px)' }}
@@ -217,14 +217,14 @@ export default function ProceduresScreen() {
       <div className="sticky top-0 z-30 flex-shrink-0 bg-background" ref={dropdownRef}>
         <div className="px-5 pt-4 pb-2 flex items-center gap-3">
           <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/07dad48dc_Pic3.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ transform: 'scale(1.1)', transformOrigin: 'center' }} />
-          <div className="animate-fade-in">
+          <div className="">
             <h1 className="text-2xl font-black text-foreground">Procedures</h1>
             <p className="text-xs font-medium text-muted-foreground">Step-by-step nursing guides</p>
           </div>
         </div>
 
       {/* Search + Filter */}
-      <div className="px-4 mb-3 relative animate-fade-in">
+      <div className="px-4 mb-3 relative">
         <div className="flex items-center gap-2">
           <div className="flex-1 flex items-center gap-2.5 rounded-2xl px-4 py-3 border transition-colors bg-card border-border"
             style={{ boxShadow: '0 1px 4px rgba(147,92,210,0.06)' }}>
@@ -265,7 +265,7 @@ export default function ProceduresScreen() {
       </div>
 
       {/* List */}
-      <PullToRefresh scrollRef={scrollRef} onRefresh={handleRefresh} className="main-scroll px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
+      <PullToRefresh scrollRef={scrollRef} onRefresh={handleRefresh} className="main-scroll px-4 pt-2 pb-4 space-y-2.5">
         {isLoading && (
           <div className="text-center py-14">
             <div className="w-7 h-7 mx-auto border-4 border-secondary border-t-primary rounded-full animate-spin" />

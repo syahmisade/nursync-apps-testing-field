@@ -209,14 +209,14 @@ export default function MedicineScreen() {
       <div className="flex-shrink-0 bg-background">
         <div className="px-5 pt-4 pb-2 flex items-center gap-3">
           <img src="https://media.base44.com/images/public/6a0f188f950f15d08b991324/0d9983c47_Pic1.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" style={{ transform: 'scale(1.1)', transformOrigin: 'center' }} />
-          <div className="animate-fade-in">
+          <div className="">
             <h1 className="text-2xl font-black text-foreground">Medicine</h1>
             <p className="text-xs font-medium text-muted-foreground">Drug reference guide</p>
           </div>
         </div>
 
       {/* Search + Filter */}
-      <div className="px-4 mb-3 relative animate-fade-in" ref={dropdownRef}>
+      <div className="px-4 mb-3 relative" ref={dropdownRef}>
         <div className="flex items-center gap-2" ref={searchRef}>
           <div className="flex-1 flex items-center gap-2.5 rounded-2xl px-4 py-3 border transition-colors relative bg-card border-border"
             style={{
@@ -293,7 +293,7 @@ export default function MedicineScreen() {
       </div>{/* end sticky wrapper */}
 
       {/* Medicine list */}
-      <PullToRefresh scrollRef={scrollRef} onRefresh={handleRefresh} className="px-4 pt-2 pb-4 space-y-2.5 animate-fade-in">
+      <PullToRefresh scrollRef={scrollRef} onRefresh={handleRefresh} className="px-4 pt-2 pb-4 space-y-2.5">
         {isLoading && (
           <div className="text-center py-14">
             <div className="w-7 h-7 mx-auto border-4 border-secondary border-t-primary rounded-full animate-spin" />

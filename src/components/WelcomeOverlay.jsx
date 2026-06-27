@@ -21,7 +21,7 @@ export default function WelcomeOverlay() {
   };
 
   return (
-    <div className="absolute inset-0 z-[120] flex flex-col bg-background animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+    <div className="absolute inset-0 z-[120] flex flex-col bg-background" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
       <div className="flex-1 overflow-y-auto scrollbar-hide px-6 pt-10 pb-4 flex flex-col">
         <div className="w-16 h-16 rounded-3xl flex items-center justify-center mb-5 mx-auto shadow-md"
           style={{ background: 'linear-gradient(135deg, hsl(265,60%,58%) 0%, hsl(285,55%,62%) 100%)' }}>

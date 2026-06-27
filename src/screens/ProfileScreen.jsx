@@ -282,7 +282,7 @@ export default function ProfileScreen() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto scrollbar-hide main-scroll pt-2">
-        <div className="mx-4 rounded-3xl px-5 pt-5 pb-5 flex flex-col items-center gap-3 animate-fade-in bg-secondary border border-border">
+        <div className="mx-4 rounded-3xl px-5 pt-5 pb-5 flex flex-col items-center gap-3 bg-secondary border border-border">
           <div
             className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-md"
             style={{ background: 'linear-gradient(135deg, hsl(265,60%,58%) 0%, hsl(285,55%,62%) 100%)' }}
@@ -302,7 +302,7 @@ export default function ProfileScreen() {
           </div>
         </div>
 
-        <div className="px-4 pt-4 pb-8 space-y-4 animate-fade-in">
+        <div className="px-4 pt-4 pb-8 space-y-4">
           {deleted && (
             <StatusPanel tone="success">
               <ShieldCheck size={16} />
