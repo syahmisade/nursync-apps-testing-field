@@ -33,7 +33,10 @@ export function toneForCategory(category) {
   return categoryToneMap[category] || 'neutral';
 }
 
-const neutralCategoryTextColor = 'hsl(265,30%,40%)';
+const neutralCategoryTextColor = {
+  light: 'hsl(265,30%,40%)',
+  dark: 'hsl(265,48%,78%)',
+};
 
 function normalizeCategoryKey(category) {
   return String(category || '').trim().toLowerCase();
@@ -42,9 +45,11 @@ function normalizeCategoryKey(category) {
 function categoryTextColorAt(index) {
   const hue = (220 + (index * 137.508)) % 360;
   const saturation = 52 + (index % 4) * 4;
-  const lightness = 34 + (index % 3) * 4;
 
-  return `hsl(${hue.toFixed(2)},${saturation}%,${lightness}%)`;
+  return {
+    light: `hsl(${hue.toFixed(2)},${saturation}%,${34 + (index % 3) * 4}%)`,
+    dark: `hsl(${hue.toFixed(2)},${Math.min(saturation + 18, 82)}%,${72 + (index % 3) * 4}%)`,
+  };
 }
 
 export function buildCategoryTextColorMap(categories) {
@@ -68,13 +73,14 @@ export function buildCategoryTextColorMap(categories) {
   return colorMap;
 }
 
-export function categoryTextColorFromMap(category, colorMap = {}) {
+export function categoryTextColorFromMap(category, colorMap = {}, isDark = false) {
   const label = String(category || '').trim();
   if (!label || label === 'All' || label === 'Uncategorized') {
-    return neutralCategoryTextColor;
+    return isDark ? neutralCategoryTextColor.dark : neutralCategoryTextColor.light;
   }
 
-  return colorMap[normalizeCategoryKey(label)] || neutralCategoryTextColor;
+  const color = colorMap[normalizeCategoryKey(label)] || neutralCategoryTextColor;
+  return isDark ? color.dark : color.light;
 }
 
 export function toneForQuizCategory(category) {
