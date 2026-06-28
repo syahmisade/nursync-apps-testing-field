@@ -251,7 +251,7 @@ export default function QuizScreen() {
 
   return (
     <div className="relative h-full overflow-hidden">
-      <AnimatePresence initial={false}>
+      <AnimatePresence initial={Boolean(id)}>
         {isDetail ? (
           <motion.div
             key="detail"

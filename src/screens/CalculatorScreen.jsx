@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { AlertTriangle, RotateCcw, ChevronRight, ArrowLeft, Info } from 'lucide-react';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import { StatusPanel } from '../components/Semantic';
+import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
 
 function BMICalculator({ onBack }) {
   const [height, setHeight] = useState('');
@@ -655,15 +656,42 @@ export default function CalculatorScreen() {
     return () => el.removeEventListener('scroll', onScroll);
   }, []);
 
-  if (activeCalc === 'bmi') return <BMICalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'ivdrip') return <IVDripCalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'fluidbalance') return <FluidBalanceCalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'dose') return <DoseCalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'infusiontime') return <InfusionTimeCalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'bloodtransfusion') return <BloodTransfusionCalculator onBack={() => setActiveCalc(null)} />;
-  if (activeCalc === 'edd') return <EDDCalculator onBack={() => setActiveCalc(null)} />;
+  const calculatorViews = {
+    bmi: <BMICalculator onBack={() => setActiveCalc(null)} />,
+    ivdrip: <IVDripCalculator onBack={() => setActiveCalc(null)} />,
+    fluidbalance: <FluidBalanceCalculator onBack={() => setActiveCalc(null)} />,
+    dose: <DoseCalculator onBack={() => setActiveCalc(null)} />,
+    infusiontime: <InfusionTimeCalculator onBack={() => setActiveCalc(null)} />,
+    bloodtransfusion: <BloodTransfusionCalculator onBack={() => setActiveCalc(null)} />,
+    edd: <EDDCalculator onBack={() => setActiveCalc(null)} />,
+  };
+  const activeCalculator = calculatorViews[activeCalc];
 
   return (
+    <div className="relative h-full overflow-hidden">
+      <AnimatePresence initial={false}>
+        {activeCalculator ? (
+          <motion.div
+            key="detail"
+            className="absolute inset-0 overflow-hidden bg-background"
+            variants={detailVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={slideTransition}
+          >
+            {activeCalculator}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="list"
+            className="absolute inset-0"
+            variants={listVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={slideTransition}
+          >
     <div className="flex flex-col h-full">
       <div className="sticky top-0 z-30 flex-shrink-0 bg-background">
         <div className="px-5 pt-4 pb-2 flex items-center gap-3">
@@ -707,6 +735,10 @@ export default function CalculatorScreen() {
         <DisclaimerBanner />
         <div className="h-2" />
       </div>
+    </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

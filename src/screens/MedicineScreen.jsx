@@ -244,7 +244,7 @@ export default function MedicineScreen() {
 
   return (
     <div className="relative h-full overflow-hidden">
-      <AnimatePresence initial={false}>
+      <AnimatePresence initial={Boolean(id)}>
         {id ? (
           <motion.div
             key="detail"
