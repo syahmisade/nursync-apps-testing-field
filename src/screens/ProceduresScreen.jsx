@@ -4,26 +4,34 @@ import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTrian
 import { useApp } from '../context/AppContext';
 import { useProcedures } from '../hooks/useProcedures';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import { SemanticPill, StatusPanel, toneForCategory } from '../components/Semantic';
+import { SemanticPill, StatusPanel, procedureCategoryTextColor, toneForCategory } from '../components/Semantic';
 import PullToRefresh from '../components/PullToRefresh';
 import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
 
-const catTextColor = {
-  "All":                      'hsl(265,30%,40%)',
-  "Vital Signs":              'hsl(220,60%,46%)',
-  "Medication Administration":'hsl(270,50%,46%)',
-  "Infection Control":        'hsl(152,50%,34%)',
-  "Wound Care":               'hsl(350,55%,46%)',
-  "Patient Safety":           'hsl(28,65%,42%)',
-  "Emergency Basics":         'hsl(0,52%,46%)',
-};
+function hasText(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
 
 function ProcCategoryPill({ category }) {
+  const label = hasText(category) ? category : 'Uncategorized';
+
   return (
-    <SemanticPill tone={toneForCategory(category)}>
-      {category}
+    <SemanticPill tone={toneForCategory(label)} style={{ color: procedureCategoryTextColor(label) }}>
+      <span className="max-w-[13rem] truncate">{label}</span>
     </SemanticPill>
   );
+}
+
+function getProcedureSearchText(procedure) {
+  return [
+    procedure.title,
+    procedure.category,
+  ].filter(hasText).join(' ').toLowerCase();
+}
+
+function getProcedureOverviewText(procedure) {
+  if (Array.isArray(procedure.overview)) return procedure.overview.filter(hasText).join(' • ');
+  return hasText(procedure.overview) ? procedure.overview : 'No overview listed';
 }
 
 function ProcedureDetail({ procedure, onBack }) {
@@ -163,10 +171,14 @@ export default function ProceduresScreen() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (!procedureCategories.includes(activeCategory)) setActiveCategory('All');
+  }, [procedureCategories, activeCategory]);
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return procedures.filter(p => {
-      const matchSearch = !q || p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+      const matchSearch = !q || getProcedureSearchText(p).includes(q);
       const matchCat = activeCategory === 'All' || p.category === activeCategory;
       return matchSearch && matchCat;
     });
@@ -251,9 +263,9 @@ export default function ProceduresScreen() {
             {procedureCategories.map(cat => (
               <button key={cat} onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
                 className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold text-left transition-colors border-t border-border hover:bg-muted"
-                style={{ color: catTextColor[cat] || 'hsl(265,30%,40%)' }}>
+                style={{ color: procedureCategoryTextColor(cat) }}>
                 <span className={activeCategory === cat ? 'font-black' : ''}>{cat}</span>
-                {activeCategory === cat && <Check size={14} style={{ color: catTextColor[cat] }} />}
+                {activeCategory === cat && <Check size={14} style={{ color: procedureCategoryTextColor(cat) }} />}
               </button>
             ))}
             </div>
@@ -298,15 +310,23 @@ export default function ProceduresScreen() {
                     navigate(`/procedures/${proc.id}`);
                   }
                 }}
-                className="w-full p-4 text-left transition-all cursor-pointer hover:bg-muted">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <ProcCategoryPill category={proc.category} />
-                    <h3 className="font-bold text-sm mt-1.5 text-foreground">{proc.title}</h3>
-                    <p className="text-xs font-medium mt-1 line-clamp-2 text-muted-foreground">{Array.isArray(proc.overview) ? proc.overview.join(' • ') : proc.overview}</p>
-                    <p className="text-xs font-semibold mt-1 text-primary">{proc.steps.length} steps</p>
+                className="w-full h-[132px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
+                <div className="grid grid-cols-[1fr_auto] gap-3 h-full">
+                  <div className="min-w-0 flex flex-col">
+                    <div className="h-[26px] flex items-center overflow-hidden">
+                      <ProcCategoryPill category={proc.category} />
+                    </div>
+                    <div className="h-[40px] flex items-center">
+                      <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{proc.title}</h3>
+                    </div>
+                    <p className="h-[32px] text-xs font-medium leading-4 line-clamp-2 text-muted-foreground">
+                      {getProcedureOverviewText(proc)}
+                    </p>
+                    <p className="text-xs font-semibold mt-auto text-primary">
+                      {Array.isArray(proc.steps) ? proc.steps.length : 0} steps
+                    </p>
                   </div>
-                  <div className="flex items-center gap-1 flex-shrink-0">
+                  <div className="w-12 flex items-start justify-end gap-1 pt-0.5">
                     <button onClick={e => { e.stopPropagation(); toggleSaveProcedure(proc.id); }}
                       className="p-1.5 rounded-xl transition-all active:scale-90"
                       style={{ color: isSaved ? 'hsl(265,55%,52%)' : 'hsl(265,15%,68%)' }}>

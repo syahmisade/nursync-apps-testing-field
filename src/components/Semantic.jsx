@@ -69,6 +69,8 @@ export function medicineCategoryTextColor(category) {
   return medicineCategoryTextColors[hashCategory(label) % medicineCategoryTextColors.length];
 }
 
+export const procedureCategoryTextColor = medicineCategoryTextColor;
+
 export function toneForQuizCategory(category) {
   return quizToneMap[category] || 'neutral';
 }
