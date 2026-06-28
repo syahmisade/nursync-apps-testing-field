@@ -220,6 +220,10 @@ export default function MedicineScreen() {
   const { savedMedicines, toggleSaveMedicine, addRecentSearch, recentSearches } = useApp();
   const { medicines, categories, isLoading, error } = useMedicines();
 
+  useEffect(() => {
+    if (!categories.includes(activeCategory)) setActiveCategory('All');
+  }, [categories, activeCategory]);
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return medicines.filter(m => {
