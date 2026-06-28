@@ -4,7 +4,7 @@ import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTrian
 import { useApp } from '../context/AppContext';
 import { useProcedures } from '../hooks/useProcedures';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import { SemanticPill, StatusPanel, procedureCategoryTextColor, toneForCategory } from '../components/Semantic';
+import { SemanticPill, StatusPanel, buildCategoryTextColorMap, categoryTextColorFromMap, toneForCategory } from '../components/Semantic';
 import PullToRefresh from '../components/PullToRefresh';
 import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
 
@@ -12,11 +12,11 @@ function hasText(value) {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-function ProcCategoryPill({ category }) {
+function ProcCategoryPill({ category, colorMap }) {
   const label = hasText(category) ? category : 'Uncategorized';
 
   return (
-    <SemanticPill tone={toneForCategory(label)} style={{ color: procedureCategoryTextColor(label) }}>
+    <SemanticPill tone={toneForCategory(label)} style={{ color: categoryTextColorFromMap(label, colorMap) }}>
       <span className="max-w-[13rem] truncate">{label}</span>
     </SemanticPill>
   );
@@ -34,7 +34,7 @@ function getProcedureOverviewText(procedure) {
   return hasText(procedure.overview) ? procedure.overview : 'No overview listed';
 }
 
-function ProcedureDetail({ procedure, onBack }) {
+function ProcedureDetail({ procedure, onBack, categoryColorMap }) {
   const { savedProcedures, toggleSaveProcedure } = useApp();
   const isSaved = savedProcedures.includes(procedure.id);
   const [completedSteps, setCompletedSteps] = useState([]);
@@ -63,7 +63,7 @@ function ProcedureDetail({ procedure, onBack }) {
       <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-6 space-y-3">
         {/* Title */}
         <div className="rounded-3xl p-5 border card-shadow bg-card border-border">
-          <ProcCategoryPill category={procedure.category} />
+          <ProcCategoryPill category={procedure.category} colorMap={categoryColorMap} />
           <h1 className="text-lg font-black mt-2 text-foreground">{procedure.title}</h1>
         </div>
 
@@ -154,6 +154,7 @@ export default function ProceduresScreen() {
   const scrollRef = useRef(null);
   const { savedProcedures, toggleSaveProcedure } = useApp();
   const { procedures, procedureCategories, isLoading, error } = useProcedures();
+  const categoryColorMap = useMemo(() => buildCategoryTextColorMap(procedureCategories), [procedureCategories]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -210,9 +211,9 @@ export default function ProceduresScreen() {
             transition={slideTransition}
           >
             {selected
-              ? <ProcedureDetail procedure={selected} onBack={handleBack} />
+              ? <ProcedureDetail procedure={selected} onBack={handleBack} categoryColorMap={categoryColorMap} />
               : !isLoading && procedures[0]
-                ? <ProcedureDetail procedure={procedures[0]} onBack={() => navigate('/procedures', { replace: true })} />
+                ? <ProcedureDetail procedure={procedures[0]} onBack={() => navigate('/procedures', { replace: true })} categoryColorMap={categoryColorMap} />
                 : <div className="flex items-center justify-center h-full"><div className="w-7 h-7 border-4 border-secondary border-t-primary rounded-full animate-spin" /></div>}
           </motion.div>
         ) : (
@@ -263,9 +264,9 @@ export default function ProceduresScreen() {
             {procedureCategories.map(cat => (
               <button key={cat} onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
                 className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold text-left transition-colors border-t border-border hover:bg-muted"
-                style={{ color: procedureCategoryTextColor(cat) }}>
+                style={{ color: categoryTextColorFromMap(cat, categoryColorMap) }}>
                 <span className={activeCategory === cat ? 'font-black' : ''}>{cat}</span>
-                {activeCategory === cat && <Check size={14} style={{ color: procedureCategoryTextColor(cat) }} />}
+                {activeCategory === cat && <Check size={14} style={{ color: categoryTextColorFromMap(cat, categoryColorMap) }} />}
               </button>
             ))}
             </div>
@@ -314,7 +315,7 @@ export default function ProceduresScreen() {
                 <div className="grid grid-cols-[1fr_auto] gap-3 h-full">
                   <div className="min-w-0 flex flex-col">
                     <div className="h-[26px] flex items-center overflow-hidden">
-                      <ProcCategoryPill category={proc.category} />
+                      <ProcCategoryPill category={proc.category} colorMap={categoryColorMap} />
                     </div>
                     <div className="h-[40px] flex items-center">
                       <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{proc.title}</h3>

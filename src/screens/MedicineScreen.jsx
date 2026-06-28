@@ -4,17 +4,17 @@ import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTrian
 import { useApp } from '../context/AppContext';
 import { useMedicines } from '../hooks/useMedicines';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import { SemanticPill, StatusPanel, medicineCategoryTextColor, toneForCategory } from '../components/Semantic';
+import { SemanticPill, StatusPanel, buildCategoryTextColorMap, categoryTextColorFromMap, toneForCategory } from '../components/Semantic';
 import PullToRefresh from '../components/PullToRefresh';
 import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
 
-function CategoryPill({ category, fallback = false }) {
+function CategoryPill({ category, colorMap, fallback = false }) {
   const label = hasText(category) ? category : 'Uncategorized';
 
   return (
     <SemanticPill
       tone={fallback ? 'neutral' : toneForCategory(label)}
-      style={{ color: medicineCategoryTextColor(label) }}
+      style={{ color: categoryTextColorFromMap(label, colorMap) }}
     >
       <span className="max-w-[13rem] truncate">{label}</span>
     </SemanticPill>
@@ -105,7 +105,7 @@ function isControlledSubstance(medicine) {
     || /controlled/i.test(medicine.nemlStatus || '');
 }
 
-function MedicineDetail({ medicine, onBack }) {
+function MedicineDetail({ medicine, onBack, categoryColorMap }) {
   const { savedMedicines, toggleSaveMedicine } = useApp();
   const isSaved = savedMedicines.includes(medicine.id);
 
@@ -150,7 +150,7 @@ function MedicineDetail({ medicine, onBack }) {
             <div className="min-w-0">
               <h1 className="text-lg font-black text-foreground">{medicine.genericName}</h1>
             </div>
-            <CategoryPill category={medicine.category} />
+            <CategoryPill category={medicine.category} colorMap={categoryColorMap} />
           </div>
           <MedicineMeta medicine={medicine} />
         </div>
@@ -208,6 +208,7 @@ export default function MedicineScreen() {
 
   const { savedMedicines, toggleSaveMedicine, addRecentSearch, recentSearches } = useApp();
   const { medicines, categories, isLoading, error } = useMedicines();
+  const categoryColorMap = useMemo(() => buildCategoryTextColorMap(categories), [categories]);
 
   useEffect(() => {
     if (!categories.includes(activeCategory)) setActiveCategory('All');
@@ -253,9 +254,9 @@ export default function MedicineScreen() {
             transition={slideTransition}
           >
             {selectedMedicine
-              ? <MedicineDetail medicine={selectedMedicine} onBack={handleBack} />
+              ? <MedicineDetail medicine={selectedMedicine} onBack={handleBack} categoryColorMap={categoryColorMap} />
               : !isLoading && medicines[0]
-                ? <MedicineDetail medicine={medicines[0]} onBack={() => navigate('/medicine', { replace: true })} />
+                ? <MedicineDetail medicine={medicines[0]} onBack={() => navigate('/medicine', { replace: true })} categoryColorMap={categoryColorMap} />
                 : <div className="flex items-center justify-center h-full"><div className="w-7 h-7 border-4 border-secondary border-t-primary rounded-full animate-spin" /></div>}
           </motion.div>
         ) : (
@@ -339,9 +340,9 @@ export default function MedicineScreen() {
               <button key={cat}
                 onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
                 className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold text-left transition-colors border-t border-border hover:bg-muted"
-                style={{ color: medicineCategoryTextColor(cat) }}>
+                style={{ color: categoryTextColorFromMap(cat, categoryColorMap) }}>
                 <span className={activeCategory === cat ? 'font-black' : ''}>{cat}</span>
-                {activeCategory === cat && <Check size={14} style={{ color: medicineCategoryTextColor(cat) }} />}
+                {activeCategory === cat && <Check size={14} style={{ color: categoryTextColorFromMap(cat, categoryColorMap) }} />}
               </button>
             ))}
             </div>
@@ -398,7 +399,7 @@ export default function MedicineScreen() {
                       <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{medicine.genericName}</h3>
                     </div>
                     <div className="h-[26px] flex items-center overflow-hidden">
-                      <CategoryPill category={getCategoryLabel(medicine)} fallback={!hasText(medicine.category)} />
+                      <CategoryPill category={getCategoryLabel(medicine)} colorMap={categoryColorMap} fallback={!hasText(medicine.category)} />
                     </div>
                     <MedicineCardMeta medicine={medicine} />
                   </div>

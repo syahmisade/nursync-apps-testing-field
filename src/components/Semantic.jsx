@@ -33,43 +33,49 @@ export function toneForCategory(category) {
   return categoryToneMap[category] || 'neutral';
 }
 
-const medicineCategoryTextColors = [
-  'hsl(220,65%,45%)',
-  'hsl(152,55%,32%)',
-  'hsl(270,50%,45%)',
-  'hsl(350,58%,45%)',
-  'hsl(28,70%,40%)',
-  'hsl(188,55%,32%)',
-  'hsl(38,65%,36%)',
-  'hsl(0,58%,45%)',
-  'hsl(330,55%,45%)',
-  'hsl(195,55%,34%)',
-  'hsl(115,42%,34%)',
-  'hsl(255,56%,48%)',
-];
+const neutralCategoryTextColor = 'hsl(265,30%,40%)';
 
-function hashCategory(category) {
-  const normalized = String(category || '').trim().toLowerCase();
-  let hash = 0;
-
-  for (let i = 0; i < normalized.length; i += 1) {
-    hash = ((hash << 5) - hash) + normalized.charCodeAt(i);
-    hash |= 0;
-  }
-
-  return Math.abs(hash);
+function normalizeCategoryKey(category) {
+  return String(category || '').trim().toLowerCase();
 }
 
-export function medicineCategoryTextColor(category) {
+function categoryTextColorAt(index) {
+  const hue = (220 + (index * 137.508)) % 360;
+  const saturation = 52 + (index % 4) * 4;
+  const lightness = 34 + (index % 3) * 4;
+
+  return `hsl(${hue.toFixed(2)},${saturation}%,${lightness}%)`;
+}
+
+export function buildCategoryTextColorMap(categories) {
+  const colorMap = {};
+  let colorIndex = 0;
+
+  for (const category of categories) {
+    const label = String(category || '').trim();
+    if (!label) continue;
+
+    const key = normalizeCategoryKey(label);
+    if (label === 'All' || label === 'Uncategorized') {
+      colorMap[key] = neutralCategoryTextColor;
+      continue;
+    }
+
+    colorMap[key] = categoryTextColorAt(colorIndex);
+    colorIndex += 1;
+  }
+
+  return colorMap;
+}
+
+export function categoryTextColorFromMap(category, colorMap = {}) {
   const label = String(category || '').trim();
   if (!label || label === 'All' || label === 'Uncategorized') {
-    return 'hsl(265,30%,40%)';
+    return neutralCategoryTextColor;
   }
 
-  return medicineCategoryTextColors[hashCategory(label) % medicineCategoryTextColors.length];
+  return colorMap[normalizeCategoryKey(label)] || neutralCategoryTextColor;
 }
-
-export const procedureCategoryTextColor = medicineCategoryTextColor;
 
 export function toneForQuizCategory(category) {
   return quizToneMap[category] || 'neutral';
