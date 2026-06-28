@@ -4,29 +4,18 @@ import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTrian
 import { useApp } from '../context/AppContext';
 import { useMedicines } from '../hooks/useMedicines';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import { SemanticPill, StatusPanel, toneForCategory } from '../components/Semantic';
+import { SemanticPill, StatusPanel, medicineCategoryTextColor, toneForCategory } from '../components/Semantic';
 import PullToRefresh from '../components/PullToRefresh';
 import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
-
-const catTextColor = {
-  "All":              'hsl(265,30%,40%)',
-  "Analgesic":        'hsl(220,65%,50%)',
-  "Antibiotic":       'hsl(152,55%,36%)',
-  "Antidiabetic":     'hsl(270,50%,48%)',
-  "Antihypertensive": 'hsl(350,60%,48%)',
-  "Antilipid":        'hsl(28,70%,45%)',
-  "Bronchodilator":   'hsl(188,55%,36%)',
-  "Antacid/PPI":      'hsl(38,65%,40%)',
-  "Opioid Analgesic": 'hsl(0,58%,48%)',
-  "Anticoagulant":    'hsl(330,55%,48%)',
-  "Corticosteroid":   'hsl(195,55%,38%)',
-};
 
 function CategoryPill({ category, fallback = false }) {
   const label = hasText(category) ? category : 'Uncategorized';
 
   return (
-    <SemanticPill tone={fallback ? 'neutral' : toneForCategory(label)}>
+    <SemanticPill
+      tone={fallback ? 'neutral' : toneForCategory(label)}
+      style={{ color: medicineCategoryTextColor(label) }}
+    >
       <span className="max-w-[13rem] truncate">{label}</span>
     </SemanticPill>
   );
@@ -350,9 +339,9 @@ export default function MedicineScreen() {
               <button key={cat}
                 onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
                 className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold text-left transition-colors border-t border-border hover:bg-muted"
-                style={{ color: catTextColor[cat] || 'hsl(265,30%,40%)' }}>
+                style={{ color: medicineCategoryTextColor(cat) }}>
                 <span className={activeCategory === cat ? 'font-black' : ''}>{cat}</span>
-                {activeCategory === cat && <Check size={14} style={{ color: catTextColor[cat] }} />}
+                {activeCategory === cat && <Check size={14} style={{ color: medicineCategoryTextColor(cat) }} />}
               </button>
             ))}
             </div>
