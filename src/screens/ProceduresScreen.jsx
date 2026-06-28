@@ -205,7 +205,7 @@ export default function ProceduresScreen() {
         {id ? (
           <motion.div
             key="detail"
-            className="absolute inset-0"
+            className="absolute inset-0 overflow-hidden bg-background"
             variants={detailVariants}
             initial="initial"
             animate="animate"
