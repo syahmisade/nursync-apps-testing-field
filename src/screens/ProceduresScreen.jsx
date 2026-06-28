@@ -311,21 +311,24 @@ export default function ProceduresScreen() {
                     navigate(`/procedures/${proc.id}`);
                   }
                 }}
-                className="w-full h-[132px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
+                className="w-full h-[144px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
                 <div className="grid grid-cols-[1fr_auto] gap-3 h-full">
                   <div className="min-w-0 flex flex-col">
-                    <div className="h-[26px] flex items-center overflow-hidden">
+                    <div className="h-[24px] flex items-center overflow-hidden">
                       <ProcCategoryPill category={proc.category} colorMap={categoryColorMap} />
                     </div>
-                    <div className="h-[40px] flex items-center">
+                    <div className="h-[36px] flex items-center">
                       <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{proc.title}</h3>
                     </div>
-                    <p className="h-[32px] text-xs font-medium leading-4 line-clamp-2 text-muted-foreground">
+                    <p className="h-[30px] text-xs font-medium leading-[15px] line-clamp-2 text-muted-foreground">
                       {getProcedureOverviewText(proc)}
                     </p>
-                    <p className="text-xs font-semibold mt-auto text-primary">
-                      {Array.isArray(proc.steps) ? proc.steps.length : 0} steps
-                    </p>
+                    <div className="h-[22px] flex items-end">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-[11px] font-black leading-none text-primary">
+                        <CheckCircle2 size={12} />
+                        {Array.isArray(proc.steps) ? proc.steps.length : 0} steps
+                      </span>
+                    </div>
                   </div>
                   <div className="w-12 flex items-start justify-end gap-1 pt-0.5">
                     <button onClick={e => { e.stopPropagation(); toggleSaveProcedure(proc.id); }}
