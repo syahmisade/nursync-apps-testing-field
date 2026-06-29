@@ -340,7 +340,7 @@ export default function ProceduresScreen() {
                     <div className="flex items-center overflow-hidden">
                       <ProcCategoryPill category={proc.category} colorMap={categoryColorMap} isDark={isDark} />
                     </div>
-                    <div className="flex items-start">
+                    <div className="h-[36px] flex items-center">
                       <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{proc.title}</h3>
                     </div>
                     <p className="text-xs font-medium leading-[15px] line-clamp-2 text-muted-foreground">
