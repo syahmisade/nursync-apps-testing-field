@@ -30,6 +30,19 @@ function getProcedureSearchText(procedure) {
   ].filter(hasText).join(' ').toLowerCase();
 }
 
+function getCategoryLabel(procedure) {
+  return hasText(procedure.category) ? procedure.category.trim() : 'Uncategorized';
+}
+
+function buildCategoryCounts(items) {
+  return items.reduce((counts, item) => {
+    const category = getCategoryLabel(item);
+    counts.All += 1;
+    counts[category] = (counts[category] || 0) + 1;
+    return counts;
+  }, { All: 0 });
+}
+
 function getProcedureOverviewText(procedure) {
   if (Array.isArray(procedure.overview)) return procedure.overview.filter(hasText).join(' • ');
   return hasText(procedure.overview) ? procedure.overview : 'No overview listed';
@@ -157,6 +170,7 @@ export default function ProceduresScreen() {
   const { savedProcedures, toggleSaveProcedure } = useApp();
   const { procedures, procedureCategories, isLoading, error } = useProcedures();
   const categoryColorMap = useMemo(() => buildCategoryTextColorMap(procedureCategories), [procedureCategories]);
+  const categoryCounts = useMemo(() => buildCategoryCounts(procedures), [procedures]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -182,7 +196,7 @@ export default function ProceduresScreen() {
     const q = search.toLowerCase();
     return procedures.filter(p => {
       const matchSearch = !q || getProcedureSearchText(p).includes(q);
-      const matchCat = activeCategory === 'All' || p.category === activeCategory;
+      const matchCat = activeCategory === 'All' || getCategoryLabel(p) === activeCategory;
       return matchSearch && matchCat;
     });
   }, [procedures, search, activeCategory]);
@@ -267,8 +281,13 @@ export default function ProceduresScreen() {
               <button key={cat} onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
                 className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold text-left transition-colors border-t border-border hover:bg-muted"
                 style={{ color: categoryTextColorFromMap(cat, categoryColorMap, isDark) }}>
-                <span className={activeCategory === cat ? 'font-black' : ''}>{cat}</span>
-                {activeCategory === cat && <Check size={14} style={{ color: categoryTextColorFromMap(cat, categoryColorMap, isDark) }} />}
+                <span className={`min-w-0 flex-1 truncate ${activeCategory === cat ? 'font-black' : ''}`}>{cat}</span>
+                <span className="ml-3 flex items-center gap-2 flex-shrink-0">
+                  <span className="min-w-7 rounded-full bg-secondary px-2 py-0.5 text-center text-[11px] font-black text-muted-foreground">
+                    {categoryCounts[cat] || 0}
+                  </span>
+                  {activeCategory === cat && <Check size={14} style={{ color: categoryTextColorFromMap(cat, categoryColorMap, isDark) }} />}
+                </span>
               </button>
             ))}
             </div>

@@ -36,7 +36,16 @@ function getMedicineSearchText(medicine) {
 }
 
 function getCategoryLabel(medicine) {
-  return hasText(medicine.category) ? medicine.category : 'Uncategorized';
+  return hasText(medicine.category) ? medicine.category.trim() : 'Uncategorized';
+}
+
+function buildCategoryCounts(items) {
+  return items.reduce((counts, item) => {
+    const category = getCategoryLabel(item);
+    counts.All += 1;
+    counts[category] = (counts[category] || 0) + 1;
+    return counts;
+  }, { All: 0 });
 }
 
 function getMedicineMetaRows(medicine) {
@@ -211,6 +220,7 @@ export default function MedicineScreen() {
   const { savedMedicines, toggleSaveMedicine, addRecentSearch, recentSearches } = useApp();
   const { medicines, categories, isLoading, error } = useMedicines();
   const categoryColorMap = useMemo(() => buildCategoryTextColorMap(categories), [categories]);
+  const categoryCounts = useMemo(() => buildCategoryCounts(medicines), [medicines]);
 
   useEffect(() => {
     if (!categories.includes(activeCategory)) setActiveCategory('All');
@@ -220,7 +230,7 @@ export default function MedicineScreen() {
     const q = search.toLowerCase();
     return medicines.filter(m => {
       const matchSearch = !q || getMedicineSearchText(m).includes(q);
-      const matchCat = activeCategory === 'All' || m.category === activeCategory;
+      const matchCat = activeCategory === 'All' || getCategoryLabel(m) === activeCategory;
       return matchSearch && matchCat;
     });
   }, [medicines, search, activeCategory]);
@@ -343,8 +353,13 @@ export default function MedicineScreen() {
                 onClick={() => { setActiveCategory(cat); setDropdownOpen(false); }}
                 className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-semibold text-left transition-colors border-t border-border hover:bg-muted"
                 style={{ color: categoryTextColorFromMap(cat, categoryColorMap, isDark) }}>
-                <span className={activeCategory === cat ? 'font-black' : ''}>{cat}</span>
-                {activeCategory === cat && <Check size={14} style={{ color: categoryTextColorFromMap(cat, categoryColorMap, isDark) }} />}
+                <span className={`min-w-0 flex-1 truncate ${activeCategory === cat ? 'font-black' : ''}`}>{cat}</span>
+                <span className="ml-3 flex items-center gap-2 flex-shrink-0">
+                  <span className="min-w-7 rounded-full bg-secondary px-2 py-0.5 text-center text-[11px] font-black text-muted-foreground">
+                    {categoryCounts[cat] || 0}
+                  </span>
+                  {activeCategory === cat && <Check size={14} style={{ color: categoryTextColorFromMap(cat, categoryColorMap, isDark) }} />}
+                </span>
               </button>
             ))}
             </div>
