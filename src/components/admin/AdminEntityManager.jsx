@@ -5,6 +5,8 @@ import { Plus, Pencil, Trash2, AlertTriangle, Search, CheckSquare, Square, X } f
 import AdminFormModal from './AdminFormModal';
 import AdminCsvBar from './AdminCsvBar';
 
+const MAX_BULK_SELECTION = 50;
+
 // Reusable CRUD manager for a Base44 entity.
 // props:
 //   entityName  - e.g. 'Medicine'
@@ -93,15 +95,26 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
   const selectedVisibleCount = selectedIds.filter(id => visibleIds.includes(id)).length;
   const allVisibleSelected = visibleIds.length > 0 && selectedVisibleCount === visibleIds.length;
   const selectedCount = selectedIds.length;
+  const canSelectMore = selectedCount < MAX_BULK_SELECTION;
+  const selectionLimitReached = selectedCount >= MAX_BULK_SELECTION;
 
   const toggleSelect = (id) => {
-    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+    setSelectedIds(prev => {
+      if (prev.includes(id)) return prev.filter(x => x !== id);
+      if (prev.length >= MAX_BULK_SELECTION) return prev;
+      return [...prev, id];
+    });
   };
 
   const toggleSelectVisible = () => {
     setSelectedIds(prev => {
       if (allVisibleSelected) return prev.filter(id => !visibleIds.includes(id));
-      return Array.from(new Set([...prev, ...visibleIds]));
+      const next = [...prev];
+      for (const id of visibleIds) {
+        if (next.length >= MAX_BULK_SELECTION) break;
+        if (!next.includes(id)) next.push(id);
+      }
+      return next;
     });
   };
 
@@ -156,7 +169,7 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
               className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-secondary px-3 py-2 text-xs font-black text-secondary-foreground transition-all active:scale-[0.98] disabled:opacity-50"
             >
               {allVisibleSelected ? <CheckSquare size={15} /> : <Square size={15} />}
-              {allVisibleSelected ? 'Unselect visible' : 'Select visible'}
+              {allVisibleSelected ? 'Unselect visible' : `Select up to ${MAX_BULK_SELECTION}`}
             </button>
             {selectedCount > 0 && (
               <button
@@ -184,6 +197,11 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
               </button>
             </div>
           )}
+          {selectionLimitReached && (
+            <p className="mt-2 text-[11px] font-bold leading-snug text-muted-foreground">
+              Bulk actions are limited to {MAX_BULK_SELECTION} records at a time to avoid backend rate limits.
+            </p>
+          )}
         </div>
       )}
 
@@ -203,10 +221,11 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
             <button
               type="button"
               onClick={() => toggleSelect(rec.id)}
+              disabled={!isSelected && !canSelectMore}
               className={`mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl border transition-all ${
                 isSelected
                   ? 'border-primary bg-primary text-primary-foreground'
-                  : 'border-border bg-secondary text-muted-foreground'
+                  : 'border-border bg-secondary text-muted-foreground disabled:opacity-40'
               }`}
               aria-label={isSelected ? `Unselect ${rec[titleField]}` : `Select ${rec[titleField]}`}
               aria-pressed={isSelected}
