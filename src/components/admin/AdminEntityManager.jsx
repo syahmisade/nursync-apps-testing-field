@@ -17,6 +17,7 @@ const MAX_BULK_SELECTION = 50;
 //   nextLegacyId - given current records, returns next legacyId
 export default function AdminEntityManager({ entityName, queryKey, titleField, subtitleField, fields, sortField, validate, noLegacyId }) {
   const qc = useQueryClient();
+  const relatedQueryKeys = queryKey === 'quizCategories' ? [[queryKey], ['quiz']] : [[queryKey]];
   const [editing, setEditing] = useState(null); // record or {} for new
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [confirmBulkDelete, setConfirmBulkDelete] = useState(false);
@@ -30,9 +31,11 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
     queryFn: () => base44.entities[entityName].list(sortField || '-created_date', 500),
   });
 
-  const invalidate = () => {
-    qc.invalidateQueries({ queryKey: [queryKey, 'admin'] });
-    qc.invalidateQueries({ queryKey: [queryKey] });
+  const refreshEntityQueries = async () => {
+    for (const key of relatedQueryKeys) {
+      await qc.invalidateQueries({ queryKey: key, exact: false, refetchType: 'all' });
+      await qc.refetchQueries({ queryKey: key, exact: false, type: 'all' });
+    }
   };
 
   const saveMutation = useMutation({
@@ -42,13 +45,13 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
       const maxLegacy = records.reduce((m, r) => Math.max(m, r.legacyId || 0), 0);
       return base44.entities[entityName].create({ ...values, legacyId: maxLegacy + 1 });
     },
-    onSuccess: () => { invalidate(); setEditing(null); },
+    onSuccess: async () => { await refreshEntityQueries(); setEditing(null); },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities[entityName].delete(id),
     onMutate: () => setDeleteError(''),
-    onSuccess: () => { invalidate(); setConfirmDelete(null); },
+    onSuccess: async () => { await refreshEntityQueries(); setConfirmDelete(null); },
     onError: (error) => {
       setDeleteError(error?.message || `Could not delete this ${entityName.toLowerCase()}. Please try again.`);
     },
@@ -71,8 +74,8 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
       setDeleteError('');
       setBulkDeleteProgress({ done: 0, total: selectedIds.length });
     },
-    onSuccess: () => {
-      invalidate();
+    onSuccess: async () => {
+      await refreshEntityQueries();
       setSelectedIds([]);
       setConfirmBulkDelete(false);
       setBulkDeleteProgress({ done: 0, total: 0 });
@@ -80,7 +83,7 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
     onError: (error) => {
       setDeleteError(error?.message || `Could not delete selected ${entityName.toLowerCase()} records. Please try again.`);
     },
-    onSettled: invalidate,
+    onSettled: refreshEntityQueries,
   });
 
   const q = search.trim().toLowerCase();
@@ -128,7 +131,7 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
       return { ...clean, legacyId: nextLegacy };
     });
     await base44.entities[entityName].bulkCreate(payload);
-    invalidate();
+    await refreshEntityQueries();
     return payload.length;
   };
 

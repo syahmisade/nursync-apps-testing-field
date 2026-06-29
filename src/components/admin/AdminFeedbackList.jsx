@@ -23,30 +23,33 @@ export default function AdminFeedbackList() {
     queryFn: () => base44.entities.Feedback.list('-created_date', 200),
   });
 
-  const invalidate = () => qc.invalidateQueries({ queryKey: ['feedback', 'admin'] });
+  const refreshFeedback = async () => {
+    await qc.invalidateQueries({ queryKey: ['feedback'], exact: false, refetchType: 'all' });
+    await qc.refetchQueries({ queryKey: ['feedback'], exact: false, type: 'all' });
+  };
 
   const updateStatus = useMutation({
     mutationFn: ({ id, status }) => base44.entities.Feedback.update(id, { status }),
-    onSuccess: invalidate,
+    onSuccess: refreshFeedback,
   });
 
   const bulkUpdateStatus = useMutation({
     mutationFn: ({ ids, status }) => Promise.all(ids.map(id => base44.entities.Feedback.update(id, { status }))),
-    onSuccess: () => {
-      invalidate();
+    onSuccess: async () => {
+      await refreshFeedback();
       setSelectedIds([]);
     },
   });
 
   const deleteItem = useMutation({
     mutationFn: (id) => base44.entities.Feedback.delete(id),
-    onSuccess: invalidate,
+    onSuccess: refreshFeedback,
   });
 
   const bulkDelete = useMutation({
     mutationFn: (ids) => Promise.all(ids.map(id => base44.entities.Feedback.delete(id))),
-    onSuccess: () => {
-      invalidate();
+    onSuccess: async () => {
+      await refreshFeedback();
       setSelectedIds([]);
       setConfirmBulkDelete(false);
     },
