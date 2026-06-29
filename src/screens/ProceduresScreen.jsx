@@ -77,10 +77,8 @@ function ProcedureDetail({ procedure, onBack, categoryColorMap, isDark }) {
       <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-3 pb-6 space-y-3">
         {/* Title block */}
         <div className="rounded-3xl p-5 border card-shadow bg-card border-border">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <h1 className="text-lg font-black text-foreground">{procedure.title}</h1>
-            </div>
+          <div className="flex flex-col items-start gap-2">
+            <h1 className="text-lg font-black text-foreground">{procedure.title}</h1>
             <ProcCategoryPill category={procedure.category} colorMap={categoryColorMap} isDark={isDark} />
           </div>
         </div>
