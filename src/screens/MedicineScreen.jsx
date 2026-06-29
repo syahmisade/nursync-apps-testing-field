@@ -410,11 +410,11 @@ export default function MedicineScreen() {
                 className="w-full min-h-[150px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
                 <div className="grid grid-cols-[1fr_auto] gap-4 h-full">
                   <div className="min-w-0 flex flex-col gap-2.5">
-                    <div className="min-h-[36px] flex items-start">
-                      <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{medicine.genericName}</h3>
-                    </div>
                     <div className="flex items-center overflow-hidden">
                       <CategoryPill category={getCategoryLabel(medicine)} colorMap={categoryColorMap} isDark={isDark} fallback={!hasText(medicine.category)} />
+                    </div>
+                    <div className="min-h-[36px] flex items-start">
+                      <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{medicine.genericName}</h3>
                     </div>
                     <MedicineCardMeta medicine={medicine} />
                   </div>
