@@ -334,19 +334,19 @@ export default function ProceduresScreen() {
                     navigate(`/procedures/${proc.id}`);
                   }
                 }}
-                className="w-full h-[144px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
-                <div className="grid grid-cols-[1fr_auto] gap-3 h-full">
-                  <div className="min-w-0 flex flex-col">
-                    <div className="h-[24px] flex items-center overflow-hidden">
+                className="w-full min-h-[164px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
+                <div className="grid grid-cols-[1fr_auto] gap-4 h-full">
+                  <div className="min-w-0 flex flex-col gap-2.5">
+                    <div className="flex items-center overflow-hidden">
                       <ProcCategoryPill category={proc.category} colorMap={categoryColorMap} isDark={isDark} />
                     </div>
-                    <div className="h-[36px] flex items-center">
+                    <div className="min-h-[36px] flex items-start">
                       <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{proc.title}</h3>
                     </div>
-                    <p className="h-[30px] text-xs font-medium leading-[15px] line-clamp-2 text-muted-foreground">
+                    <p className="text-xs font-medium leading-[15px] line-clamp-2 text-muted-foreground">
                       {getProcedureOverviewText(proc)}
                     </p>
-                    <div className="h-[22px] flex items-end">
+                    <div className="flex items-center">
                       <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-[11px] font-black leading-none text-primary">
                         <CheckCircle2 size={12} />
                         {Array.isArray(proc.steps) ? proc.steps.length : 0} steps

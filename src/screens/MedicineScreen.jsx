@@ -65,7 +65,7 @@ function getMedicineMetaRows(medicine) {
 
 function MedicineCardMeta({ medicine }) {
   return (
-    <div className="h-[38px] space-y-0.5">
+    <div className="space-y-1">
       {getMedicineMetaRows(medicine).map((row, index) => (
         <p
           key={`${row.label || 'placeholder'}-${index}`}
@@ -407,13 +407,13 @@ export default function MedicineScreen() {
                     handleSelect(medicine);
                   }
                 }}
-                className="w-full h-[132px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
-                <div className="grid grid-cols-[1fr_auto] gap-3 h-full">
-                  <div className="min-w-0 flex flex-col">
-                    <div className="h-[40px] flex items-center">
+                className="w-full min-h-[150px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted">
+                <div className="grid grid-cols-[1fr_auto] gap-4 h-full">
+                  <div className="min-w-0 flex flex-col gap-2.5">
+                    <div className="min-h-[36px] flex items-start">
                       <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{medicine.genericName}</h3>
                     </div>
-                    <div className="h-[26px] flex items-center overflow-hidden">
+                    <div className="flex items-center overflow-hidden">
                       <CategoryPill category={getCategoryLabel(medicine)} colorMap={categoryColorMap} isDark={isDark} fallback={!hasText(medicine.category)} />
                     </div>
                     <MedicineCardMeta medicine={medicine} />
