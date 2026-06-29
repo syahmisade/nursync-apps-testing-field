@@ -20,6 +20,8 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
   const [confirmBulkDelete, setConfirmBulkDelete] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedIds, setSelectedIds] = useState([]);
+  const [deleteError, setDeleteError] = useState('');
+  const [bulkDeleteProgress, setBulkDeleteProgress] = useState({ done: 0, total: 0 });
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: [queryKey, 'admin'],
@@ -43,16 +45,40 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities[entityName].delete(id),
+    onMutate: () => setDeleteError(''),
     onSuccess: () => { invalidate(); setConfirmDelete(null); },
+    onError: (error) => {
+      setDeleteError(error?.message || `Could not delete this ${entityName.toLowerCase()}. Please try again.`);
+    },
   });
 
+  const deleteRecordsInBatches = async (ids) => {
+    const batchSize = 10;
+    setBulkDeleteProgress({ done: 0, total: ids.length });
+
+    for (let i = 0; i < ids.length; i += batchSize) {
+      const batch = ids.slice(i, i + batchSize);
+      await Promise.all(batch.map(id => base44.entities[entityName].delete(id)));
+      setBulkDeleteProgress({ done: Math.min(i + batch.length, ids.length), total: ids.length });
+    }
+  };
+
   const bulkDeleteMutation = useMutation({
-    mutationFn: (ids) => Promise.all(ids.map(id => base44.entities[entityName].delete(id))),
+    mutationFn: deleteRecordsInBatches,
+    onMutate: () => {
+      setDeleteError('');
+      setBulkDeleteProgress({ done: 0, total: selectedIds.length });
+    },
     onSuccess: () => {
       invalidate();
       setSelectedIds([]);
       setConfirmBulkDelete(false);
+      setBulkDeleteProgress({ done: 0, total: 0 });
     },
+    onError: (error) => {
+      setDeleteError(error?.message || `Could not delete selected ${entityName.toLowerCase()} records. Please try again.`);
+    },
+    onSettled: invalidate,
   });
 
   const q = search.trim().toLowerCase();
@@ -150,7 +176,7 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
               </p>
               <button
                 type="button"
-                onClick={() => setConfirmBulkDelete(true)}
+                onClick={() => { setDeleteError(''); setConfirmBulkDelete(true); }}
                 className="flex items-center gap-1.5 rounded-xl bg-destructive px-3 py-2 text-xs font-black text-destructive-foreground"
               >
                 <Trash2 size={14} />
@@ -197,7 +223,7 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
               <button onClick={() => setEditing(rec)} className="p-2 rounded-xl bg-secondary text-primary" aria-label="Edit">
                 <Pencil size={15} />
               </button>
-              <button onClick={() => setConfirmDelete(rec)} className="p-2 rounded-xl bg-destructive/10 text-destructive" aria-label="Delete">
+              <button onClick={() => { setDeleteError(''); setConfirmDelete(rec); }} className="p-2 rounded-xl bg-destructive/10 text-destructive" aria-label="Delete">
                 <Trash2 size={15} />
               </button>
             </div>
@@ -229,7 +255,12 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
               "{confirmDelete[titleField]}" will be permanently removed for all users. This cannot be undone.
             </p>
             <div className="grid grid-cols-2 gap-2 mt-5">
-              <button onClick={() => setConfirmDelete(null)} className="py-3 rounded-2xl text-sm font-black border bg-secondary text-secondary-foreground border-border">
+              {deleteError && (
+                <div className="col-span-2 rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs font-bold leading-snug text-destructive">
+                  {deleteError}
+                </div>
+              )}
+              <button onClick={() => setConfirmDelete(null)} disabled={deleteMutation.isPending} className="py-3 rounded-2xl text-sm font-black border bg-secondary text-secondary-foreground border-border disabled:opacity-60">
                 Cancel
               </button>
               <button onClick={() => deleteMutation.mutate(confirmDelete.id)} disabled={deleteMutation.isPending} className="py-3 rounded-2xl text-sm font-black bg-destructive text-destructive-foreground disabled:opacity-60">
@@ -251,7 +282,17 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
               {selectedCount} selected record{selectedCount === 1 ? '' : 's'} will be permanently removed for all users. This cannot be undone.
             </p>
             <div className="grid grid-cols-2 gap-2 mt-5">
-              <button onClick={() => setConfirmBulkDelete(false)} className="py-3 rounded-2xl text-sm font-black border bg-secondary text-secondary-foreground border-border">
+              {bulkDeleteMutation.isPending && bulkDeleteProgress.total > 0 && (
+                <p className="col-span-2 text-xs font-bold text-muted-foreground">
+                  Deleted {bulkDeleteProgress.done} of {bulkDeleteProgress.total} records...
+                </p>
+              )}
+              {deleteError && (
+                <div className="col-span-2 rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs font-bold leading-snug text-destructive">
+                  {deleteError}
+                </div>
+              )}
+              <button onClick={() => setConfirmBulkDelete(false)} disabled={bulkDeleteMutation.isPending} className="py-3 rounded-2xl text-sm font-black border bg-secondary text-secondary-foreground border-border disabled:opacity-60">
                 Cancel
               </button>
               <button
