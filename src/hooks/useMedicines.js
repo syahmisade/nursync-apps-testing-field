@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
+const MEDICINE_FETCH_LIMIT = 5000;
+
 // Reads medicines from the Base44 `Medicine` entity and maps `legacyId` -> `id`
 // so the existing screen/save logic (which keys off `medicine.id`) keeps working.
 function mapRecord(r) {
@@ -29,7 +31,7 @@ export function useMedicines() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['medicines'],
     queryFn: async () => {
-      const records = await base44.entities.Medicine.list('legacyId', 500);
+      const records = await base44.entities.Medicine.list('legacyId', MEDICINE_FETCH_LIMIT);
       const medicines = records.map(mapRecord);
       return {
         medicines,

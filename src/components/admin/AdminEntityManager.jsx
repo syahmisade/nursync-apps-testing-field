@@ -7,6 +7,23 @@ import AdminCsvBar from './AdminCsvBar';
 
 const MAX_BULK_SELECTION = 50;
 
+function getReusableLegacyIds(records, count) {
+  const used = new Set(
+    records
+      .map(record => Number(record.legacyId))
+      .filter(id => Number.isInteger(id) && id > 0)
+  );
+  const ids = [];
+  let next = 1;
+
+  while (ids.length < count) {
+    if (!used.has(next)) ids.push(next);
+    next += 1;
+  }
+
+  return ids;
+}
+
 // Reusable CRUD manager for a Base44 entity.
 // props:
 //   entityName  - e.g. 'Medicine'
@@ -15,7 +32,7 @@ const MAX_BULK_SELECTION = 50;
 //   subtitleField - optional field shown under the title
 //   fields      - field config passed to AdminFormModal
 //   nextLegacyId - given current records, returns next legacyId
-export default function AdminEntityManager({ entityName, queryKey, titleField, subtitleField, fields, sortField, validate, noLegacyId }) {
+export default function AdminEntityManager({ entityName, queryKey, titleField, subtitleField, fields, sortField, validate, noLegacyId, fetchLimit = 500 }) {
   const qc = useQueryClient();
   const relatedQueryKeys = queryKey === 'quizCategories' ? [[queryKey], ['quiz']] : [[queryKey]];
   const [editing, setEditing] = useState(null); // record or {} for new
@@ -28,7 +45,7 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: [queryKey, 'admin'],
-    queryFn: () => base44.entities[entityName].list(sortField || '-created_date', 500),
+    queryFn: () => base44.entities[entityName].list(sortField || '-created_date', fetchLimit),
   });
 
   const refreshEntityQueries = async () => {
@@ -42,8 +59,8 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
     mutationFn: (values) => {
       if (editing?.id) return base44.entities[entityName].update(editing.id, values);
       if (noLegacyId) return base44.entities[entityName].create(values);
-      const maxLegacy = records.reduce((m, r) => Math.max(m, r.legacyId || 0), 0);
-      return base44.entities[entityName].create({ ...values, legacyId: maxLegacy + 1 });
+      const [legacyId] = getReusableLegacyIds(records, 1);
+      return base44.entities[entityName].create({ ...values, legacyId });
     },
     onSuccess: async () => { await refreshEntityQueries(); setEditing(null); },
   });
@@ -122,13 +139,12 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
   };
 
   const handleImport = async (rows) => {
-    let nextLegacy = records.reduce((m, r) => Math.max(m, r.legacyId || 0), 0);
-    const payload = rows.map(r => {
+    const reusableIds = getReusableLegacyIds(records, rows.length);
+    const payload = rows.map((r, index) => {
       const clean = { ...r };
       delete clean.legacyId;
       if (noLegacyId) return clean;
-      nextLegacy += 1;
-      return { ...clean, legacyId: nextLegacy };
+      return { ...clean, legacyId: reusableIds[index] };
     });
     await base44.entities[entityName].bulkCreate(payload);
     await refreshEntityQueries();

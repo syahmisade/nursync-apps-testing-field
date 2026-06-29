@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
+const PROCEDURE_FETCH_LIMIT = 5000;
+
 // Reads procedures from the Base44 `Procedure` entity and maps `legacyId` -> `id`
 // so the existing screen/save logic (which keys off `procedure.id`) keeps working.
 function mapRecord(r) {
@@ -29,7 +31,7 @@ export function useProcedures() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['procedures'],
     queryFn: async () => {
-      const records = await base44.entities.Procedure.list('legacyId', 500);
+      const records = await base44.entities.Procedure.list('legacyId', PROCEDURE_FETCH_LIMIT);
       const procedures = records.map(mapRecord);
       return {
         procedures,

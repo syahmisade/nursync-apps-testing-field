@@ -129,6 +129,7 @@ export default function AdminScreen() {
             subtitleField="brandName"
             fields={medicineFields}
             sortField="legacyId"
+            fetchLimit={5000}
           />
         )}
         {tab === 'procedures' && (
@@ -139,6 +140,7 @@ export default function AdminScreen() {
             subtitleField="category"
             fields={procedureFields}
             sortField="legacyId"
+            fetchLimit={5000}
           />
         )}
         {tab === 'quiz' && (
