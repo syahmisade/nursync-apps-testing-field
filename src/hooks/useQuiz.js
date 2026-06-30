@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
+const QUIZ_QUESTION_FETCH_LIMIT = 5000;
+
 // Reads quiz data from the Base44 `QuizCategory` and `QuizQuestion` entities.
 // Maps fields so the existing screen logic keeps working:
 //  - category: categoryKey -> id, plus computed `count`
@@ -12,7 +14,7 @@ export function useQuiz() {
     queryFn: async () => {
       const [categories, questions] = await Promise.all([
         base44.entities.QuizCategory.list('categoryKey', 100),
-        base44.entities.QuizQuestion.list('legacyId', 1000),
+        base44.entities.QuizQuestion.list('legacyId', QUIZ_QUESTION_FETCH_LIMIT),
       ]);
 
       const quizQuestions = questions.map(q => ({ ...q, id: q.legacyId, category: q.categoryKey }));

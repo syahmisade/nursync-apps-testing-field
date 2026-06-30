@@ -152,6 +152,7 @@ export default function AdminScreen() {
             fields={quizFields}
             sortField="legacyId"
             validate={validateQuiz}
+            fetchLimit={5000}
           />
         )}
         {tab === 'categories' && (
