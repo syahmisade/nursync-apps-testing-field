@@ -6,7 +6,8 @@ import { useProcedures } from '../hooks/useProcedures';
 import { useQuiz } from '../hooks/useQuiz';
 import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import { SemanticPill, toneForCategory, toneForQuizCategory } from '../components/Semantic';
+import { SemanticPill, buildCategoryTextColorMap, categoryTextColorFromMap, toneForCategory, toneForQuizCategory } from '../components/Semantic';
+import { useTheme } from '../context/ThemeContext';
 
 const quizCatLabel = {
   "pharmacology": "Pharmacology",
@@ -18,6 +19,57 @@ const quizCatLabel = {
 };
 
 const fromSavedState = (savedTab) => ({ fromSaved: true, savedTab });
+
+function hasText(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function getMedicineCategoryLabel(medicine) {
+  return hasText(medicine.category) ? medicine.category.trim() : 'Uncategorized';
+}
+
+function getProcedureCategoryLabel(procedure) {
+  return hasText(procedure.category) ? procedure.category.trim() : 'Uncategorized';
+}
+
+function CategoryPill({ category, colorMap, isDark, fallback = false }) {
+  const label = hasText(category) ? category : 'Uncategorized';
+
+  return (
+    <SemanticPill
+      tone={fallback ? 'neutral' : toneForCategory(label)}
+      style={{ color: categoryTextColorFromMap(label, colorMap, isDark) }}
+    >
+      <span className="max-w-[13rem] truncate">{label}</span>
+    </SemanticPill>
+  );
+}
+
+function MedicineCardMeta({ medicine }) {
+  const rows = [
+    { label: 'Brand', value: hasText(medicine.brandName) ? medicine.brandName : '-', muted: !hasText(medicine.brandName) },
+    { label: 'Also known as', value: hasText(medicine.glamourName) ? medicine.glamourName : '-', muted: !hasText(medicine.glamourName) },
+  ];
+
+  return (
+    <div className="space-y-1">
+      {rows.map(row => (
+        <p
+          key={row.label}
+          className={`text-xs leading-4 line-clamp-1 break-words ${row.muted ? 'font-medium text-muted-foreground/70' : 'font-medium text-muted-foreground'}`}
+        >
+          <span className="font-bold text-primary">{row.label}: </span>
+          {row.value}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function getProcedureOverviewText(procedure) {
+  if (Array.isArray(procedure.overview)) return procedure.overview.filter(hasText).join(' • ');
+  return hasText(procedure.overview) ? procedure.overview : 'No overview listed';
+}
 
 const EmptyState = ({ label }) => (
   <div className="flex flex-col items-center justify-center py-14 gap-3">
@@ -31,6 +83,7 @@ const EmptyState = ({ label }) => (
 );
 
 export default function SavedScreen() {
+  const { isDark } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const initialTab = location.state?.activeTab || 'medicines';
@@ -49,6 +102,14 @@ export default function SavedScreen() {
   const { medicines, isLoading: isLoadingMedicines } = useMedicines();
   const { procedures, isLoading: isLoadingProcedures } = useProcedures();
   const { quizQuestions, isLoading: isLoadingQuiz } = useQuiz();
+  const medicineCategoryColorMap = React.useMemo(
+    () => buildCategoryTextColorMap(['All', ...medicines.map(getMedicineCategoryLabel)]),
+    [medicines]
+  );
+  const procedureCategoryColorMap = React.useMemo(
+    () => buildCategoryTextColorMap(['All', ...procedures.map(getProcedureCategoryLabel)]),
+    [procedures]
+  );
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -111,27 +172,41 @@ export default function SavedScreen() {
           savedMeds.length === 0 ? <EmptyState label="medicines" /> :
           savedMeds.map(med => {
             return (
-              <div key={med.id} role="button" tabIndex={0}
-                onClick={() => navigate(`/medicine/${med.id}`, { state: fromSavedState('medicines') })}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    navigate(`/medicine/${med.id}`, { state: fromSavedState('medicines') });
-                  }
-                }}
-                className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer bg-card border-border hover:bg-muted">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                    <h3 className="font-bold text-sm text-foreground">{med.genericName}</h3>
-                    <SemanticPill tone={toneForCategory(med.category)}>{med.category}</SemanticPill>
+              <div key={med.id} className="rounded-2xl border overflow-hidden card-shadow bg-card border-border">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => navigate(`/medicine/${med.id}`, { state: fromSavedState('medicines') })}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      navigate(`/medicine/${med.id}`, { state: fromSavedState('medicines') });
+                    }
+                  }}
+                  className="w-full min-h-[150px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted"
+                >
+                  <div className="grid grid-cols-[1fr_auto] gap-4 h-full">
+                    <div className="min-w-0 flex flex-col gap-2.5">
+                      <div className="flex items-center overflow-hidden">
+                        <CategoryPill
+                          category={getMedicineCategoryLabel(med)}
+                          colorMap={medicineCategoryColorMap}
+                          isDark={isDark}
+                          fallback={!hasText(med.category)}
+                        />
+                      </div>
+                      <div className="h-[36px] flex items-center">
+                        <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{med.genericName}</h3>
+                      </div>
+                      <MedicineCardMeta medicine={med} />
+                    </div>
+                    <div className="w-12 flex items-start justify-end gap-1 pt-0.5">
+                      <button onClick={e => { e.stopPropagation(); toggleSaveMedicine(med.id); }} className="p-1.5 rounded-xl transition-all active:scale-90" style={{ color: 'hsl(265,55%,52%)' }}>
+                        <Bookmark size={16} fill="currentColor" />
+                      </button>
+                      <ChevronRight size={15} className="text-muted-foreground" />
+                    </div>
                   </div>
-                  <p className="text-xs font-medium text-muted-foreground">{med.brandName}</p>
-                </div>
-                <div className="flex items-center gap-1 flex-shrink-0">
-                  <button onClick={e => { e.stopPropagation(); toggleSaveMedicine(med.id); }} className="p-1.5" style={{ color: 'hsl(265,55%,52%)' }}>
-                    <Bookmark size={16} fill="currentColor" />
-                  </button>
-                  <ChevronRight size={15} className="text-muted-foreground" />
                 </div>
               </div>
             );
@@ -143,27 +218,49 @@ export default function SavedScreen() {
           savedProcs.length === 0 ? <EmptyState label="procedures" /> :
           savedProcs.map(proc => {
             return (
-              <div key={proc.id} role="button" tabIndex={0}
-                onClick={() => navigate(`/procedures/${proc.id}`, { state: fromSavedState('procedures') })}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    navigate(`/procedures/${proc.id}`, { state: fromSavedState('procedures') });
-                  }
-                }}
-                className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer bg-card border-border hover:bg-muted">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                    <h3 className="font-bold text-sm text-foreground">{proc.title}</h3>
+              <div key={proc.id} className="rounded-2xl border overflow-hidden card-shadow bg-card border-border">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => navigate(`/procedures/${proc.id}`, { state: fromSavedState('procedures') })}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      navigate(`/procedures/${proc.id}`, { state: fromSavedState('procedures') });
+                    }
+                  }}
+                  className="w-full min-h-[164px] p-4 text-left transition-all active:scale-[0.99] cursor-pointer hover:bg-muted"
+                >
+                  <div className="grid grid-cols-[1fr_auto] gap-4 h-full">
+                    <div className="min-w-0 flex flex-col gap-2.5">
+                      <div className="flex items-center overflow-hidden">
+                        <CategoryPill
+                          category={getProcedureCategoryLabel(proc)}
+                          colorMap={procedureCategoryColorMap}
+                          isDark={isDark}
+                          fallback={!hasText(proc.category)}
+                        />
+                      </div>
+                      <div className="h-[36px] flex items-center">
+                        <h3 className="font-bold text-sm leading-snug text-foreground line-clamp-2 break-words">{proc.title}</h3>
+                      </div>
+                      <p className="text-xs font-medium leading-[15px] line-clamp-2 text-muted-foreground">
+                        {getProcedureOverviewText(proc)}
+                      </p>
+                      <div className="flex items-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-[11px] font-black leading-none text-primary">
+                          <CheckCircle2 size={12} />
+                          {Array.isArray(proc.steps) ? proc.steps.length : 0} steps
+                        </span>
+                      </div>
+                    </div>
+                    <div className="w-12 flex items-start justify-end gap-1 pt-0.5">
+                      <button onClick={e => { e.stopPropagation(); toggleSaveProcedure(proc.id); }} className="p-1.5 rounded-xl transition-all active:scale-90" style={{ color: 'hsl(265,55%,52%)' }}>
+                        <Bookmark size={16} fill="currentColor" />
+                      </button>
+                      <ChevronRight size={15} className="text-muted-foreground" />
+                    </div>
                   </div>
-                  <SemanticPill tone={toneForCategory(proc.category)}>{proc.category}</SemanticPill>
-                  <p className="text-xs font-medium mt-1 text-muted-foreground">{proc.steps.length} steps</p>
-                </div>
-                <div className="flex items-center gap-1 flex-shrink-0">
-                  <button onClick={e => { e.stopPropagation(); toggleSaveProcedure(proc.id); }} className="p-1.5" style={{ color: 'hsl(265,55%,52%)' }}>
-                    <Bookmark size={16} fill="currentColor" />
-                  </button>
-                  <ChevronRight size={15} className="text-muted-foreground" />
                 </div>
               </div>
             );
