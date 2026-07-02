@@ -1,39 +1,98 @@
-**Welcome to your Base44 project** 
+# NurSync
 
-**About**
+A nursing reference and study companion. NurSync gives nurses and nursing
+students quick, searchable access to a medicine formulary, clinical
+calculators, procedure guides, and self-assessment quizzes — all in one app,
+with the ability to save items for later and track quiz progress.
 
-View and Edit  your app on [Base44.com](http://Base44.com) 
+Built on [Base44](https://base44.com): the React front end in this repo talks
+to Base44-hosted data entities, and any change pushed to this repo is also
+reflected in the Base44 Builder.
 
-This project contains everything you need to run your app locally.
+## Features
 
-**Edit the code in your local development environment**
+- **Medicine formulary** — browse and search medicines by category, with
+  indications, dosage, contraindications, adverse reactions, interactions, and
+  more.
+- **Clinical calculators** — common bedside calculations.
+- **Procedures** — step-by-step procedure references.
+- **Quizzes** — categorized questions with attempt tracking.
+- **Saved items** — bookmark medicines and procedures for quick recall.
+- **Accounts** — register / log in, password reset, and a profile screen.
+- **Admin panel** — manage catalog content and review user feedback.
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+## Tech stack
 
-**Prerequisites:** 
+- **React 18** + **Vite 6** (JavaScript, JSX)
+- **Tailwind CSS** with **Radix UI** primitives
+- **TanStack Query** for data fetching and caching
+- **React Router** for navigation
+- **Framer Motion** for animation
+- **@base44/sdk** for the backend (entities, auth, functions)
 
-1. Clone the repository using the project's Git URL 
-2. Navigate to the project directory
-3. Install dependencies: `npm install`
-4. Create an `.env.local` file and set the right environment variables
+## Getting started
+
+**Prerequisites:** Node.js 18+ and npm.
+
+1. Clone the repository and enter the project directory.
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Copy the example env file and fill in your own values:
+   ```
+   cp .env.example .env.local
+   ```
+   `.env.local` is gitignored — never commit real credentials.
+4. Start the dev server:
+   ```
+   npm run dev
+   ```
+   The app runs at http://localhost:5173.
+
+### Environment variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_BASE44_APP_ID` | Yes | Your Base44 app ID (the string between `/apps/` and `/editor/` in the app URL). |
+| `VITE_BASE44_API_KEY` | Option A | App API key from Base44. When set, the client authenticates directly against the hosted backend (`https://base44.app`). Best for standalone local dev. |
+| `VITE_BASE44_APP_BASE_URL` | Option B | Your app's backend URL (e.g. `https://my-app-xxxxxxxx.base44.app`). Use this instead of an API key to route requests through the dev proxy. |
+
+Set **either** `VITE_BASE44_API_KEY` (Option A) **or** `VITE_BASE44_APP_BASE_URL`
+(Option B) alongside `VITE_BASE44_APP_ID`.
+
+## npm scripts
+
+| Script | What it does |
+|---|---|
+| `npm run dev` | Start the Vite dev server. |
+| `npm run build` | Build for production into `dist/`. |
+| `npm run preview` | Serve the production build locally. |
+| `npm run lint` | Run ESLint. |
+| `npm run lint:fix` | Run ESLint and auto-fix. |
+| `npm run typecheck` | Type-check with the TypeScript compiler. |
+
+## Project structure
 
 ```
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=your_backend_url
-
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
+src/
+  pages/       Top-level routes (NurSync shell, Login, Register, …)
+  screens/     Feature screens (Medicine, Calculators, Procedures, Quiz, Saved, Profile, Admin)
+  components/  Reusable UI (incl. Radix-based primitives under components/ui)
+  hooks/       Data hooks (useMedicines, useProcedures, …)
+  api/         Base44 client setup
+  lib/         Auth context, query client, helpers
+  context/     Theme provider
+base44/
+  entities/    Base44 data-model definitions (Medicine, Procedure, Quiz*, SavedItem, User, Feedback)
 ```
 
-Run the app: `npm run dev`
+## Publishing
 
-**Publish your changes**
+Open [Base44.com](https://base44.com) and click **Publish**, or push to this
+repo — changes sync to the Base44 Builder automatically.
 
-Open [Base44.com](http://Base44.com) and click on Publish.
+## Docs & support
 
-**Docs & Support**
-
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
-
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+- Base44 + GitHub: https://docs.base44.com/Integrations/Using-GitHub
+- Support: https://app.base44.com/support
