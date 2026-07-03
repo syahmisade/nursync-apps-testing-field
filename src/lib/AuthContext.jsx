@@ -4,6 +4,7 @@ import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
 const AuthContext = createContext();
+const apiKey = import.meta.env.VITE_BASE44_API_KEY;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -26,9 +27,10 @@ export const AuthProvider = ({ children }) => {
       // First, check app public settings (with token if available)
       // This will tell us if auth is required, user not registered, etc.
       const appClient = createAxiosClient({
-        baseURL: `/api/apps/public`,
+        baseURL: apiKey ? 'https://base44.app/api/apps/public' : `/api/apps/public`,
         headers: {
-          'X-App-Id': appParams.appId
+          'X-App-Id': appParams.appId,
+          ...(apiKey ? { api_key: apiKey } : {})
         },
         token: appParams.token, // Include token if available
         interceptResponses: true
