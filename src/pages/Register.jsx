@@ -8,6 +8,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 
+const apiKey = import.meta.env.VITE_BASE44_API_KEY;
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -65,6 +66,11 @@ export default function Register() {
   };
 
   const handleGoogle = () => {
+    if (apiKey) {
+      setError("Google sign up is unavailable in local API-key mode. Create an account with email and password instead.");
+      return;
+    }
+
     base44.auth.loginWithProvider("google", "/");
   };
 

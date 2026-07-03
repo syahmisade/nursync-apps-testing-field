@@ -5,6 +5,10 @@ import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
 const AuthContext = createContext();
 const apiKey = import.meta.env.VITE_BASE44_API_KEY;
+const clearStoredAuth = () => {
+  localStorage.removeItem('base44_access_token');
+  localStorage.removeItem('token');
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -116,17 +120,27 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = (shouldRedirect = true) => {
+  const logout = (redirectTo = '/login') => {
     setUser(null);
     setIsAuthenticated(false);
-    base44.auth.logout(); // clears the token on the platform side, no redirect
-    if (shouldRedirect) {
-      window.location.href = '/login'; // redirect to our own login page
+
+    if (apiKey) {
+      clearStoredAuth();
+    } else {
+      base44.auth.logout();
+    }
+
+    if (redirectTo) {
+      window.location.href = redirectTo;
     }
   };
 
   const navigateToLogin = () => {
-    // Use the SDK's redirectToLogin method
+    if (apiKey) {
+      window.location.href = '/login';
+      return;
+    }
+
     base44.auth.redirectToLogin(window.location.href);
   };
 

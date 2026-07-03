@@ -8,6 +8,8 @@ import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 
+const apiKey = import.meta.env.VITE_BASE44_API_KEY;
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,6 +31,11 @@ export default function Login() {
   };
 
   const handleGoogle = () => {
+    if (apiKey) {
+      setError("Google login is unavailable in local API-key mode. Use email and password instead.");
+      return;
+    }
+
     base44.auth.loginWithProvider("google", "/");
   };
 
