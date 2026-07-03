@@ -8,7 +8,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 
-const apiKey = import.meta.env.VITE_BASE44_API_KEY;
+const canUseProviderLogin = Boolean(import.meta.env.VITE_BASE44_APP_BASE_URL);
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -66,11 +66,6 @@ export default function Register() {
   };
 
   const handleGoogle = () => {
-    if (apiKey) {
-      setError("Google sign up is unavailable in local API-key mode. Create an account with email and password instead.");
-      return;
-    }
-
     base44.auth.loginWithProvider("google", "/");
   };
 
@@ -140,25 +135,27 @@ export default function Register() {
         </>
       }
     >
-      {/* Google button */}
-      <button
-        type="button"
-        onClick={handleGoogle}
-        className="w-full flex items-center justify-center gap-2.5 h-12 rounded-2xl border text-sm font-bold mb-5 transition-all active:scale-[0.98] bg-card text-foreground border-border hover:bg-muted"
-      >
-        <GoogleIcon className="w-4 h-4" />
-        Continue with Google
-      </button>
+      {canUseProviderLogin && (
+        <>
+          <button
+            type="button"
+            onClick={handleGoogle}
+            className="w-full flex items-center justify-center gap-2.5 h-12 rounded-2xl border text-sm font-bold mb-5 transition-all active:scale-[0.98] bg-card text-foreground border-border hover:bg-muted"
+          >
+            <GoogleIcon className="w-4 h-4" />
+            Continue with Google
+          </button>
 
-      {/* Divider */}
-      <div className="relative mb-5">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase font-bold tracking-widest">
-          <span className="px-3 bg-card text-muted-foreground">or</span>
-        </div>
-      </div>
+          <div className="relative mb-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase font-bold tracking-widest">
+              <span className="px-3 bg-card text-muted-foreground">or</span>
+            </div>
+          </div>
+        </>
+      )}
 
       {error && (
         <div className="mb-4 status-panel status-panel-compact" data-tone="danger">
