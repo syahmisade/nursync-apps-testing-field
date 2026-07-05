@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, CheckCircle2, SlidersHorizontal, Check } from 'lucide-react';
+import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, CheckCircle2, SlidersHorizontal, Check, ClipboardList } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useProcedures } from '../hooks/useProcedures';
 import DisclaimerBanner from '../components/DisclaimerBanner';
@@ -8,6 +8,7 @@ import { SemanticPill, StatusPanel, buildCategoryTextColorMap, categoryTextColor
 import PullToRefresh from '../components/PullToRefresh';
 import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
 import { useTheme } from '../context/ThemeContext';
+import EmptyContentState from '../components/EmptyContentState';
 
 function hasText(value) {
   return typeof value === 'string' && value.trim().length > 0;
@@ -315,10 +316,11 @@ export default function ProceduresScreen() {
           </StatusPanel>
         )}
         {!isLoading && !error && filtered.length === 0 && (
-          <div className="text-center py-14">
-            <p className="text-4xl mb-3">🐱</p>
-            <p className="text-sm font-semibold text-muted-foreground">No procedures found</p>
-          </div>
+          <EmptyContentState
+            icon={ClipboardList}
+            title={procedures.length === 0 ? 'No procedures available' : 'No procedures found'}
+            description={procedures.length === 0 ? 'Add procedure records in Content Manager or import a CSV.' : 'Try a different search term or category.'}
+          />
         )}
         {filtered.map(proc => {
           const isSaved = savedProcedures.includes(proc.id);

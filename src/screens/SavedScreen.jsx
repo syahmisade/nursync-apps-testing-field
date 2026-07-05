@@ -8,6 +8,7 @@ import { useApp } from '../context/AppContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import { SemanticPill, buildCategoryTextColorMap, categoryTextColorFromMap, toneForCategory, toneForQuizCategory } from '../components/Semantic';
 import { useTheme } from '../context/ThemeContext';
+import EmptyContentState from '../components/EmptyContentState';
 
 const quizCatLabel = {
   "pharmacology": "Pharmacology",
@@ -71,16 +72,30 @@ function getProcedureOverviewText(procedure) {
   return hasText(procedure.overview) ? procedure.overview : 'No overview listed';
 }
 
-const EmptyState = ({ label }) => (
-  <div className="flex flex-col items-center justify-center py-14 gap-3">
-    <div className="text-5xl">🐱</div>
-    <div className="rounded-2xl px-5 py-3 text-center bg-secondary border border-border">
-      <BookmarkX size={24} className="mx-auto mb-2 text-muted-foreground" />
-      <p className="text-sm font-semibold text-foreground">No saved {label} yet</p>
-      <p className="text-xs mt-1 text-muted-foreground">Tap the bookmark on any {label.slice(0, -1)}</p>
-    </div>
-  </div>
-);
+const savedEmptyCopy = {
+  medicines: {
+    title: 'No saved medicines yet',
+    description: 'Tap the bookmark on any medicine',
+  },
+  procedures: {
+    title: 'No saved procedures yet',
+    description: 'Tap the bookmark on any procedure',
+  },
+  quiz: {
+    title: 'No saved quiz questions yet',
+    description: 'Tap the bookmark on any quiz question',
+  },
+};
+
+function SavedEmptyState({ type }) {
+  return (
+    <EmptyContentState
+      icon={BookmarkX}
+      title={savedEmptyCopy[type].title}
+      description={savedEmptyCopy[type].description}
+    />
+  );
+}
 
 export default function SavedScreen() {
   const { isDark } = useTheme();
@@ -169,7 +184,7 @@ export default function SavedScreen() {
 
         {/* Medicines */}
         {!isLoadingSavedContent && activeTab === 'medicines' && (
-          savedMeds.length === 0 ? <EmptyState label="medicines" /> :
+          savedMeds.length === 0 ? <SavedEmptyState type="medicines" /> :
           savedMeds.map(med => {
             return (
               <div key={med.id} className="rounded-2xl border overflow-hidden card-shadow bg-card border-border">
@@ -215,7 +230,7 @@ export default function SavedScreen() {
 
         {/* Procedures */}
         {!isLoadingSavedContent && activeTab === 'procedures' && (
-          savedProcs.length === 0 ? <EmptyState label="procedures" /> :
+          savedProcs.length === 0 ? <SavedEmptyState type="procedures" /> :
           savedProcs.map(proc => {
             return (
               <div key={proc.id} className="rounded-2xl border overflow-hidden card-shadow bg-card border-border">
@@ -269,7 +284,7 @@ export default function SavedScreen() {
 
         {/* Quiz */}
         {!isLoadingSavedContent && activeTab === 'quiz' && (
-          savedQuestions.length === 0 ? <EmptyState label="quiz questions" /> :
+          savedQuestions.length === 0 ? <SavedEmptyState type="quiz" /> :
           savedQuestions.map(q => {
             return (
               <div key={q.id} role="button" tabIndex={0}

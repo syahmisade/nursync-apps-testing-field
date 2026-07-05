@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, Check, SlidersHorizontal, Clock } from 'lucide-react';
+import { Search, X, Bookmark, BookmarkCheck, ChevronRight, ArrowLeft, AlertTriangle, Check, SlidersHorizontal, Clock, Pill } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useMedicines } from '../hooks/useMedicines';
 import DisclaimerBanner from '../components/DisclaimerBanner';
@@ -8,6 +8,7 @@ import { SemanticPill, StatusPanel, buildCategoryTextColorMap, categoryTextColor
 import PullToRefresh from '../components/PullToRefresh';
 import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
 import { useTheme } from '../context/ThemeContext';
+import EmptyContentState from '../components/EmptyContentState';
 
 function CategoryPill({ category, colorMap, isDark, fallback = false }) {
   const label = hasText(category) ? category : 'Uncategorized';
@@ -387,11 +388,11 @@ export default function MedicineScreen() {
           </StatusPanel>
         )}
         {!isLoading && !error && filtered.length === 0 && (
-          <div className="text-center py-14">
-            <p className="text-4xl mb-3">🐱</p>
-            <p className="text-sm font-semibold text-muted-foreground">No medicines found</p>
-            <p className="text-xs mt-1 text-muted-foreground">Try a different search term</p>
-          </div>
+          <EmptyContentState
+            icon={Pill}
+            title={medicines.length === 0 ? 'No medicines available' : 'No medicines found'}
+            description={medicines.length === 0 ? 'Add medicine records in Content Manager or import a CSV.' : 'Try a different search term or category.'}
+          />
         )}
         {filtered.map(medicine => {
           const isSaved = savedMedicines.includes(medicine.id);

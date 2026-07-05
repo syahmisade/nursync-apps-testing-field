@@ -1,11 +1,12 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, AlertTriangle, Bookmark, BookmarkCheck, CheckCircle2, XCircle, RotateCcw, ChevronRight, Trophy } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Bookmark, BookmarkCheck, CheckCircle2, XCircle, RotateCcw, ChevronRight, Trophy, BookOpen } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useQuiz } from '../hooks/useQuiz';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import { SemanticPill, StatusPanel, toneForQuizCategory } from '../components/Semantic';
 import { AnimatePresence, motion, slideTransition, detailVariants, listVariants } from '../components/PageTransition';
+import EmptyContentState from '../components/EmptyContentState';
 
 function QuizSession({ category, allQuestions, onBack, onFinish }) {
   const questions = useMemo(() =>
@@ -256,6 +257,10 @@ export default function QuizScreen() {
     () => Object.keys(quizProgress).filter(categoryId => completableCategoryIds.has(categoryId)).length,
     [quizProgress, completableCategoryIds]
   );
+  const availableQuizCategories = useMemo(
+    () => quizCategories.filter(cat => cat.count > 0),
+    [quizCategories]
+  );
 
   return (
     <div className="relative h-full overflow-hidden">
@@ -331,7 +336,13 @@ export default function QuizScreen() {
 
         <p className="text-xs font-black uppercase tracking-widest px-1 text-muted-foreground">Select a Category</p>
 
-        {quizCategories.map(cat => {
+        {availableQuizCategories.length === 0 ? (
+          <EmptyContentState
+            icon={BookOpen}
+            title="No quiz questions available"
+            description="Add quiz question records in Content Manager or import a CSV."
+          />
+        ) : availableQuizCategories.map(cat => {
           const progress = quizProgress[cat.id];
           const pct = progress ? Math.round((progress.score / progress.total) * 100) : null;
           return (
