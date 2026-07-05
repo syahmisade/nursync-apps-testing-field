@@ -3,7 +3,7 @@
 //   [{ key, type: 'text'|'textarea'|'number'|'list'|'select', ... }]
 // List fields are stored in a single CSV cell, items separated by " | ".
 
-const LIST_SEP = '|';
+const LIST_SEP = ' | ';
 
 function escapeCell(value) {
   const str = value == null ? '' : String(value);
@@ -22,7 +22,7 @@ export function recordsToCsv(records, fields) {
     const row = fields.map(f => {
       const v = rec[f.key];
       if (f.type === 'list') {
-        return escapeCell(Array.isArray(v) ? v.join(` ${LIST_SEP} `) : '');
+        return escapeCell(Array.isArray(v) ? v.join(LIST_SEP) : '');
       }
       return escapeCell(v);
     });
@@ -38,6 +38,7 @@ function parseCsvRows(text) {
   let row = [];
   let cell = '';
   let inQuotes = false;
+  let inPipeListItem = false;
   const src = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
   for (let i = 0; i < src.length; i++) {
@@ -51,11 +52,16 @@ function parseCsvRows(text) {
       }
     } else if (ch === '"') {
       inQuotes = true;
-    } else if (ch === ',') {
+    } else if (src.slice(i, i + LIST_SEP.length) === LIST_SEP) {
+      inPipeListItem = !inPipeListItem;
+      cell += LIST_SEP;
+      i += LIST_SEP.length - 1;
+    } else if (ch === ',' && !inPipeListItem) {
       row.push(cell); cell = '';
     } else if (ch === '\n') {
       row.push(cell); cell = '';
       rows.push(row); row = [];
+      inPipeListItem = false;
     } else {
       cell += ch;
     }
