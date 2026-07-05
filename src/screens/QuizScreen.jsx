@@ -248,6 +248,14 @@ export default function QuizScreen() {
   const showSession = quizState === 'session' && activeCategory;
   const showResults = quizState === 'results' && activeCategory && lastResult;
   const isDetail = showSession || showResults;
+  const completableCategoryIds = useMemo(
+    () => new Set(quizCategories.filter(cat => cat.count > 0).map(cat => cat.id)),
+    [quizCategories]
+  );
+  const completedCount = useMemo(
+    () => Object.keys(quizProgress).filter(categoryId => completableCategoryIds.has(categoryId)).length,
+    [quizProgress, completableCategoryIds]
+  );
 
   return (
     <div className="relative h-full overflow-hidden">
@@ -312,7 +320,7 @@ export default function QuizScreen() {
           {[
             { label: 'Questions', value: quizQuestions.length, color: 'hsl(265,55%,52%)' },
             { label: 'Categories', value: quizCategories.length, color: 'hsl(270,50%,48%)' },
-            { label: 'Completed', value: Object.keys(quizProgress).length, color: 'hsl(152,50%,38%)' },
+            { label: 'Completed', value: completedCount, color: 'hsl(152,50%,38%)' },
           ].map(({ label, value, color }) => (
             <div key={label} className="rounded-2xl p-3 border card-shadow text-center bg-card border-border">
               <p className="text-xl font-black" style={{ color }}>{value}</p>
