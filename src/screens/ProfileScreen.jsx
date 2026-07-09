@@ -215,19 +215,7 @@ export default function ProfileScreen() {
   }, [quizProgress]);
 
   const deleteUserProfile = async () => {
-    const deleteMethods = ['deleteMe', 'deleteAccount', 'deleteUser', 'removeMe'];
-    const methodName = deleteMethods.find(name => typeof base44.auth?.[name] === 'function');
-
-    if (methodName) {
-      await base44.auth[methodName]();
-      return;
-    }
-
-    const currentUser = await base44.auth.me();
-    if (!currentUser?.id) {
-      throw new Error('Could not identify the current user profile.');
-    }
-    await base44.entities.User.delete(currentUser.id);
+    await base44.functions.invoke('deleteMyAccount', {});
   };
 
   const handleDelete = async () => {
