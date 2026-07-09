@@ -73,6 +73,7 @@ const AuthenticatedApp = () => {
         <Route path="procedures" element={<ProceduresScreen />} />
         <Route path="procedures/:id" element={<ProceduresScreen />} />
         <Route path="quiz" element={<QuizScreen />} />
+        <Route path="quiz/:mode/:id" element={<QuizScreen />} />
         <Route path="quiz/:id" element={<QuizScreen />} />
         <Route path="saved" element={<SavedScreen />} />
         <Route path="profile" element={<ProfileScreen />} />

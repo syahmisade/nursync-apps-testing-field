@@ -46,6 +46,10 @@ function validateQuiz(out) {
   if (out.correctIndex == null || Number.isNaN(out.correctIndex) || out.correctIndex < 0 || out.correctIndex > 3) {
     return 'Correct option index must be between 0 and 3.';
   }
+  if (out.setid !== undefined && out.setid !== null && out.setid !== '') {
+    const setid = Number(out.setid);
+    if (!Number.isFinite(setid) || setid <= 0) return 'Set ID must be a positive number.';
+  }
   return null;
 }
 

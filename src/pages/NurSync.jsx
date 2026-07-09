@@ -7,7 +7,8 @@ import { Settings, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 function isDetailRoute(pathname) {
-  return /^\/(medicine|procedures|quiz)\/[^/]+$/.test(pathname);
+  return /^\/(medicine|procedures)\/[^/]+$/.test(pathname)
+    || /^\/quiz\/([^/]+|category\/[^/]+|set\/[^/]+)$/.test(pathname);
 }
 
 export default function NurSync() {

@@ -6,6 +6,18 @@ const AppContext = createContext(null);
 const RECENT_KEY = 'nursync_recent_searches';
 const RECENT_SEARCH_LIMIT = 8;
 
+export const quizProgressKey = (mode, key) => `${mode}:${key}`;
+
+function normalizeAttemptProgressKey(attempt) {
+  if (attempt.quizMode && attempt.quizKey) {
+    return quizProgressKey(attempt.quizMode, attempt.quizKey);
+  }
+  if (attempt.categoryKey) {
+    return quizProgressKey('category', attempt.categoryKey);
+  }
+  return null;
+}
+
 // Saved items and quiz attempts are persisted per-user via the SavedItem and
 // QuizAttempt Base44 entities. Recent searches stay in localStorage (device-local,
 // no entity needed).
@@ -30,7 +42,7 @@ export function AppProvider({ children }) {
   // Maps `${itemType}:${legacyId}` -> SavedItem record id, so we can delete on un-save.
   const [savedRecordIds, setSavedRecordIds] = useState({});
 
-  // Load saved items + latest quiz attempt per category from the backend.
+  // Load saved items + latest quiz attempt per category/set from the backend.
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -56,11 +68,18 @@ export function AppProvider({ children }) {
         setSavedProcedures(procs);
         setSavedQuizQuestions(quizzes);
 
-        // Attempts are sorted newest-first; keep the first (latest) per category.
+        // Attempts are sorted newest-first; keep the first (latest) per quiz source.
         const progress = {};
         for (const a of attempts) {
-          if (!progress[a.categoryKey]) {
-            progress[a.categoryKey] = { score: a.score, total: a.total, date: a.created_date };
+          const key = normalizeAttemptProgressKey(a);
+          if (key && !progress[key]) {
+            progress[key] = {
+              score: a.score,
+              total: a.total,
+              date: a.created_date,
+              mode: a.quizMode || 'category',
+              quizKey: a.quizKey || a.categoryKey,
+            };
           }
         }
         setQuizProgress(progress);
@@ -108,12 +127,15 @@ export function AppProvider({ children }) {
     });
   };
 
-  const saveQuizProgress = async (category, score, total) => {
+  const saveQuizProgress = async (mode, key, score, total) => {
+    const progressKey = quizProgressKey(mode, key);
     setQuizProgress(prev => ({
       ...prev,
-      [category]: { score, total, date: new Date().toISOString() }
+      [progressKey]: { score, total, date: new Date().toISOString(), mode, quizKey: key }
     }));
-    await base44.entities.QuizAttempt.create({ categoryKey: category, score, total });
+    const payload = { quizMode: mode, quizKey: String(key), score, total };
+    if (mode === 'category') payload.categoryKey = key;
+    await base44.entities.QuizAttempt.create(payload);
   };
 
   // Clears all of the user's saved data on the backend and resets in-memory state.

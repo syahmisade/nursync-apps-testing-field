@@ -2,9 +2,17 @@
   "name": "QuizAttempt",
   "type": "object",
   "properties": {
+    "quizMode": {
+      "type": "string",
+      "description": "Quiz source type: category or set"
+    },
+    "quizKey": {
+      "type": "string",
+      "description": "Category key or set id string for this attempt"
+    },
     "categoryKey": {
       "type": "string",
-      "description": "Matches QuizCategory.categoryKey (e.g. pharmacology, fundamentals)"
+      "description": "Legacy/category attempt key. Matches QuizCategory.categoryKey."
     },
     "score": {
       "type": "number",
@@ -16,7 +24,6 @@
     }
   },
   "required": [
-    "categoryKey",
     "score",
     "total"
   ],

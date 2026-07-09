@@ -208,7 +208,7 @@ export default function ProfileScreen() {
     const totalAnswered = attempts.reduce((sum, item) => sum + item.total, 0);
 
     return {
-      label: `${attempts.length} quiz set${attempts.length === 1 ? '' : 's'} completed`,
+      label: `${attempts.length} quiz attempt${attempts.length === 1 ? '' : 's'} completed`,
       bestScore: `${bestPercent}%`,
       totalAnswered
     };

@@ -21,6 +21,17 @@ const quizCatLabel = {
 
 const fromSavedState = (savedTab) => ({ fromSaved: true, savedTab });
 
+function getValidSetId(question) {
+  const setid = Number(question?.setid);
+  return Number.isFinite(setid) && setid > 0 ? setid : null;
+}
+
+function getSavedQuestionPath(question) {
+  const setid = getValidSetId(question);
+  if (setid) return `/quiz/set/${setid}`;
+  return `/quiz/category/${question.category}`;
+}
+
 function hasText(value) {
   return typeof value === 'string' && value.trim().length > 0;
 }
@@ -116,7 +127,7 @@ export default function SavedScreen() {
   } = useApp();
   const { medicines, isLoading: isLoadingMedicines } = useMedicines();
   const { procedures, isLoading: isLoadingProcedures } = useProcedures();
-  const { quizQuestions, isLoading: isLoadingQuiz } = useQuiz();
+  const { quizCategories, quizQuestions, isLoading: isLoadingQuiz } = useQuiz();
   const medicineCategoryColorMap = React.useMemo(
     () => buildCategoryTextColorMap(['All', ...medicines.map(getMedicineCategoryLabel)]),
     [medicines]
@@ -138,6 +149,13 @@ export default function SavedScreen() {
   const savedProcs = procedures.filter(p => savedProcedures.includes(p.id));
   const savedQuestions = quizQuestions.filter(q => savedQuizQuestions.includes(q.id));
   const isLoadingSavedContent = isLoadingAppData || isLoadingMedicines || isLoadingProcedures || isLoadingQuiz;
+  const quizCategoryLabels = React.useMemo(() => {
+    const labels = {};
+    for (const category of quizCategories) {
+      labels[category.id] = category.label;
+    }
+    return labels;
+  }, [quizCategories]);
 
   return (
     <div className="flex flex-col h-full">
@@ -286,18 +304,21 @@ export default function SavedScreen() {
         {!isLoadingSavedContent && activeTab === 'quiz' && (
           savedQuestions.length === 0 ? <SavedEmptyState type="quiz" /> :
           savedQuestions.map(q => {
+            const setid = getValidSetId(q);
+            const categoryLabel = quizCategoryLabels[q.category] || quizCatLabel[q.category] || q.category || 'Quiz';
+            const metaLabel = setid ? `${categoryLabel} - Set ${setid}` : categoryLabel;
             return (
               <div key={q.id} role="button" tabIndex={0}
-                onClick={() => navigate(`/quiz/${q.category}`, { state: fromSavedState('quiz') })}
+                onClick={() => navigate(getSavedQuestionPath(q), { state: fromSavedState('quiz') })}
                 onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    navigate(`/quiz/${q.category}`, { state: fromSavedState('quiz') });
+                    navigate(getSavedQuestionPath(q), { state: fromSavedState('quiz') });
                   }
                 }}
                 className="w-full rounded-2xl border p-4 flex items-start gap-3 text-left transition-all card-shadow active:scale-[0.99] cursor-pointer bg-card border-border hover:bg-muted">
                 <div className="flex-1 min-w-0">
-                  <SemanticPill tone={toneForQuizCategory(q.category)} className="mb-1.5">{quizCatLabel[q.category]}</SemanticPill>
+                  <SemanticPill tone={toneForQuizCategory(q.category)} className="mb-1.5">{metaLabel}</SemanticPill>
                   <p className="text-xs font-medium leading-relaxed line-clamp-3 text-foreground">{q.question}</p>
                   <p className="text-xs font-bold mt-1.5" style={{ color: 'hsl(152,50%,38%)' }}>✓ {q.options[q.correctIndex]}</p>
                 </div>
