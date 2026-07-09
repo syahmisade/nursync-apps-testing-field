@@ -74,6 +74,7 @@ export default function AdminScreen() {
     { key: 'correctIndex', label: 'Correct option index (0–3)', type: 'number', placeholder: '0 = first option' },
     { key: 'explanation', label: 'Explanation', type: 'textarea' },
     { key: 'reference', label: 'Reference', type: 'text' },
+    { key: 'setid', label: 'Set ID', type: 'number', placeholder: 'e.g. 1' },
   ];
 
   if (!isAdmin) {

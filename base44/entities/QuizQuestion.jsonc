@@ -32,6 +32,10 @@
     "reference": {
       "type": "string",
       "description": "Reference source for the question"
+    },
+    "setid": {
+      "type": "number",
+      "description": "Question set identifier grouping questions into sets"
     }
   },
   "required": [
