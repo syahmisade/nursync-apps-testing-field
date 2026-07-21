@@ -38,8 +38,7 @@ function parseCsvRows(text) {
   let row = [];
   let cell = '';
   let inQuotes = false;
-  let inPipeListItem = false;
-  const src = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const src = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
   for (let i = 0; i < src.length; i++) {
     const ch = src[i];
@@ -52,20 +51,16 @@ function parseCsvRows(text) {
       }
     } else if (ch === '"') {
       inQuotes = true;
-    } else if (src.slice(i, i + LIST_SEP.length) === LIST_SEP) {
-      inPipeListItem = !inPipeListItem;
-      cell += LIST_SEP;
-      i += LIST_SEP.length - 1;
-    } else if (ch === ',' && !inPipeListItem) {
+    } else if (ch === ',') {
       row.push(cell); cell = '';
     } else if (ch === '\n') {
       row.push(cell); cell = '';
       rows.push(row); row = [];
-      inPipeListItem = false;
     } else {
       cell += ch;
     }
   }
+  if (inQuotes) throw new Error('CSV contains an unterminated quoted field.');
   if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
   return rows.filter(r => r.some(c => c.trim() !== ''));
 }
@@ -78,7 +73,19 @@ export function csvToRecords(text, fields) {
   const headers = rows[0].map(h => h.trim());
   const fieldByKey = Object.fromEntries(fields.map(f => [f.key, f]));
 
-  return rows.slice(1).map(cols => {
+  const duplicateHeader = headers.find((header, index) => headers.indexOf(header) !== index);
+  if (duplicateHeader) throw new Error(`CSV contains a duplicate "${duplicateHeader}" column.`);
+
+  const unknownHeaders = headers.filter(header => header && !fieldByKey[header]);
+  if (unknownHeaders.length) throw new Error(`Unknown CSV column${unknownHeaders.length === 1 ? '' : 's'}: ${unknownHeaders.join(', ')}.`);
+
+  const missingHeaders = fields.filter(f => f.required && !headers.includes(f.key));
+  if (missingHeaders.length) throw new Error(`Missing required CSV column${missingHeaders.length === 1 ? '' : 's'}: ${missingHeaders.map(f => f.key).join(', ')}.`);
+
+  return rows.slice(1).map((cols, rowIndex) => {
+    if (cols.length !== headers.length) {
+      throw new Error(`CSV row ${rowIndex + 2} has ${cols.length} columns; expected ${headers.length}. Check commas and quotation marks.`);
+    }
     const out = {};
     headers.forEach((key, idx) => {
       const f = fieldByKey[key];
@@ -87,7 +94,11 @@ export function csvToRecords(text, fields) {
       if (f.type === 'list') {
         out[key] = raw ? raw.split(LIST_SEP).map(s => s.trim()).filter(Boolean) : [];
       } else if (f.type === 'number') {
-        out[key] = raw === '' ? null : Number(raw);
+        const number = raw === '' ? null : Number(raw);
+        if (number !== null && !Number.isFinite(number)) {
+          throw new Error(`CSV row ${rowIndex + 2} has an invalid number in "${key}".`);
+        }
+        out[key] = number;
       } else {
         out[key] = raw;
       }

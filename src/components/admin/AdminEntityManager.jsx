@@ -139,6 +139,21 @@ export default function AdminEntityManager({ entityName, queryKey, titleField, s
   };
 
   const handleImport = async (rows) => {
+    rows.forEach((row, index) => {
+      const missing = fields.find(field => (
+        field.required
+        && (row[field.key] === '' || row[field.key] == null || (Array.isArray(row[field.key]) && row[field.key].length === 0))
+      ));
+      if (missing) {
+        throw new Error(`CSV row ${index + 2}: ${missing.label} is required. No records were imported.`);
+      }
+
+      const customError = validate ? validate(row) : null;
+      if (customError) {
+        throw new Error(`CSV row ${index + 2}: ${customError} No records were imported.`);
+      }
+    });
+
     const reusableIds = getReusableLegacyIds(records, rows.length);
     const payload = rows.map((r, index) => {
       const clean = { ...r };
